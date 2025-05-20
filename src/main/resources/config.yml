@@ -1,0 +1,50 @@
+version: 1.6 # Config version
+debug: false # Enable debug mode (for developers)
+delete-blocks-when-disable: false # Delete blocks created by the plugin when the server is disabled?
+teleport-player-in-place: true # Teleport the player to the built block?
+center-direction-in-teleport: true # Center the player's viewing direction when teleporting?
+
+# Block names can be found here: https://helpch.at/docs/1.19.4/org/bukkit/Material.html
+enabled-blocks: [CYAN_CONCRETE, LIME_CONCRETE, YELLOW_CONCRETE, PURPLE_CONCRETE, BLUE_CONCRETE]
+
+# Sound list available here: https://helpch.at/docs/1.19.4/org/bukkit/Sound.html
+win-sound: ENTITY_PLAYER_LEVELUP # Sound played when a player wins
+block-place-sound: BLOCK_SCAFFOLDING_PLACE # Sound played when a block is placed
+
+build-delay: 0 # Delay before building starts (in ticks)
+build-period: 10 # Building period (in ticks)
+
+# Message templates
+question-template: "§6Question§8: §f§r{0}" # {0} - question text
+questions-are-over: "§cQuestions are over." # Notification that questions are finished
+
+# Plugin messages
+no-args: "§cNot enough arguments in the command"
+you-not-connected-to-game: "§cYou are not connected to a game"
+game-is-not-started: "§cThe game has not started yet"
+already-answer: "§cYou have already answered this question"
+you-answer: "§fYou answered §6{0}" # {0} - player's answer
+player-answer: "§fPlayer §6{0} §fanswered" # {0} - player's name
+you-dont-have-game-requests: "§cYou have no game requests"
+this-game-is-not-requested-you: "§cYou were not invited to this game"
+you-connected-to: "§fYou are connected to game §6{0}" # {0} - game name
+command-only-for-player: "§cThis command is only available for players"
+in-argument-needed-number: "§cThe argument must be a number"
+game-is-created: "§aGame created successfully! Now create paths for the players."
+is-game-already-created: "§cA game with this name already exists!"
+game-not-found: "§cA game with this name was not found"
+unknown-problem-with-game-delete: "§cAn unexpected error occurred while deleting the game."
+game-delete: "§aGame deleted"
+you-dont-game-owner: "§cYou are not the owner of this game"
+is-game-owner: "§cThis is the game owner"
+is-player-is-not-found: "§cPlayer not found"
+you-have-new-game-requests: "§fYou have a new game invitation! Use §6/acceptgame {0} §fto accept it."
+is-command-only-for-game-owner: "§cThis command is only for the game owner"
+in-the-game-not-found-paths: "§cNo paths are defined for this game"
+players-win-game: "§6{0} §fwon!" # {0} - winner's name
+player-win-game: "§6{0} §fwon the game §6{1}!" # {0} - winner's name, {1} - game name
+game-add-player-already-started: "§cCannot add a player, the game has already started."
+path-created: "§aPath set successfully"
+player-accepted-requests: "§fPlayer §6{0} §fhas accepted your invitation!"
+requests-sended: "§fRequest to join the game sent to player §6{0}." # {0} - recipient's name
+you-already-create-your-game: "§cYou have already created your game, delete the previous one."

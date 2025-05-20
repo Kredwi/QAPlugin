@@ -1,0 +1,40 @@
+name: QAPlugin
+api-version: 1.19
+description: Adds a question and answer mechanic to your server!
+version: 0.4.5
+author: Kredwi
+main: ru.kredwi.qa.QAPlugin
+website: https://github.com/Kredwi/QAPlugin
+commands:
+  question:
+    description: Ask your question.
+    usage: /question <question...>
+  answer:
+    description: Answer the current question.
+    usage: /answer <answer>
+    default: true
+  path:
+    description: Set the path for a player in the game.
+    usage: /path <game name> <player name>
+    default: op
+  acceptgame:
+    description: Accept the invitation and join the game.
+    usage: /acceptgame <game name>
+    default: true
+  creategame:
+    description: Create a new game.
+    usage: /creategame <game name> <blocks to end>
+    default: op
+  startgame:
+    description: Start the game.
+    usage: /startgame <game name>
+    default: op
+  deletegame:
+    description: Delete an existing game.
+    usage: /deletegame <game name>
+    default: op
+  deleteplayer:
+    description: Remove a player from the game.
+    usage: /deleteplayer <game name> <player name>
+    default: op
+
