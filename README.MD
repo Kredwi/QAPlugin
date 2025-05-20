@@ -21,13 +21,13 @@ QAPlugin will add a Question/Answer minigame to your server.
 ## Configuration
 The plugin settings are located in the `plugins/QAPlugin/config.yml` file. Basic parameters:
 
-- `enabled-blocks' - List of blocks used for construction
-- `win-sound' - Sound when winning
-- `block-place-sound' - The sound when placing the block
-- `build-delay' - Delay before the start of construction (in ticks)
+- `enabled-blocks` - List of blocks used for construction
+- `win-sound` - Sound when winning
+- `block-place-sound` - The sound when placing the block
+- `build-delay` - Delay before the start of construction (in ticks)
 - `build-period` - Construction period (in ticks)
 
 ## Links
 - [GitHub](https://github.com/Kredwi/QAPlugin)
-- [List of Bukkit materials](https://helpch.at/docs/1.19.4/org/bukkit/Material.html )
-- [List of Bukkit sounds](https://helpch.at/docs/1.19.4/org/bukkit/Sound.html )
+- [List of Bukkit materials](https://helpch.at/docs/1.19.4/org/bukkit/Material.html)
+- [List of Bukkit sounds](https://helpch.at/docs/1.19.4/org/bukkit/Sound.html)
