@@ -1,6 +1,7 @@
 package ru.kredwi.qa.commands;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -76,7 +77,7 @@ public class ConfirmGame extends CommandAbstract {
 					.getUserRequests(player.getUniqueId());
 			
 			if (UserRequests == null) {
-				return new ArrayList<>(0);
+				return Collections.emptyList();
 			}
 			
 			if (args.length == 0) {

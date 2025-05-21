@@ -1,4 +1,4 @@
-version: 1.7 # Config version
+version: 1.8 # Config version
 debug: false # Enable debug mode (for developers)
 delete-blocks-when-disable: false # Delete blocks created by the plugin when the server is disabled?
 teleport-player-in-place: true # Teleport the player to the built block?
@@ -49,6 +49,7 @@ player-accepted-requests: "§fPlayer §6{0} §fhas accepted your invitation!"
 requests-sended: "§fRequest to join the game sent to player §6{0}." # {0} - recipient's name
 you-already-create-your-game: "§cYou have already created your game, delete the previous one."
 not-have-permission: "§cYou do not have permission to use this command."
+unknown-error: "An unknown error occurred while executing the command."
 
 # Your questions
 questions:

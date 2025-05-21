@@ -22,6 +22,10 @@ commands:
     description: Accept the invitation and join the game.
     usage: /acceptgame <game name>
     permission: qaplugin.commands.acceptgame
+  denygame:
+    description: Deny game request.
+    usage: /denygame <game name>
+    permission: qaplugin.commands.acceptgame
   creategame:
     description: Create a new game.
     usage: /creategame <game name> <blocks to end>

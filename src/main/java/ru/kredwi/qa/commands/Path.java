@@ -1,7 +1,7 @@
 package ru.kredwi.qa.commands;
 
 import java.text.MessageFormat;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -65,7 +65,7 @@ public class Path extends CommandAbstract {
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
 		
-		if (!playerHavePermissions(sender)) return new ArrayList<>(0);
+		if (!playerHavePermissions(sender)) return Collections.emptyList();
 		
 		if (args.length == 1) {
 			return mainGame.getNamesFromGames().stream()
@@ -80,7 +80,7 @@ public class Path extends CommandAbstract {
 					.collect(Collectors.toList());
 		}
 		
-		return null;
+		return Collections.emptyList();
 	}
 
 }

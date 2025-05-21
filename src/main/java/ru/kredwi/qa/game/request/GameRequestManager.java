@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
@@ -14,6 +15,7 @@ import org.bukkit.entity.Player;
 
 import ru.kredwi.qa.QAPlugin;
 import ru.kredwi.qa.config.QAConfig;
+import ru.kredwi.qa.exceptions.InvalidRequestData;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IMainGame;
 import ru.kredwi.qa.game.state.PlayerState;
@@ -83,8 +85,24 @@ public class GameRequestManager {
 		clearUserRequests(playerUUID);
 	}
 	
-	public void denyGame(UUID playerUUID, String gameName) {
-		// TODO write logics
+	public void denyGame(UUID playerUUID, String gameName) throws InvalidRequestData {
+		Set<RequestInfo> requestsList = this.userRequests.get(playerUUID);
+		
+		if (Objects.isNull(requestsList) || requestsList.size() < 1) {
+			throw new InvalidRequestData("Requests list for " + playerUUID + " is null");
+		}
+		
+		List<RequestInfo> requestInfo = requestsList.stream()
+				.filter(e -> e.gameName().equalsIgnoreCase(gameName.trim()))
+				.toList();
+
+		if (requestInfo.size() < 1 || Objects.isNull(requestInfo.get(0))) {
+			throw new InvalidRequestData("Requests info for " + playerUUID + " is null or 0");
+		}
+		
+		requestsList.remove(requestInfo.get(0));
+		
+		this.userRequests.put(playerUUID, requestsList);
 	}
 	
 	/** 

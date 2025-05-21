@@ -16,6 +16,7 @@ import ru.kredwi.qa.commands.ConfirmGame;
 import ru.kredwi.qa.commands.CreateGame;
 import ru.kredwi.qa.commands.DeleteGame;
 import ru.kredwi.qa.commands.DeletePlayer;
+import ru.kredwi.qa.commands.DenyGame;
 import ru.kredwi.qa.commands.Path;
 import ru.kredwi.qa.commands.Question;
 import ru.kredwi.qa.commands.StartGame;
@@ -45,7 +46,7 @@ public class QAPlugin extends JavaPlugin implements IMainGame {
 		
 		saveDefaultConfig();
 		
-		if (QAConfig.VERSION.getAsDouble() != 1.7) {
+		if (QAConfig.VERSION.getAsDouble() != 1.8) {
 			for (int i = 0; i < 10; i++) {
 				logger.info("THE CONFIG VERSION IS NOT SUITABLE FOR THIS VERSION OF THE PLUGIN!!!! DELETE config.yml ON THE Plugins/QAPlugin PATH, AND RESTART THE SERVER");
 			}
@@ -60,7 +61,7 @@ public class QAPlugin extends JavaPlugin implements IMainGame {
 			CommandAbstract[] commandInstaces = new CommandAbstract[] {
 					new Question(this), new Answer(this), new Path(this),
 					new CreateGame(this), new StartGame(this), new DeleteGame(this),
-					new DeletePlayer(this), new ConfirmGame(this)
+					new DeletePlayer(this), new ConfirmGame(this), new DenyGame(this)
 			};
 			
 			for (CommandAbstract commandInstance : commandInstaces) {

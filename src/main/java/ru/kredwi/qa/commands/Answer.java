@@ -1,6 +1,6 @@
 package ru.kredwi.qa.commands;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.bukkit.command.Command;
@@ -50,7 +50,7 @@ public class Answer extends CommandAbstract {
 
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
-		return new ArrayList<>(0);
+		return Collections.emptyList();
 	}
 	
 	public void setCallback(ICallback callback) {

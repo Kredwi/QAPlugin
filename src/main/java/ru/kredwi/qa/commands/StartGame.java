@@ -1,6 +1,6 @@
 package ru.kredwi.qa.commands;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -54,7 +54,7 @@ public class StartGame extends CommandAbstract {
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
 
-		if (!playerHavePermissions(sender)) return new ArrayList<>(0);		
+		if (!playerHavePermissions(sender)) return Collections.emptyList();		
 		
 		return mainGame.getNamesFromGames().stream().toList();
 	}

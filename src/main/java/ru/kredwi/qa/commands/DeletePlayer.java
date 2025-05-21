@@ -1,6 +1,6 @@
 package ru.kredwi.qa.commands;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -76,7 +76,7 @@ public class DeletePlayer extends CommandAbstract {
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {		
 		
-		if (!playerHavePermissions(sender)) return new ArrayList<>(0);
+		if (!playerHavePermissions(sender)) return Collections.emptyList();
 		
 		if (args.length == 1) {
 			return mainGame.getNamesFromGames().stream()
@@ -88,7 +88,7 @@ public class DeletePlayer extends CommandAbstract {
 			IGame game = mainGame.getGame(args[0]);
 			
 			if (Objects.isNull(game)) {
-				return new ArrayList<String>(0);
+				return Collections.emptyList();
 			}
 			
 			return game.getPlayers().stream()
@@ -96,7 +96,7 @@ public class DeletePlayer extends CommandAbstract {
 					.filter(e -> e.startsWith(args[1]))
 					.collect(Collectors.toList());
 		}
-		return new ArrayList<String>(0);
+		return Collections.emptyList();
 	}
 
 }
