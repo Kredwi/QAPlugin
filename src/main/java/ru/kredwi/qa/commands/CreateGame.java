@@ -16,12 +16,17 @@ public class CreateGame extends CommandAbstract {
 	private QAPlugin plugin;
 	
 	public CreateGame(QAPlugin plugin) {
-		super(plugin, "creategame");
+		super(plugin, "creategame", "qaplugin.commands.creategame");
 		this.plugin = plugin;
 	}
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+		
+		if (!playerHavePermissions(sender)) {
+			sendError(sender, QAConfig.NOT_HAVE_PERMISSION);
+			return true;
+		}
 		
 		if (!isPlayer(sender)) {
 			sendError(sender, QAConfig.COMMAND_ONLY_FOR_PLAYERS);

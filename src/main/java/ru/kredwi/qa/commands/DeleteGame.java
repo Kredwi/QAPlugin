@@ -15,11 +15,16 @@ import ru.kredwi.qa.game.IMainGame;
 public class DeleteGame extends CommandAbstract {
 
 	public DeleteGame(IMainGame mainGame) {
-		super(mainGame, "deletegame");
+		super(mainGame, "deletegame", "qaplugin.commands.deletegame");
 	}
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+		
+		if (!playerHavePermissions(sender)) {
+			sendError(sender, QAConfig.NOT_HAVE_PERMISSION);
+			return true;
+		}
 		
 		if (!validateArgs(args.length, 0)) {
 			sendError(sender, QAConfig.GAME_NOT_FOUND);
@@ -42,6 +47,9 @@ public class DeleteGame extends CommandAbstract {
 
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
+		
+		if (!playerHavePermissions(sender)) return null;
+		
 		return mainGame.getNamesFromGames().stream()
 			.filter(e -> e.toLowerCase().startsWith(args[0].toLowerCase()))
 			.collect(Collectors.toList());

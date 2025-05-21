@@ -57,7 +57,8 @@ public enum QAConfig {
 	PATH_CREATED("path-created"),
 	REQUESTS_SENDED("requests-sended"),
 	YOU_ALREADY_CREATE_YOUR_GAME("you-already-create-your-game"),
-	PLAYER_ACCEPTED_REQUESTS("player-accepted-requests");
+	PLAYER_ACCEPTED_REQUESTS("player-accepted-requests"),
+	NOT_HAVE_PERMISSION("not-have-permission");
 	
 	private final FileConfiguration config = JavaPlugin.getPlugin(QAPlugin.class).getConfig();
 	private String path;

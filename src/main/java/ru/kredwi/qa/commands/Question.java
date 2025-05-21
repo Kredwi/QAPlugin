@@ -15,11 +15,16 @@ import ru.kredwi.qa.game.state.PlayerState;
 public class Question extends CommandAbstract {
 	
 	public Question(IMainGame mainGame) {
-		super(mainGame, "question");
+		super(mainGame, "question", "qaplugin.commands.question");
 	}
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+		
+		if (!playerHavePermissions(sender)) {
+			sendError(sender, QAConfig.NOT_HAVE_PERMISSION);
+			return true;
+		}
 		
 		if (!isPlayer(sender)) {
 			sendError(sender, QAConfig.COMMAND_ONLY_FOR_PLAYERS);

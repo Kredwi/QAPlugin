@@ -1,4 +1,4 @@
-version: 1.6 # Config version
+version: 1.7 # Config version
 debug: false # Enable debug mode (for developers)
 delete-blocks-when-disable: false # Delete blocks created by the plugin when the server is disabled?
 teleport-player-in-place: true # Teleport the player to the built block?
@@ -48,3 +48,37 @@ path-created: "§aPath set successfully"
 player-accepted-requests: "§fPlayer §6{0} §fhas accepted your invitation!"
 requests-sended: "§fRequest to join the game sent to player §6{0}." # {0} - recipient's name
 you-already-create-your-game: "§cYou have already created your game, delete the previous one."
+not-have-permission: "§cYou do not have permission to use this command."
+
+# Your questions
+questions:
+ - I am the beginning of everything, the end of everything, and the beginning of every ending.
+ - I am always hungry, I must always be fed, the touch of me will destroy even the strongest thing.
+ - I speak without a mouth and hear without ears. I have no body, but I come alive with wind.
+ - I am as light as a feather, but the strongest person cannot hold me for five minutes.
+ - I grow up and at the same time I decrease.
+ - I am bought to eat, but never eaten.
+ - I am full of holes, but I still hold water.
+ - The more there is of me, the less you see.
+ - I am something that belongs to you, but others use me more than you do.
+ - I am what you throw away when you want to use me.
+ - I only move when killed.
+ - I know the answer, but I don't ask the questions.
+ - I cannot be seen, but I can be felt. I can be cruel and I can be gentle.
+ - I can be big or small, but you cannot use me until you break me.
+ - I have cities, mountains, and water, but no houses, trees, or fish.
+ - I have eyes, but I cannot see.
+ - I am made of wood, but I am not wood.
+ - I live, but never breathe, I move, but never walk.
+ - I am always in front of you, but you cannot see me.
+ - I fall, but I don't break.
+ - I speak, but I have no voice.
+ - The more you take from me, the bigger I become.
+ - I can be long or short, but I have no beginning and no end.
+ - I am always coming, but never arrive.
+ - What can fill a room but takes up no space?
+ - I am broken when I am not yet formed.
+ - I am always near, but I cannot be touched.
+ - The more you know about me, the more you forget.
+ - I am always growing, but never get taller.
+ - I am something people often look for, but rarely find.

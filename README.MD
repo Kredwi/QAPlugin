@@ -4,7 +4,13 @@
 QAPlugin will add a Question/Answer minigame to your server.
 **1.19**+
 
-## Teams
+## How to use
+1.  A player with game creation permissions uses the command `/creategame <game name>`, specifying the required arguments. (Corrected grammar and clarity.  Using "uses" is more natural.)
+2.  The player who created the game must then create paths for the players using the command `/path <game name> [player]`.
+ - **NOTE**: The direction and starting location are set based on the *command sender's* current position. (Replaced "command sender" with "command sender's" to show possession. Replaced "place of start" with "starting location" for better flow.)
+3.  After setting paths for all players, the command `/startgame` must be executed. This will initialize the game, create the necessary blocks, and teleport all players to their starting points. (Replaced "proinitsiliziruet" with a proper spelling. Replaced "to start points" with "to their starting points" for better flow. Changed order of sentences for better flow)
+
+## Commands
 
 ### Basic Commands
 - `/question <question text>` - Ask the players a question (for the game owner only)

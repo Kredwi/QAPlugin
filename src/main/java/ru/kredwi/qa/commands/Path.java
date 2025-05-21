@@ -1,6 +1,7 @@
 package ru.kredwi.qa.commands;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,13 +20,18 @@ public class Path extends CommandAbstract {
 	private final GameRequestManager gameRequestManager;
 	
 	public Path(IMainGame mainGame) {
-		super(mainGame, "path");
+		super(mainGame, "path", "qaplugin.commands.path");
 		
 		this.gameRequestManager = mainGame.getGameRequestManager();
 	}
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+		
+		if (!playerHavePermissions(sender)) {
+			sendError(sender, QAConfig.NOT_HAVE_PERMISSION);
+			return true;
+		}
 		
 		if (!sendMessageIfNotPlayer(sender)) return true;
 		
@@ -58,6 +64,9 @@ public class Path extends CommandAbstract {
 
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
+		
+		if (!playerHavePermissions(sender)) return new ArrayList<>(0);
+		
 		if (args.length == 1) {
 			return mainGame.getNamesFromGames().stream()
 					.filter(e -> e.startsWith(args[0]))

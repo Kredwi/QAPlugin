@@ -45,7 +45,7 @@ public class QAPlugin extends JavaPlugin implements IMainGame {
 		
 		saveDefaultConfig();
 		
-		if (QAConfig.VERSION.getAsDouble() != 1.6) {
+		if (QAConfig.VERSION.getAsDouble() != 1.7) {
 			for (int i = 0; i < 10; i++) {
 				logger.info("THE CONFIG VERSION IS NOT SUITABLE FOR THIS VERSION OF THE PLUGIN!!!! DELETE config.yml ON THE Plugins/QAPlugin PATH, AND RESTART THE SERVER");
 			}

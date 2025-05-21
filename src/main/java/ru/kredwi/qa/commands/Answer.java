@@ -23,12 +23,17 @@ public class Answer extends CommandAbstract {
 	}
 	
 	public Answer(IMainGame mainGame, ICallback callback) {
-		super(mainGame, "answer");
+		super(mainGame, "answer", "qaplugin.commands.answer");
 		this.callback = callback;
 	}
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+		
+		if (!playerHavePermissions(sender)) {
+			sendError(sender, QAConfig.NOT_HAVE_PERMISSION);
+			return true;
+		}
 		
 		if (args.length < 1) {
 			sendError(sender, QAConfig.NO_ARGS);
@@ -45,7 +50,6 @@ public class Answer extends CommandAbstract {
 
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
-		// TODO Auto-generated method stub
 		return new ArrayList<>(0);
 	}
 	

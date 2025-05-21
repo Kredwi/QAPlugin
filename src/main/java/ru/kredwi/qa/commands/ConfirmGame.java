@@ -17,11 +17,16 @@ import ru.kredwi.qa.game.request.RequestInfo;
 public class ConfirmGame extends CommandAbstract {
 	
 	public ConfirmGame(IMainGame mainGame) {
-		super(mainGame, "acceptgame");
+		super(mainGame, "acceptgame", "qaplugin.commands.acceptgame");
 	}
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+		
+		if (!playerHavePermissions(sender)) {
+			sendError(sender, QAConfig.NOT_HAVE_PERMISSION);
+			return true;
+		}
 		
 		if (!sendMessageIfNotPlayer(sender)) {
 			if (QAConfig.DEBUG.getAsBoolean()) {
@@ -62,9 +67,13 @@ public class ConfirmGame extends CommandAbstract {
 
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
+		
+		if (!playerHavePermissions(sender)) return null;
+			
 		if (sender instanceof Player player) {
 			
-			Set<RequestInfo> UserRequests = mainGame.getGameRequestManager().getUserRequests(player.getUniqueId());
+			Set<RequestInfo> UserRequests = mainGame.getGameRequestManager()
+					.getUserRequests(player.getUniqueId());
 			
 			if (UserRequests == null) {
 				return new ArrayList<>(0);

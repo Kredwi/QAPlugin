@@ -1,5 +1,6 @@
 package ru.kredwi.qa.commands;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -15,11 +16,17 @@ import ru.kredwi.qa.game.IMainGame;
 public class StartGame extends CommandAbstract {
 
 	public StartGame(IMainGame mainGame) {
-		super(mainGame, "startgame");
+		super(mainGame, "startgame", "qaplugin.commands.startgame");
 	}
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+		
+		if (!playerHavePermissions(sender)) {
+			sendError(sender, QAConfig.NOT_HAVE_PERMISSION);
+			return true;
+		}
+		
 		if (!validateArgs(args.length, 0)) {
 			sendError(sender, QAConfig.NO_ARGS);
 			return true;
@@ -46,7 +53,9 @@ public class StartGame extends CommandAbstract {
 	}
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
-		// TODO Auto-generated method stub
+
+		if (!playerHavePermissions(sender)) return new ArrayList<>(0);		
+		
 		return mainGame.getNamesFromGames().stream().toList();
 	}
 }

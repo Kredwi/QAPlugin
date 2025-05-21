@@ -21,11 +21,17 @@ import ru.kredwi.qa.removers.IRemover;
 public class DeletePlayer extends CommandAbstract {
 	
 	public DeletePlayer(IMainGame mainGame) {
-		super(mainGame, "deleteplayer");
+		super(mainGame, "deleteplayer", "qaplugin.commands.deleteplayer");
 	}
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+		
+		if (!playerHavePermissions(sender)) {
+			sendError(sender, QAConfig.NOT_HAVE_PERMISSION);
+			return true;
+		}
+		
 		if (!validateArgs(args.length, 1)) {
 			sendError(sender, QAConfig.NO_ARGS);
 			return true;
@@ -69,6 +75,9 @@ public class DeletePlayer extends CommandAbstract {
 	
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {		
+		
+		if (!playerHavePermissions(sender)) return new ArrayList<>(0);
+		
 		if (args.length == 1) {
 			return mainGame.getNamesFromGames().stream()
 					.filter(e -> e.startsWith(args[0]))

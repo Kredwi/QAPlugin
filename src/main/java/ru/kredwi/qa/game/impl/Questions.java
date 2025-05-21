@@ -2,6 +2,7 @@ package ru.kredwi.qa.game.impl;
 
 import java.text.MessageFormat;
 import java.util.List;
+import java.util.ArrayList;
 
 import org.bukkit.entity.Player;
 
@@ -24,6 +25,15 @@ public class Questions {
 			
 			if (questions != null && questions.size() > 0) {
 				INSTANCE = new Questions(questions);
+			} else {
+
+				QAPlugin.getQALogger().severe("ERROR OF LOADING QUESTIONS !!!");
+
+				INSTANCE = new Questions(new ArrayList<String>(0));
+
+				if (QAConfig.DEBUG.getAsBoolean()) {
+					QAPlugin.getQALogger().warning("questions is null? " + (questions == null));
+				}
 			}
 		}
 		return INSTANCE;
