@@ -16,9 +16,10 @@ import org.bukkit.entity.Player;
 import ru.kredwi.qa.QAPlugin;
 import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.exceptions.InvalidRequestData;
+import ru.kredwi.qa.exceptions.RequestsOutOfBounds;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IMainGame;
-import ru.kredwi.qa.game.state.PlayerState;
+import ru.kredwi.qa.game.player.PlayerState;
 
 public class GameRequestManager {
 	
@@ -93,7 +94,7 @@ public class GameRequestManager {
 			addPlayer(otherPlayer, startLocation, game);
 			mainGame.connectPlayerToGame(otherPlayer, game);
 			
-			if (game.getGameInfo().owner().getUniqueId().equals(otherPlayer.getUniqueId())) {
+			if (game.getGameInfo().isPlayerOwner(otherPlayer)) {
 				sender.sendMessage(QAConfig.PATH_CREATED.getAsString());
 			} else {
 				sender.sendMessage(MessageFormat.format(QAConfig.PLAYER_ACCEPTED_REQUESTS.getAsString(), otherPlayer.getName()));
@@ -105,7 +106,7 @@ public class GameRequestManager {
 	public void denyGame(UUID playerUUID, String gameName) throws InvalidRequestData {
 		Set<RequestInfo> requestsList = this.userRequests.get(playerUUID);
 		
-		if (Objects.isNull(requestsList) || requestsList.size() < 1) {
+		if (Objects.isNull(requestsList) || requestsList.isEmpty()) {
 			throw new InvalidRequestData("Requests list for " + playerUUID + " is null");
 		}
 		
@@ -113,7 +114,7 @@ public class GameRequestManager {
 				.filter(e -> e.gameName().equalsIgnoreCase(gameName.trim()))
 				.toList();
 
-		if (requestInfo.size() < 1 || Objects.isNull(requestInfo.get(0))) {
+		if (requestInfo.isEmpty() || Objects.isNull(requestInfo.get(0))) {
 			throw new InvalidRequestData("Requests info for " + playerUUID + " is null or 0");
 		}
 		
@@ -122,12 +123,19 @@ public class GameRequestManager {
 		this.userRequests.put(playerUUID, requestsList);
 	}
 	
-	public void addUserRequest(UUID playerUUID, String gameName, Player sender) {
+	public void addUserRequest(UUID playerUUID, String gameName, Player sender) throws RequestsOutOfBounds {
 		Set<RequestInfo> requests = userRequests.getOrDefault(gameName, new HashSet<RequestInfo>());
 		
 		requests.add(new RequestInfo(gameName, sender, sender.getLocation().clone()));
 		
+		if (requests.size() >= QAConfig.MAX_REQUESTS_SIZE.getAsInt())
+			throw new RequestsOutOfBounds("Game requests out of bounds");
+		
 		this.userRequests.put(playerUUID, requests);
+	}
+	
+	private void addPlayer(Player player, Location location, IGame game) {
+		game.addPath(player, new PlayerState(location.clone().add(0,-1,0), game.getRandomBlockData()));
 	}
 	
 	public Set<RequestInfo> getUserRequests(UUID playerUUID) {
@@ -136,9 +144,5 @@ public class GameRequestManager {
 	
 	public void clearUserRequests(UUID playerUUID) {
 		this.userRequests.get(playerUUID).clear();
-	}
-	
-	private void addPlayer(Player player, Location location, IGame game) {
-		game.addPath(player, new PlayerState(location.clone().add(0,-1,0), game.getRandomBlockData()));
 	}
 }

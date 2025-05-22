@@ -22,7 +22,7 @@ public class PlaceBlockCallback implements ICallback<Location> {
 	public void run(Location location) {
 		Bukkit.getScheduler().runTask(plugin, () -> {
 			player.playSound(location, QAConfig.BLOCK_PLACE_SOUND.getAsSound(), 1F, 1f);
-			if (!player.isDead()) {
+			if (player.isOnline() & !player.isDead()) {
 				player.teleport(LocationUtils.getInstance().centerLocation(location));	
 			}
 		});	

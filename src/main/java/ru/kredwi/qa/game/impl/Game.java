@@ -16,12 +16,12 @@ import ru.kredwi.qa.game.IGameAnswer;
 import ru.kredwi.qa.game.IGamePlayer;
 import ru.kredwi.qa.game.IGameQuestionManager;
 import ru.kredwi.qa.game.IWinnerService;
+import ru.kredwi.qa.game.player.PlayerState;
 import ru.kredwi.qa.game.service.BlockConstructionService;
 import ru.kredwi.qa.game.service.GameAnswerService;
 import ru.kredwi.qa.game.service.GamePlayerService;
 import ru.kredwi.qa.game.service.QuestionService;
 import ru.kredwi.qa.game.service.WinnerService;
-import ru.kredwi.qa.game.state.PlayerState;
 import ru.kredwi.qa.removers.IRemover;
 
 public class Game implements IGame {
@@ -44,7 +44,7 @@ public class Game implements IGame {
 		this.setGamePlayer(new GamePlayerService());
 		
 		this.gameInfo = new GameInfo(name.trim().toLowerCase(),
-				owner, blocksToWin);
+				owner.getUniqueId(), blocksToWin);
 	}
 	
 	public void setQuestionManager(IGameQuestionManager questionManager) {

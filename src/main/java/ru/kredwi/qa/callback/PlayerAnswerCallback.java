@@ -10,7 +10,7 @@ import ru.kredwi.qa.callback.data.PlayerAnswerData;
 import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IMainGame;
-import ru.kredwi.qa.game.state.PlayerState;
+import ru.kredwi.qa.game.player.PlayerState;
 
 public class PlayerAnswerCallback implements ICallback<PlayerAnswerData> {
 	

@@ -6,7 +6,7 @@ import java.util.Set;
 
 import org.bukkit.entity.Player;
 
-import ru.kredwi.qa.game.state.PlayerState;
+import ru.kredwi.qa.game.player.PlayerState;
 
 public interface IGamePlayer {
 	Set<Player> getPlayers();

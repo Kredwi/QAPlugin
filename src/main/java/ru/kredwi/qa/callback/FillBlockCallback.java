@@ -4,7 +4,7 @@ import org.bukkit.entity.Player;
 
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IMainGame;
-import ru.kredwi.qa.game.state.PlayerState;
+import ru.kredwi.qa.game.player.PlayerState;
 
 public class FillBlockCallback implements ICallback<Void> {
 
@@ -31,7 +31,7 @@ public class FillBlockCallback implements ICallback<Void> {
 			
 			game.resetBuildComplete();
 			
-			if (game.getWinners().size() > 0) {
+			if (!game.getWinners().isEmpty()) {
 				
 				game.alertOfPlayersWin();
 				

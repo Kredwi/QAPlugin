@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 import ru.kredwi.qa.QAPlugin;
 import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.game.IGamePlayer;
-import ru.kredwi.qa.game.state.PlayerState;
+import ru.kredwi.qa.game.player.PlayerState;
 
 public class GamePlayerService implements IGamePlayer {
 

@@ -35,7 +35,7 @@ public class DeleteGame extends CommandAbstract {
 		
 		if (isGameExists(args[0])) {
 			IGame game = mainGame.getGame(args[0]);
-			if (game.getGameInfo().owner().getUniqueId().equals(((Player) sender).getUniqueId())) {
+			if (game.getGameInfo().isPlayerOwner((Player) sender)) {
 				game.deleteBuildedBlocks();
 				if (!mainGame.removeGameWithName(args[0])) {
 					sendError(sender, QAConfig.UNKOWN_PROBLEM_WITH_GAME_DELETE);

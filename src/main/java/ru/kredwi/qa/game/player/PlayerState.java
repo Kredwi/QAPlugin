@@ -1,4 +1,4 @@
-package ru.kredwi.qa.game.state;
+package ru.kredwi.qa.game.player;
 
 import java.util.HashSet;
 import java.util.Set;

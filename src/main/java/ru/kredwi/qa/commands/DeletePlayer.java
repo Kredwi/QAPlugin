@@ -15,7 +15,7 @@ import ru.kredwi.qa.commands.base.CommandAbstract;
 import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IMainGame;
-import ru.kredwi.qa.game.state.PlayerState;
+import ru.kredwi.qa.game.player.PlayerState;
 import ru.kredwi.qa.removers.IRemover;
 
 public class DeletePlayer extends CommandAbstract {
@@ -58,7 +58,7 @@ public class DeletePlayer extends CommandAbstract {
 				}
 			}
 			
-			if (game.getGameInfo().owner().getUniqueId().equals(player.getUniqueId())) {
+			if (game.getGameInfo().isPlayerOwner(player)) {
 				sendError(sender, QAConfig.IS_GAME_OWNER);
 				return true;
 			}

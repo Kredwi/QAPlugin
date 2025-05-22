@@ -18,7 +18,7 @@ import ru.kredwi.qa.game.request.RequestInfo;
 public class ConfirmGame extends CommandAbstract {
 	
 	public ConfirmGame(IMainGame mainGame) {
-		super(mainGame, "acceptgame", "qaplugin.commands.denygame");
+		super(mainGame, "acceptgame", "qaplugin.commands.acceptgame");
 	}
 
 	@Override

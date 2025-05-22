@@ -10,7 +10,7 @@ import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.game.IBlockConstructionService;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IWinnerService;
-import ru.kredwi.qa.game.state.PlayerState;
+import ru.kredwi.qa.game.player.PlayerState;
 
 public class WinnerService implements IWinnerService {
 

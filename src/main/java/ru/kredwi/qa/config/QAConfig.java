@@ -16,6 +16,8 @@ public enum QAConfig {
 	ENABLED_BLOCKS("enabled-blocks"),
 	QUESTIONS("questions"),
 	DELETE_BLOCKS_WHEN_DISABLE("delete-blocks-when-disable"),
+	SPAWN_DISPLAY_TEXTS("spawn-display-texts"),
+	MAX_REQUESTS_SIZE("max-requests-size"),
 	
 	TELEPORT_PLAYER_IN_PLACE("teleport-player-in-place"),
 	CENTER_DIRECTION_IN_TELEPORT("center-direction-in-teleport"),
@@ -59,7 +61,8 @@ public enum QAConfig {
 	YOU_ALREADY_CREATE_YOUR_GAME("you-already-create-your-game"),
 	PLAYER_ACCEPTED_REQUESTS("player-accepted-requests"),
 	NOT_HAVE_PERMISSION("not-have-permission"),
-	UNKNOWN_ERROR("unknown-error");
+	UNKNOWN_ERROR("unknown-error"),
+	MANY_GAME_REQUESTS("many-game-requests");
 	
 	private final FileConfiguration config = JavaPlugin.getPlugin(QAPlugin.class).getConfig();
 	private String path;

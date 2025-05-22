@@ -23,8 +23,9 @@ import ru.kredwi.qa.QAPlugin;
 import ru.kredwi.qa.callback.FillBlockCallback;
 import ru.kredwi.qa.callback.ICallback;
 import ru.kredwi.qa.callback.PlaceBlockCallback;
+import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.game.IGame;
-import ru.kredwi.qa.game.state.PlayerState;
+import ru.kredwi.qa.game.player.PlayerState;
 import ru.kredwi.qa.removers.BlockRemover;
 import ru.kredwi.qa.removers.DisplayRemover;
 import ru.kredwi.qa.utils.LocationUtils;
@@ -106,8 +107,9 @@ public class FillBlocksTask extends BukkitRunnable {
 		
 		setBlockBatch(blocksToUpdate, playerState);
 		
-		blocksToUpdate.forEach(l ->
-			createTextOnBlock(l.getBlock(), symbol, targetLocation));
+		if (QAConfig.SPAWN_DISPLAY_TEXTS.getAsBoolean())
+			blocksToUpdate.forEach(l ->
+				createTextOnBlock(l.getBlock(), symbol, targetLocation));
 		
 		placeBlockCallback.run(targetLocation.clone());
 		

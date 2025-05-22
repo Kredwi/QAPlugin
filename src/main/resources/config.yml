@@ -1,8 +1,10 @@
-version: 1.8 # Config version
+version: 1.9 # Config version
 debug: false # Enable debug mode (for developers)
 delete-blocks-when-disable: false # Delete blocks created by the plugin when the server is disabled?
 teleport-player-in-place: true # Teleport the player to the built block?
 center-direction-in-teleport: true # Center the player's viewing direction when teleporting?
+spawn-display-texts: true # (BAD FOR OPTIMIZATION (FOR 1 BLOCK CREATED WITH 5 ENTITY DISPLAY TEXTS))
+max-requests-size: 10 # Max requests size
 
 # Block names can be found here: https://helpch.at/docs/1.19.4/org/bukkit/Material.html
 enabled-blocks: [CYAN_CONCRETE, LIME_CONCRETE, YELLOW_CONCRETE, PURPLE_CONCRETE, BLUE_CONCRETE]
@@ -50,6 +52,7 @@ requests-sended: "§fRequest to join the game sent to player §6{0}." # {0} - re
 you-already-create-your-game: "§cYou have already created your game, delete the previous one."
 not-have-permission: "§cYou do not have permission to use this command."
 unknown-error: "An unknown error occurred while executing the command."
+many-game-requests: "§cYou have too many game requests. Please ask someone else to join the game"
 
 # Your questions
 questions:

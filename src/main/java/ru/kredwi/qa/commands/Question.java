@@ -10,7 +10,7 @@ import ru.kredwi.qa.commands.base.CommandAbstract;
 import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IMainGame;
-import ru.kredwi.qa.game.state.PlayerState;
+import ru.kredwi.qa.game.player.PlayerState;
 
 public class Question extends CommandAbstract {
 	
@@ -44,7 +44,7 @@ public class Question extends CommandAbstract {
 			return true;
 		}
 		
-		if (!(game.getGameInfo().owner().getUniqueId().equals(player.getUniqueId()))) {
+		if (!(game.getGameInfo().isPlayerOwner(player))) {
 			sendError(sender, QAConfig.IS_COMMAND_ONLYE_FOR_GAME_OWNER);
 			return true;
 		}
