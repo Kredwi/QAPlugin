@@ -3,6 +3,7 @@ package ru.kredwi.qa.commands;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import org.bukkit.command.Command;
@@ -38,8 +39,10 @@ public class ConfirmGame extends CommandAbstract {
 		
 		Player player = (Player) sender;
 		String connectedToGame = "";
-		List<RequestInfo> requests = new ArrayList<>(mainGame.getGameRequestManager().getUserRequests(player.getUniqueId()));
-		if (requests == null || requests.isEmpty()) {
+		List<RequestInfo> requests = new ArrayList<>(mainGame.getGameRequestManager()
+				.getUserRequests(player.getUniqueId()));
+		
+		if (Objects.isNull(requests == null) || requests.isEmpty()) {
 			sendError(sender, QAConfig.YOU_DONT_HAVE_GAME_REQUESTS);
 			return true;
 		}

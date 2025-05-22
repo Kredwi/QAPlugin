@@ -1,12 +1,14 @@
 package ru.kredwi.qa.callback;
 
+import java.util.function.Consumer;
+
 import org.bukkit.entity.Player;
 
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IMainGame;
 import ru.kredwi.qa.game.player.PlayerState;
 
-public class FillBlockCallback implements ICallback<Void> {
+public class FillBlockCallback implements Consumer<Void> {
 
 	private IMainGame mainGame;
 	private IGame game;
@@ -19,7 +21,7 @@ public class FillBlockCallback implements ICallback<Void> {
 	}
 	
 	@Override
-	public void run(Void o) {
+	public void accept(Void o) {
 		PlayerState state = game.getPlayerState(player);
 		state.resetState();
 		

@@ -29,10 +29,7 @@ public class CreateGame extends CommandAbstract {
 			return true;
 		}
 		
-		if (!isPlayer(sender)) {
-			sendError(sender, QAConfig.COMMAND_ONLY_FOR_PLAYERS);
-			return true;
-		}
+		if (!sendMessageIfNotPlayer(sender)) return true;
 		
 		
 		if (!hasMoreArgsThan(args.length, 1)) {

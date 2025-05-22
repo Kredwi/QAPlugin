@@ -2,6 +2,7 @@ package ru.kredwi.qa.task;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -21,7 +22,6 @@ import org.joml.Vector3f;
 
 import ru.kredwi.qa.QAPlugin;
 import ru.kredwi.qa.callback.FillBlockCallback;
-import ru.kredwi.qa.callback.ICallback;
 import ru.kredwi.qa.callback.PlaceBlockCallback;
 import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.game.IGame;
@@ -54,8 +54,8 @@ public class FillBlocksTask extends BukkitRunnable {
 	private final Vector perpendicular;
 	
 	private PlayerState playerState;
-	private ICallback<Void> buildFinalCallback;
-	private ICallback<Location> placeBlockCallback;
+	private Consumer<Void> buildFinalCallback;
+	private Consumer<Location> placeBlockCallback;
 	
 	private int i = 0;
 	
@@ -84,7 +84,7 @@ public class FillBlocksTask extends BukkitRunnable {
 	public void run() {
 		if (i >= Integer.MAX_VALUE | i >= wordLength) {
 			Bukkit.getScheduler().runTask(plugin, () -> {
-				buildFinalCallback.run(null);
+				buildFinalCallback.accept(null);
 			});
 			cancel();
 			return;
@@ -111,7 +111,7 @@ public class FillBlocksTask extends BukkitRunnable {
 			blocksToUpdate.forEach(l ->
 				createTextOnBlock(l.getBlock(), symbol, targetLocation));
 		
-		placeBlockCallback.run(targetLocation.clone());
+		placeBlockCallback.accept(targetLocation.clone());
 		
 		i++;
 	}
@@ -192,10 +192,10 @@ public class FillBlocksTask extends BukkitRunnable {
 		});
 	}
 	
-	public void setBuildFinalCallback(ICallback<Void> callback) {
+	public void setBuildFinalCallback(Consumer<Void> callback) {
 		this.buildFinalCallback = callback;
 	}
-	public void setPlaceBlockCallback(ICallback<Location> callback) {
+	public void setPlaceBlockCallback(Consumer<Location> callback) {
 		this.placeBlockCallback = callback;
 	}
 }

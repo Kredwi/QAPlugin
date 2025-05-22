@@ -2,12 +2,12 @@ package ru.kredwi.qa.commands;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import ru.kredwi.qa.callback.ICallback;
 import ru.kredwi.qa.callback.PlayerAnswerCallback;
 import ru.kredwi.qa.callback.data.PlayerAnswerData;
 import ru.kredwi.qa.commands.base.CommandAbstract;
@@ -16,13 +16,13 @@ import ru.kredwi.qa.game.IMainGame;
 
 public class Answer extends CommandAbstract {
 	
-	private ICallback<PlayerAnswerData> callback;
+	private Consumer<PlayerAnswerData> callback;
 
 	public Answer(IMainGame mainGame) {
 		this(mainGame, new PlayerAnswerCallback(mainGame));
 	}
 	
-	public Answer(IMainGame mainGame, ICallback<PlayerAnswerData> callback) {
+	public Answer(IMainGame mainGame, Consumer<PlayerAnswerData> callback) {
 		super(mainGame, "answer", "qaplugin.commands.answer");
 		this.callback = callback;
 	}
@@ -43,7 +43,7 @@ public class Answer extends CommandAbstract {
 		if (isPlayer(sender)) {
 			String text = args[0];
 			
-			callback.run(new PlayerAnswerData(((Player) sender), text));
+			callback.accept(new PlayerAnswerData(((Player) sender), text));
 		}
 
 		return true;
@@ -54,7 +54,7 @@ public class Answer extends CommandAbstract {
 		return Collections.emptyList();
 	}
 	
-	public void setCallback(ICallback<PlayerAnswerData> callback) {
+	public void setCallback(Consumer<PlayerAnswerData> callback) {
 		this.callback = callback;
 	}
 }

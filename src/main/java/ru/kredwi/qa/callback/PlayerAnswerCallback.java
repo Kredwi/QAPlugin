@@ -3,6 +3,7 @@ package ru.kredwi.qa.callback;
 import java.text.MessageFormat;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import org.bukkit.entity.Player;
 
@@ -12,7 +13,7 @@ import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IMainGame;
 import ru.kredwi.qa.game.player.PlayerState;
 
-public class PlayerAnswerCallback implements ICallback<PlayerAnswerData> {
+public class PlayerAnswerCallback implements Consumer<PlayerAnswerData> {
 	
 	private IMainGame mainGame;
 	
@@ -28,7 +29,7 @@ public class PlayerAnswerCallback implements ICallback<PlayerAnswerData> {
 	}
 
 	@Override
-	public void run(PlayerAnswerData data) {
+	public void accept(PlayerAnswerData data) {
 		IGame game = mainGame.getGameFromPlayer(data.player());
 		
 		if (Objects.isNull(game)) {

@@ -76,7 +76,7 @@ public class QAPlugin extends JavaPlugin implements IMainGame {
 				
 				command.setExecutor(commandInstance);
 				command.setTabCompleter(commandInstance);
-			}	
+			}
 		} catch (NullPointerException e) {
 			logger.severe("Error of loading commands: " + e.getMessage());
 			e.printStackTrace();
