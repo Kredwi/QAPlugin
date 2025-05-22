@@ -1,11 +1,6 @@
 package ru.kredwi.qa.callback;
 
-public interface ICallback {
+public interface ICallback<T> {
 	
-	/**
-	 * Callback runner for ANY event
-	 * @param o is ANY event data method (IF DATA IS NOT NEEDED IN THE METHOD IS OBJECT IS NULL!!!)
-	 * @author Kredwi
-	 * */
-	public void run(Object o);
+	public void run(T o);
 }

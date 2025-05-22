@@ -8,11 +8,23 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import ru.kredwi.qa.commands.handler.CommandAbstract;
+import ru.kredwi.qa.commands.base.CommandAbstract;
 import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IMainGame;
 
+/**
+ * Initializes the game by performing the following actions:
+ *
+ * <ol>
+ *  <li>Building initial blocks.</li>
+ *  <li>Teleporting players to starting positions.</li>
+ *  <li>Initializing the question list.</li>
+ *  <li>Sending the first question to all players.</li>
+ * </ol>
+ *
+ * @author Kredwi
+ */
 public class StartGame extends CommandAbstract {
 
 	public StartGame(IMainGame mainGame) {
@@ -27,7 +39,7 @@ public class StartGame extends CommandAbstract {
 			return true;
 		}
 		
-		if (!validateArgs(args.length, 0)) {
+		if (!hasMoreArgsThan(args.length, 0)) {
 			sendError(sender, QAConfig.NO_ARGS);
 			return true;
 		}

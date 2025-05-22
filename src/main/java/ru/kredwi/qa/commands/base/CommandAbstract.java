@@ -1,4 +1,4 @@
-package ru.kredwi.qa.commands.handler;
+package ru.kredwi.qa.commands.base;
 
 import java.text.MessageFormat;
 
@@ -32,7 +32,7 @@ public abstract class CommandAbstract implements CommandExecutor, TabCompleter {
 		this.permissions=permissions;
 	}
 	
-	protected final boolean validateArgs(int argsLength, int needArgs) {
+	protected final boolean hasMoreArgsThan(int argsLength, int needArgs) {
 		return argsLength > needArgs;
 	}
 	
@@ -45,7 +45,7 @@ public abstract class CommandAbstract implements CommandExecutor, TabCompleter {
 			
 			// sender dont have permissions
 			if (!permissible.hasPermission(permission))
-				return true;
+				return false;
 		}
 		
 		// sender have permissions

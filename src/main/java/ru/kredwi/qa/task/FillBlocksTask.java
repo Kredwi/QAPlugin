@@ -1,10 +1,14 @@
 package ru.kredwi.qa.task;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Display.Billboard;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TextDisplay;
@@ -49,8 +53,8 @@ public class FillBlocksTask extends BukkitRunnable {
 	private final Vector perpendicular;
 	
 	private PlayerState playerState;
-	private ICallback buildFinalCallback;
-	private ICallback placeBlockCallback;
+	private ICallback<Void> buildFinalCallback;
+	private ICallback<Location> placeBlockCallback;
 	
 	private int i = 0;
 	
@@ -94,22 +98,18 @@ public class FillBlocksTask extends BukkitRunnable {
 
 		targetLocation.add(direction);
 		
-		Location centerLocation = targetLocation.clone();
-
-		Location rightLocation = centerLocation.clone().add(perpendicular);
+		List<Location> blocksToUpdate = new ArrayList<>(3);
 		
-		Location leftLocation = centerLocation.clone().subtract(perpendicular);
+		blocksToUpdate.add(targetLocation.clone());
+		blocksToUpdate.add(targetLocation.clone().add(perpendicular));
+		blocksToUpdate.add(targetLocation.clone().subtract(perpendicular));
 		
-		setBlock(centerLocation, playerState);
-		createTextOnBlock(centerLocation.getBlock(), symbol, targetLocation);
+		setBlockBatch(blocksToUpdate, playerState);
 		
-		setBlock(rightLocation, playerState);
-		createTextOnBlock(rightLocation.getBlock(), symbol, targetLocation);
+		blocksToUpdate.forEach(l ->
+			createTextOnBlock(l.getBlock(), symbol, targetLocation));
 		
-		setBlock(leftLocation, playerState);
-		createTextOnBlock(leftLocation.getBlock(), symbol, targetLocation);
-		
-		placeBlockCallback.run(centerLocation);
+		placeBlockCallback.run(targetLocation.clone());
 		
 		i++;
 	}
@@ -166,6 +166,7 @@ public class FillBlocksTask extends BukkitRunnable {
 			
 			textDisplay.setBillboard(Billboard.FIXED);
 			
+			// deprecated
 			textDisplay.setBackgroundColor(Color.fromARGB(0, 0, 0, 0));
 			
 			textDisplay.setText(String.valueOf(symbol));
@@ -176,15 +177,23 @@ public class FillBlocksTask extends BukkitRunnable {
 		});
 	}
 	
-	private void setBlock(Location location, PlayerState playerState) {
+	private void setBlockBatch(List<Location> locations, PlayerState playerState) {
 		Bukkit.getScheduler().runTask(plugin, () -> {
-			Block block = location.getBlock();
-			playerState.addPlayerBuildedBlocks(new BlockRemover(block));
-			block.setBlockData(playerState.getBlockData(), false);
+			BlockData blockData = playerState.getBlockData();
+			for (Location location : locations) {
+				
+				Block block = location.getBlock();
+				playerState.addPlayerBuildedBlocks(new BlockRemover(block));
+				block.setBlockData(blockData, false);	
+				
+			}
 		});
 	}
 	
-	public void setCallback(ICallback callback) {
+	public void setBuildFinalCallback(ICallback<Void> callback) {
 		this.buildFinalCallback = callback;
+	}
+	public void setPlaceBlockCallback(ICallback<Location> callback) {
+		this.placeBlockCallback = callback;
 	}
 }

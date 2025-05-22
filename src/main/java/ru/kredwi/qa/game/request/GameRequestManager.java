@@ -33,32 +33,16 @@ public class GameRequestManager {
 		this.mainGame = mainGame;
 	}
 	
-	public Set<RequestInfo> getUserRequests(UUID playerUUID) {
-		return userRequests.get(playerUUID);
-	}
-
-	public void addUserRequest(UUID playerUUID, String gameName, Player sender) {
-		Set<RequestInfo> requests = userRequests.getOrDefault(gameName, new HashSet<RequestInfo>());
-		
-		requests.add(new RequestInfo(gameName, sender, sender.getLocation().clone()));
-		
-		this.userRequests.put(playerUUID, requests);
-	}
-	
-	public void clearUserRequests(UUID playerUUID) {
-		this.userRequests.get(playerUUID).clear();
-	}
-	
 	public void acceptGame(UUID playerUUID, String gameName) {
 		Player player = Bukkit.getPlayer(playerUUID);
 		
-		if (player == null) {
+		if (Objects.isNull(player)) {
 			QAPlugin.getQALogger().info("Player is not found");
 			return;
 		}
 		IGame game = mainGame.getGame(gameName);
 		
-		if (game == null) {
+		if (Objects.isNull(game)) {
 			QAPlugin.getQALogger().info("Game is not found");
 			return;
 		}
@@ -69,7 +53,7 @@ public class GameRequestManager {
 		}
 		
 		Set<RequestInfo> request = getUserRequests(playerUUID);
-		if (request == null) {
+		if (Objects.isNull(request)) {
 			QAPlugin.getQALogger().info("requests in GameRequestsManager is NULL!");
 			return;
 		}
@@ -83,6 +67,39 @@ public class GameRequestManager {
 				reqInfo.sender(), reqInfo.startLocation());
 
 		clearUserRequests(playerUUID);
+	}
+	
+	/** 
+	 * @param gameName name of game
+	 * @param playerName player name to connect
+	 * @param sender requests owner
+	 * 
+	 * @author Kredwi
+	 * */
+	private void connectPlayersToGame(String gameName, String playerName, Player sender, Location startLocation) {
+		
+		IGame game = mainGame.getGame(gameName);
+		
+		if (Objects.nonNull(game)) {
+			
+			if (game.isStart()) sender.sendMessage(QAConfig.GAME_ADD_PLAYER_ARELADY_STARTED.getAsString());
+			
+			Player otherPlayer = Bukkit.getPlayer(playerName);
+			if (Objects.isNull(otherPlayer)) {
+				sender.sendMessage(QAConfig.IS_PLAYER_IS_NOT_FOUND.getAsString());
+				return;
+			}
+			
+			addPlayer(otherPlayer, startLocation, game);
+			mainGame.connectPlayerToGame(otherPlayer, game);
+			
+			if (game.getGameInfo().owner().getUniqueId().equals(otherPlayer.getUniqueId())) {
+				sender.sendMessage(QAConfig.PATH_CREATED.getAsString());
+			} else {
+				sender.sendMessage(MessageFormat.format(QAConfig.PLAYER_ACCEPTED_REQUESTS.getAsString(), otherPlayer.getName()));
+			}
+			
+		} else sender.sendMessage(QAConfig.GAME_NOT_FOUND.getAsString());
 	}
 	
 	public void denyGame(UUID playerUUID, String gameName) throws InvalidRequestData {
@@ -105,37 +122,20 @@ public class GameRequestManager {
 		this.userRequests.put(playerUUID, requestsList);
 	}
 	
-	/** 
-	 * @param gameName name of game
-	 * @param playerName player name to connect
-	 * @param sender requests owner
-	 * 
-	 * @author Kredwi
-	 * */
-	private void connectPlayersToGame(String gameName, String playerName, Player sender, Location startLocation) {
+	public void addUserRequest(UUID playerUUID, String gameName, Player sender) {
+		Set<RequestInfo> requests = userRequests.getOrDefault(gameName, new HashSet<RequestInfo>());
 		
-		IGame game = mainGame.getGame(gameName);
+		requests.add(new RequestInfo(gameName, sender, sender.getLocation().clone()));
 		
-		if (game != null) {
-			
-			if (game.isStart()) sender.sendMessage(QAConfig.GAME_ADD_PLAYER_ARELADY_STARTED.getAsString());
-			
-			Player otherPlayer = Bukkit.getPlayer(playerName);
-			if (otherPlayer == null) {
-				sender.sendMessage(QAConfig.IS_PLAYER_IS_NOT_FOUND.getAsString());
-				return;
-			}
-			
-			addPlayer(otherPlayer, startLocation, game);
-			mainGame.connectPlayerToGame(otherPlayer, game);
-			
-			if (game.getGameInfo().owner().getUniqueId().equals(otherPlayer.getUniqueId())) {
-				sender.sendMessage(QAConfig.PATH_CREATED.getAsString());
-			} else {
-				sender.sendMessage(MessageFormat.format(QAConfig.PLAYER_ACCEPTED_REQUESTS.getAsString(), otherPlayer.getName()));
-			}
-			
-		} else sender.sendMessage(QAConfig.GAME_NOT_FOUND.getAsString());
+		this.userRequests.put(playerUUID, requests);
+	}
+	
+	public Set<RequestInfo> getUserRequests(UUID playerUUID) {
+		return userRequests.get(playerUUID);
+	}
+	
+	public void clearUserRequests(UUID playerUUID) {
+		this.userRequests.get(playerUUID).clear();
 	}
 	
 	private void addPlayer(Player player, Location location, IGame game) {

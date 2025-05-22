@@ -1,15 +1,15 @@
 package ru.kredwi.qa.game.impl;
 
 import java.text.MessageFormat;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.entity.Player;
 
 import ru.kredwi.qa.QAPlugin;
 import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.exceptions.QuestionsAreOverException;
-import ru.kredwi.qa.game.IGame;
+import ru.kredwi.qa.game.IGameQuestionManager;
 
 public class Questions {
 	
@@ -45,16 +45,17 @@ public class Questions {
 	}
 	
 	/**
+	 * @param questionService for checking: Question is used?
 	 * @throws QuestionsAreOverException if all questions is used
 	 * @author Kredwi
 	 * */
-	public int getTextIndex(IGame game) throws QuestionsAreOverException {
+	public int getTextIndex(IGameQuestionManager questionService) throws QuestionsAreOverException {
 		for (int i = 0; i< questions.size(); i++) {
 			int randomNumber = QAPlugin.RANDOM.nextInt(questions.size());
-			if (game.questionIsUsed(randomNumber)) {
+			if (questionService.questionIsUsed(randomNumber)) {
 				continue;
 			}
-			if (game.usedQuestionSize() >= questions.size()) {
+			if (questionService.usedQuestionSize() >= questions.size()) {
 				throw new QuestionsAreOverException("All questions are over");
 			}
 		
@@ -62,7 +63,7 @@ public class Questions {
 				QAPlugin.getQALogger().info("QUESTION ID: " + randomNumber);
 			}
 			
-			game.addUsedQuestion(randomNumber);
+			questionService.addUsedQuestion(randomNumber);
 			
 			return randomNumber;
 		}

@@ -86,12 +86,12 @@ public enum QAConfig {
 	
 	public Sound getAsSound() {
 		String value =config.getString(path);
-		Sound sound = Sound.valueOf(value);
-		if (sound == null) {
-			QAPlugin.getQALogger().info(value + " is not found in Bukkit API. Used default BLOCK_LEVER_CLICK");
+		try {
+			return Sound.valueOf(value);
+		} catch (NullPointerException | IllegalArgumentException e) {
+			QAPlugin.getQALogger().warning(value + " is not found in Bukkit API. Used default BLOCK_LEVER_CLICK");
 			return Sound.BLOCK_LEVER_CLICK;
 		}
-		return sound;
 	}
 	
 	public List<String> getAsStringList() {

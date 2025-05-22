@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
@@ -15,7 +16,7 @@ import org.bukkit.scheduler.BukkitTask;
 import ru.kredwi.qa.QAPlugin;
 import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.game.IBlockConstructionService;
-import ru.kredwi.qa.game.IGame;
+import ru.kredwi.qa.game.IGamePlayer;
 import ru.kredwi.qa.game.state.PlayerState;
 import ru.kredwi.qa.removers.IRemover;
 
@@ -28,10 +29,10 @@ public class BlockConstructionService implements IBlockConstructionService{
 	private BlockData[] sequenceBlockData;
 	private boolean stopBuild;
 	
-	private IGame game;
+	private IGamePlayer playersService;
 	
-	public BlockConstructionService(IGame game, Plugin plugin) {
-		this.game = game;
+	public BlockConstructionService(IGamePlayer playersService, Plugin plugin) {
+		this.playersService = playersService;
 		
 		Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
 			List<String> enabledBlocks = QAConfig.ENABLED_BLOCKS.getAsStringList();
@@ -76,7 +77,7 @@ public class BlockConstructionService implements IBlockConstructionService{
 	public Set<IRemover> getSummaryBuildedBlocks() {
 		Set<IRemover> blocks = new HashSet<>();
 		
-		for (PlayerState state : game.getStates()) {
+		for (PlayerState state : playersService.getStates()) {
 			blocks.addAll(state.getPlayerBuildedBlocks());
 		}
 		
@@ -100,6 +101,12 @@ public class BlockConstructionService implements IBlockConstructionService{
 
 	@Override
 	public BlockData getRandomBlockData() {
+		if (Objects.isNull(sequenceBlockData)) {
+			if (QAConfig.DEBUG.getAsBoolean()) {
+				QAPlugin.getQALogger().warning("sequenceBlockData IS NOT INITILIZE. Used default BLACK_CONCRETE.");
+			}
+			return Material.BLACK_CONCRETE.createBlockData();
+		}
 		return sequenceBlockData[QAPlugin.RANDOM.nextInt(sequenceBlockData.length)];
 	}
 

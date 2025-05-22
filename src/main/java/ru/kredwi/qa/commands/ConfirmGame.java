@@ -10,7 +10,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import ru.kredwi.qa.QAPlugin;
-import ru.kredwi.qa.commands.handler.CommandAbstract;
+import ru.kredwi.qa.commands.base.CommandAbstract;
 import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.game.IMainGame;
 import ru.kredwi.qa.game.request.RequestInfo;
@@ -18,7 +18,7 @@ import ru.kredwi.qa.game.request.RequestInfo;
 public class ConfirmGame extends CommandAbstract {
 	
 	public ConfirmGame(IMainGame mainGame) {
-		super(mainGame, "acceptgame", "qaplugin.commands.acceptgame");
+		super(mainGame, "acceptgame", "qaplugin.commands.denygame");
 	}
 
 	@Override
@@ -44,7 +44,7 @@ public class ConfirmGame extends CommandAbstract {
 			return true;
 		}
 		
-		if (validateArgs(args.length, 0)) {
+		if (hasMoreArgsThan(args.length, 0)) {
 			
 			if (!requests.stream()
 					.anyMatch(e -> e.gameName().equalsIgnoreCase(args[0].trim()))) {

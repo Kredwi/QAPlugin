@@ -6,7 +6,7 @@ import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IMainGame;
 import ru.kredwi.qa.game.state.PlayerState;
 
-public class FillBlockCallback implements ICallback {
+public class FillBlockCallback implements ICallback<Void> {
 
 	private IMainGame mainGame;
 	private IGame game;
@@ -19,7 +19,7 @@ public class FillBlockCallback implements ICallback {
 	}
 	
 	@Override
-	public void run(Object o) {
+	public void run(Void o) {
 		PlayerState state = game.getPlayerState(player);
 		state.resetState();
 		
@@ -28,10 +28,16 @@ public class FillBlockCallback implements ICallback {
 			game.addWinner(player);	
 		}
 		if (game.getBuildComplete() > game.getPlayers().size()) {
-			if (!game.endGameIfHaveWinner(mainGame)) {
-				game.resetBuildComplete();
-				game.questionPlayers();
-			}
+			
+			game.resetBuildComplete();
+			
+			if (game.getWinners().size() > 0) {
+				
+				game.alertOfPlayersWin();
+				
+				game.deleteBuildedBlocks();
+				mainGame.removeGameWithName(game.getGameInfo().name());
+			} else game.questionPlayers();
 		}
 	}
 }

@@ -7,7 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import ru.kredwi.qa.QAPlugin;
-import ru.kredwi.qa.commands.handler.CommandAbstract;
+import ru.kredwi.qa.commands.base.CommandAbstract;
 import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.game.impl.Game;
 
@@ -16,6 +16,7 @@ public class CreateGame extends CommandAbstract {
 	private QAPlugin plugin;
 	
 	public CreateGame(QAPlugin plugin) {
+		// plugin in super cast to IMainGame
 		super(plugin, "creategame", "qaplugin.commands.creategame");
 		this.plugin = plugin;
 	}
@@ -34,17 +35,14 @@ public class CreateGame extends CommandAbstract {
 		}
 		
 		
-		if (!validateArgs(args.length, 1)) {
+		if (!hasMoreArgsThan(args.length, 1)) {
 			sendError(sender, QAConfig.NO_ARGS);
 			return true;
 		}
 		
 		int maxBlocks;
 		try {
-			maxBlocks = Integer.parseInt(args[1]);
-			if (maxBlocks < 0) {
-				maxBlocks = -maxBlocks;
-			}
+			maxBlocks = Math.abs(Integer.parseInt(args[1]));
 		} catch(NumberFormatException e) {
 			sendError(sender, QAConfig.IN_ARGUMENT_NEEDED_NUMBER);
 			return true;
@@ -52,7 +50,7 @@ public class CreateGame extends CommandAbstract {
 		if (!isGameExists(args[0])) {
 			
 			Player player = (Player)sender;
-			if (mainGame.getGameFromPlayer(player) != null) {
+			if (isGameExists(mainGame.getGameFromPlayer(player))) {
 				sendError(sender, QAConfig.YOU_ALREADY_CREATE_YOUR_GAME);
 				return true;
 			}

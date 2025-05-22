@@ -10,7 +10,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import ru.kredwi.qa.commands.handler.CommandAbstract;
+import ru.kredwi.qa.commands.base.CommandAbstract;
 import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.game.IMainGame;
 import ru.kredwi.qa.game.request.GameRequestManager;

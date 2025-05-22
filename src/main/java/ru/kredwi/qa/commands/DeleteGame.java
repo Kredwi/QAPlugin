@@ -7,7 +7,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import ru.kredwi.qa.commands.handler.CommandAbstract;
+import ru.kredwi.qa.commands.base.CommandAbstract;
 import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IMainGame;
@@ -26,7 +26,9 @@ public class DeleteGame extends CommandAbstract {
 			return true;
 		}
 		
-		if (!validateArgs(args.length, 0)) {
+		if (!sendMessageIfNotPlayer(sender)) return true;
+		
+		if (!hasMoreArgsThan(args.length, 0)) {
 			sendError(sender, QAConfig.GAME_NOT_FOUND);
 			return true;
 		}
@@ -41,7 +43,7 @@ public class DeleteGame extends CommandAbstract {
 				}
 				sendSuccess(sender, QAConfig.GAME_DELETE);
 			} else sendError(sender, QAConfig.YOU_DONT_GAME_OWNER);
-		}
+		} else sendError(sender, QAConfig.GAME_NOT_FOUND);
 		return true;
 	}
 

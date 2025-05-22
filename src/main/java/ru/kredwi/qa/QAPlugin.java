@@ -20,7 +20,7 @@ import ru.kredwi.qa.commands.DenyGame;
 import ru.kredwi.qa.commands.Path;
 import ru.kredwi.qa.commands.Question;
 import ru.kredwi.qa.commands.StartGame;
-import ru.kredwi.qa.commands.handler.CommandAbstract;
+import ru.kredwi.qa.commands.base.CommandAbstract;
 import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IMainGame;
@@ -101,6 +101,20 @@ public class QAPlugin extends JavaPlugin implements IMainGame {
 		}
 	}
 	
+	/**
+	 * Method delete games and connected players to this game
+	 * @param gameName name of game
+	 * @return <i>true</i> if game is deleted
+	 * @author Kredwi
+	 * */
+	@Override
+	public boolean removeGameWithName(String gameName) {
+		IGame game = games.remove(gameName.trim().toLowerCase());
+		boolean connectIsRemoved = connectedGames.entrySet()
+			.removeIf((e) -> e.getValue().equals(gameName.trim().toLowerCase()));
+		return connectIsRemoved & game != null;
+	}
+	
 	@Override
 	public IGame getGame(String gameName) {
 		return gameName == null ? null : games.get(gameName.trim().toLowerCase());
@@ -120,20 +134,6 @@ public class QAPlugin extends JavaPlugin implements IMainGame {
 	@Override
 	public Set<String> getNamesFromGames() {
 		return games.keySet();
-	}
-	
-	/**
-	 * Method delete games and connected players to this game
-	 * @param gameName name of game
-	 * @return <i>true</i> if game is deleted
-	 * @author Kredwi
-	 * */
-	@Override
-	public boolean removeGameWithName(String gameName) {
-		IGame game = games.remove(gameName.trim().toLowerCase());
-		boolean connectIsRemoved = connectedGames.entrySet()
-			.removeIf((e) -> e.getValue().equals(gameName.trim().toLowerCase()));
-		return connectIsRemoved & game != null;
 	}
 
 	@Override

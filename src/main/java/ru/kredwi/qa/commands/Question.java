@@ -6,7 +6,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import ru.kredwi.qa.commands.handler.CommandAbstract;
+import ru.kredwi.qa.commands.base.CommandAbstract;
 import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IMainGame;
@@ -31,7 +31,7 @@ public class Question extends CommandAbstract {
 			return true;
 		}
 		
-		if (!validateArgs(args.length, 0)) {
+		if (!hasMoreArgsThan(args.length, 0)) {
 			sendError(sender, QAConfig.NO_ARGS);
 			return true;
 		}
@@ -49,12 +49,7 @@ public class Question extends CommandAbstract {
 			return true;
 		}
 		
-		StringBuilder question = new StringBuilder();
-		
-		for (String word : args) {
-			question.append(word);
-			question.append(" ");
-		}
+		String question = String.join(" ", args);
 		
 		for (Player pl : game.getPlayers()) {
 			PlayerState playerState = game.getPlayerState(pl);
@@ -62,7 +57,7 @@ public class Question extends CommandAbstract {
 		}
 		
 		game.resetAnwserCount();
-		game.questionPlayers(question.toString().trim());
+		game.questionPlayers(question);
 		
 		return true;
 	}

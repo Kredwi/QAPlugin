@@ -10,7 +10,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import ru.kredwi.qa.QAPlugin;
-import ru.kredwi.qa.commands.handler.CommandAbstract;
+import ru.kredwi.qa.commands.base.CommandAbstract;
 import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.exceptions.InvalidRequestData;
 import ru.kredwi.qa.game.IMainGame;
@@ -30,7 +30,7 @@ public class DenyGame extends CommandAbstract {
 			return true;
 		}
 		
-		if (!validateArgs(args.length, 0)) {
+		if (!hasMoreArgsThan(args.length, 0)) {
 			sender.sendMessage(QAConfig.NO_ARGS.getAsString());
 			return true;
 		}
@@ -48,6 +48,7 @@ public class DenyGame extends CommandAbstract {
 			
 			if (QAConfig.DEBUG.getAsBoolean()) {
 				QAPlugin.getQALogger().info(e.getMessage());
+				e.printStackTrace();
 			}
 			
 		}
