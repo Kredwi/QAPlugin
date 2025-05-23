@@ -1,12 +1,14 @@
 package ru.kredwi.qa.commands;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import ru.kredwi.qa.commands.base.CommandAbstract;
+import ru.kredwi.qa.commands.base.ICommandController;
 import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IMainGame;
@@ -15,38 +17,29 @@ import ru.kredwi.qa.game.player.PlayerState;
 public class Question extends CommandAbstract {
 	
 	public Question(IMainGame mainGame) {
-		super(mainGame, "question", "qaplugin.commands.question");
+		super("question", 1, true, true, "qaplugin.commands.question");
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+	public void run(ICommandController commandController, CommandSender sender, Command command, String[] args) {
 		
-		if (!playerHavePermissions(sender)) {
-			sendError(sender, QAConfig.NOT_HAVE_PERMISSION);
-			return true;
+		if (args.length < 1) {
+			sender.sendMessage(QAConfig.NO_ARGS.getAsString());
+			return;
 		}
-		
-		if (!isPlayer(sender)) {
-			sendError(sender, QAConfig.COMMAND_ONLY_FOR_PLAYERS);
-			return true;
-		}
-		
-		if (!hasMoreArgsThan(args.length, 0)) {
-			sendError(sender, QAConfig.NO_ARGS);
-			return true;
-		}
-		
+
 		Player player = ((Player) sender);
-		IGame game = mainGame.getGameFromPlayer(player);
+		IGame game = commandController.getMainGame()
+				.getGameFromPlayer(player);
 		
-		if (!isGameExists(game)) {
-			sendError(sender, QAConfig.GAME_NOT_FOUND);
-			return true;
+		if (Objects.isNull(game)) {
+			sender.sendMessage(QAConfig.GAME_NOT_FOUND.getAsString());
+			return;
 		}
 		
 		if (!(game.getGameInfo().isPlayerOwner(player))) {
-			sendError(sender, QAConfig.IS_COMMAND_ONLYE_FOR_GAME_OWNER);
-			return true;
+			sender.sendMessage(QAConfig.IS_COMMAND_ONLYE_FOR_GAME_OWNER.getAsString());
+			return;
 		}
 		
 		String question = String.join(" ", args);
@@ -59,7 +52,7 @@ public class Question extends CommandAbstract {
 		game.resetAnwserCount();
 		game.questionPlayers(question);
 		
-		return true;
+		return;
 	}
 
 	@Override

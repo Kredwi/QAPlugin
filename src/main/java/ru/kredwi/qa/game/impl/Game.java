@@ -10,60 +10,20 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
 import ru.kredwi.qa.QAPlugin;
-import ru.kredwi.qa.game.IBlockConstructionService;
 import ru.kredwi.qa.game.IGame;
-import ru.kredwi.qa.game.IGameAnswer;
-import ru.kredwi.qa.game.IGamePlayer;
-import ru.kredwi.qa.game.IGameQuestionManager;
-import ru.kredwi.qa.game.IWinnerService;
 import ru.kredwi.qa.game.player.PlayerState;
-import ru.kredwi.qa.game.service.BlockConstructionService;
-import ru.kredwi.qa.game.service.GameAnswerService;
-import ru.kredwi.qa.game.service.GamePlayerService;
-import ru.kredwi.qa.game.service.QuestionService;
-import ru.kredwi.qa.game.service.WinnerService;
 import ru.kredwi.qa.removers.IRemover;
 
 public class Game implements IGame {
 	
-	private IGameQuestionManager questionManager;
-	private IGameAnswer gameAnswer;
-	private IBlockConstructionService blockConstructionService;
-	private IWinnerService winnerService;
-	private IGamePlayer gamePlayer;
-	
+	private final GameServices services;
 	private final GameInfo gameInfo;
-	
 	private boolean isStart;
 	
 	public Game(String name, Player owner, int blocksToWin, QAPlugin plugin) {
-		this.questionManager = new QuestionService(this,this);
-		this.gameAnswer = new GameAnswerService(this, plugin);
-		this.blockConstructionService = new BlockConstructionService(this, plugin);
-		this.winnerService = new WinnerService(this);
-		this.setGamePlayer(new GamePlayerService());
-		
+		this.services = new GameServices(this, plugin);
 		this.gameInfo = new GameInfo(name.trim().toLowerCase(),
 				owner.getUniqueId(), blocksToWin);
-	}
-	
-	public void setQuestionManager(IGameQuestionManager questionManager) {
-		this.questionManager = questionManager;
-	}
-	
-	public void setGameAnswer(IGameAnswer gameAnswer) {
-		this.gameAnswer = gameAnswer;
-	}
-	
-	public void setBlockConstructionService(IBlockConstructionService blockConstructionService) {
-		this.blockConstructionService = blockConstructionService;
-	}
-	
-	public void setWinnerService(IWinnerService winnerService) {
-		this.winnerService = winnerService;
-	}
-	public void setGamePlayer(IGamePlayer gamePlayer) {
-		this.gamePlayer = gamePlayer;
 	}
 	
 	@Override
@@ -87,143 +47,142 @@ public class Game implements IGame {
 	
 	@Override
 	public void questionPlayers() {
-		questionManager.questionPlayers();
+		services.getQuestionManager().questionPlayers();
 	}
 	
 	@Override
 	public void questionPlayers(String question) {
-		questionManager.questionPlayers(question);
+		services.getQuestionManager().questionPlayers(question);
 	}
 	
-
-	@Override
-	public void addAnwserCount() {
-		gameAnswer.addAnwserCount();
-	}
-
-	@Override
-	public void resetAnwserCount() {
-		gameAnswer.resetAnwserCount();
-	}
-
-	@Override
-	public boolean isAllAnswered() {
-		return gameAnswer.isAllAnswered();
-	}
-
-	@Override
-	public void processPlayerAnswers(boolean isInit) {
-		gameAnswer.processPlayerAnswers(isInit);
-	}
-	
-	@Override
-	public void alertOfPlayersWin() {
-		winnerService.alertOfPlayersWin();
-	}
-
-	@Override
-	public boolean isPlayerWin(PlayerState state) {
-		return winnerService.isPlayerWin(state);
-	}
-	
-	@Override
-	public void deleteBuildedBlocks() {
-		blockConstructionService.deleteBuildedBlocks();
-	}
-	
-	@Override
-	public int getBuildComplete() {
-		return blockConstructionService.getBuildComplete();
-	}
-	
-	@Override
-	public void addBuildComplete() {
-		blockConstructionService.addBuildComplete();
-	}
-	
-	@Override
-	public void resetBuildComplete() {
-		blockConstructionService.resetBuildComplete();
-	}
-	
-	@Override
-	public List<Player> getWinners() {
-		return winnerService.getWinners();
-	}
-	
-	@Override
-	public void addWinner(Player player) {
-		winnerService.addWinner(player);
-	}
-
 	@Override
 	public boolean questionIsUsed(int questionIndex) {
-		return questionManager.questionIsUsed(questionIndex);
+		return services.getQuestionManager().questionIsUsed(questionIndex);
 	}
 
 	@Override
 	public void addUsedQuestion(int usedText) {
-		questionManager.addUsedQuestion(usedText);
+		services.getQuestionManager().addUsedQuestion(usedText);
 	}
 	
 	@Override
 	public int usedQuestionSize() {
-		return questionManager.usedQuestionSize();
+		return services.getQuestionManager().usedQuestionSize();
+	}
+
+	@Override
+	public void addAnwserCount() {
+		services.getGameAnswer().addAnwserCount();
+	}
+
+	@Override
+	public void resetAnwserCount() {
+		services.getGameAnswer().resetAnwserCount();
+	}
+
+	@Override
+	public boolean isAllAnswered() {
+		return services.getGameAnswer().isAllAnswered();
+	}
+
+	@Override
+	public void processPlayerAnswers(boolean isInit) {
+		services.getGameAnswer().processPlayerAnswers(isInit);
+	}
+	
+	@Override
+	public void alertOfPlayersWin() {
+		services.getWinnerService().alertOfPlayersWin();
+	}
+
+	@Override
+	public boolean isPlayerWin(PlayerState state) {
+		return services.getWinnerService().isPlayerWin(state);
+	}
+	
+	@Override
+	public List<Player> getWinners() {
+		return services.getWinnerService().getWinners();
+	}
+	
+	@Override
+	public void addWinner(Player player) {
+		services.getWinnerService().addWinner(player);
+	}
+	
+	@Override
+	public void deleteBuildedBlocks() {
+		services.getBlockConstructionService().deleteBuildedBlocks();
+	}
+	
+	@Override
+	public int getBuildComplete() {
+		return services.getBlockConstructionService().getBuildComplete();
+	}
+	
+	@Override
+	public void addBuildComplete() {
+		services.getBlockConstructionService().addBuildComplete();
+	}
+	
+	@Override
+	public void resetBuildComplete() {
+		services.getBlockConstructionService().resetBuildComplete();
 	}
 	
 	@Override
 	public BlockData getRandomBlockData() {
-		return blockConstructionService.getRandomBlockData();
+		return services.getBlockConstructionService().getRandomBlockData();
 	}
 
 	@Override
 	public Set<IRemover> getSummaryBuildedBlocks() {
-		return blockConstructionService.getSummaryBuildedBlocks();
+		return services.getBlockConstructionService().getSummaryBuildedBlocks();
 	}
 
 	@Override
 	public List<BukkitTask> getBuildedTasks() {
-		return blockConstructionService.getBuildedTasks();
+		return services.getBlockConstructionService().getBuildedTasks();
 	}
 
 	@Override
 	public boolean buildIsStopped() {
-		return blockConstructionService.buildIsStopped();
+		return services.getBlockConstructionService().buildIsStopped();
 	}
 
 	@Override
 	public void setStopBuild(boolean isStop) {
-		blockConstructionService.setStopBuild(isStop);
+		services.getBlockConstructionService().setStopBuild(isStop);
 	}
 
 	@Override
 	public Set<Player> getPlayers() {
-		return gamePlayer.getPlayers();
+		return services.getGamePlayer().getPlayers();
 	}
 
 	@Override
 	public Collection<PlayerState> getStates() {
-		return gamePlayer.getStates();
+		return services.getGamePlayer().getStates();
 	}
 
 	@Override
 	public Player getPlayer(String playerName) {
-		return gamePlayer.getPlayer(playerName);
+		return services.getGamePlayer().getPlayer(playerName);
 	}
 
 	@Override
 	public PlayerState getPlayerState(Player player) {
-		return gamePlayer.getPlayerState(player);
+		return services.getGamePlayer().getPlayerState(player);
 	}
 
 	@Override
 	public void addPath(Player player, PlayerState state) {
-		gamePlayer.addPath(player, state);
+		services.getGamePlayer().addPath(player, state);
 	}
 
 	@Override
 	public Set<Entry<Player, PlayerState>> getPlayerAndStatesArray() {
-		return gamePlayer.getPlayerAndStatesArray();
+		return services.getGamePlayer().getPlayerAndStatesArray();
 	}
 	
 }

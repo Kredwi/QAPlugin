@@ -1,7 +1,7 @@
 name: QAPlugin
 api-version: 1.19
 description: Adds a question and answer mechanic to your server!
-version: 0.4.9
+version: 0.5.0
 author: Kredwi
 main: ru.kredwi.qa.QAPlugin
 website: https://github.com/Kredwi/QAPlugin
@@ -25,7 +25,7 @@ commands:
   denygame:
     description: Deny game request.
     usage: /denygame <game name>
-    permission: qaplugin.commands.acceptgame
+    permission: qaplugin.commands.denygame
   creategame:
     description: Create a new game.
     usage: /creategame <game name> <blocks to end>
@@ -57,6 +57,9 @@ permissions:
     default: op
   qaplugin.commands.acceptgame:
     description: Allows players to accept game invitations.
+    default: true
+  qaplugin.commands.denygame:
+    description: Allows players to deny game invitations.
     default: true
   qaplugin.commands.startgame:
     description: Allows players to start games.

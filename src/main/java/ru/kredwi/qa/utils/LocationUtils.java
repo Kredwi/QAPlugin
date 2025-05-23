@@ -2,22 +2,15 @@ package ru.kredwi.qa.utils;
 
 import org.bukkit.Location;
 
+import java.lang.Math;
+
 public class LocationUtils {
 	
-	private static LocationUtils INSTANCE;
-	
-	public static LocationUtils getInstance() {
-		if (INSTANCE== null) {
-			INSTANCE = new LocationUtils();
-		}
-		return INSTANCE;
-	}
-	
-	public Location centerLocation(Location location) {
+	public static Location centerLocation(Location location) {
 		return centerLocation(location, true);
 	}
 	
-	public Location centerLocation(Location location, boolean normalizeYaw) {
+	public static Location centerLocation(Location location, boolean normalizeYaw) {
 		
 		int blockX = location.getBlockX();
 		int blockY = location.getBlockY();
@@ -44,15 +37,7 @@ public class LocationUtils {
 		return centerLocation;
 	}
 	
-	private float normalizeYaw(float yaw) {
-		if (yaw > 180) {
-			yaw -= 360;
-		}
-		
-		while (yaw < -180) {
-			yaw += 360;
-		}
-		
-		return yaw;
+	public static float normalizeYaw(float yaw) {
+		return (float)Math.floorMod((long)yaw + 180, 360) - 180;
 	}
 }

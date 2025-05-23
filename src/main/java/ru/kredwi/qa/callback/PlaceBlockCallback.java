@@ -26,7 +26,7 @@ public class PlaceBlockCallback implements Consumer<Location> {
 		Bukkit.getScheduler().runTask(plugin, () -> {
 			player.playSound(location, QAConfig.BLOCK_PLACE_SOUND.getAsSound(), 1F, 1f);
 			if (player.isOnline() & !player.isDead()) {
-				player.teleport(LocationUtils.getInstance().centerLocation(location));	
+				player.teleport(LocationUtils.centerLocation(location));	
 			}
 		});	
 	}

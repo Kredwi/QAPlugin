@@ -1,10 +1,7 @@
 package ru.kredwi.qa.exceptions;
 
-public class RequestsOutOfBounds extends RuntimeException {
+public class RequestsOutOfBounds extends QAException {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	

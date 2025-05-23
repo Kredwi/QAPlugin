@@ -1,6 +1,6 @@
 package ru.kredwi.qa.exceptions;
 
-public class QuestionsAreOverException extends RuntimeException {
+public class QuestionsAreOverException extends QAException {
 
 	private static final long serialVersionUID = 1L;
 	

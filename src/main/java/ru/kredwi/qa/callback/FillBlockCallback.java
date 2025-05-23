@@ -22,23 +22,39 @@ public class FillBlockCallback implements Consumer<Void> {
 	
 	@Override
 	public void accept(Void o) {
+		// get path owner
 		PlayerState state = game.getPlayerState(player);
+		// reset all dynamic states
 		state.resetState();
 		
+		// player build complete
 		game.addBuildComplete();
+		
+		// checks is winner?
 		if (game.isPlayerWin(state)) {
-			game.addWinner(player);	
+			// add winner to list winners
+			game.addWinner(player);
 		}
+		
+		// if last player complete build
 		if (game.getBuildComplete() > game.getPlayers().size()) {
 			
+			// reset build completes
 			game.resetBuildComplete();
 			
+			// if have winner
 			if (!game.getWinners().isEmpty()) {
 				
+				// alert all players in the game of winners
 				game.alertOfPlayersWin();
 				
+				// delete all register blocks in the game
 				game.deleteBuildedBlocks();
+				
+				// and remove game from global games
 				mainGame.removeGameWithName(game.getGameInfo().name());
+				
+			// if game is dont have winners questions players of new question
 			} else game.questionPlayers();
 		}
 	}

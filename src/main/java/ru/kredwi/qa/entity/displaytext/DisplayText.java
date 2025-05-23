@@ -12,9 +12,12 @@ import org.bukkit.util.Transformation;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
-import ru.kredwi.qa.game.player.PlayerState;
+
+import ru.kredwi.qa.QAPlugin;
+import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.removers.DisplayRemover;
 import ru.kredwi.qa.utils.LocationUtils;
+import ru.kredwi.qa.game.player.PlayerState;
 
 public class DisplayText implements IDisplayText {
 	
@@ -44,9 +47,11 @@ public class DisplayText implements IDisplayText {
 	
 	@Override
 	public void createTextOnBlock(Block block, char symbol, Location targetLocation) {
-		
-		// if game in init state dont create displays on blocks
-		if (spawnDisplayText) {
+
+		if (!spawnDisplayText) {
+			if (QAConfig.DEBUG.getAsBoolean()) {
+				QAPlugin.getQALogger().info("display text spawn is cancel");
+			}
 			return;
 		}
 		
@@ -64,7 +69,7 @@ public class DisplayText implements IDisplayText {
 		createTextDisplay(world, blockLocation.clone().add(1.0+0.001, 0, x + 0.2), symbol, 90F*3, 0F);
 		createTextDisplay(world, blockLocation.clone().add(-0.001, 0, x), symbol, 270F*3, 0F);
 		
-		float faceYaw = LocationUtils.getInstance().centerLocation(newTargetLocation, true).getYaw();
+		float faceYaw = LocationUtils.centerLocation(newTargetLocation, true).getYaw();
 		
 		Location headDisplayText = blockLocation.clone().add(0, 1.01, 0);
 		

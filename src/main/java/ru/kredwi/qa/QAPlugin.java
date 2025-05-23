@@ -2,36 +2,37 @@ package ru.kredwi.qa;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
-import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import ru.kredwi.qa.commands.Answer;
-import ru.kredwi.qa.commands.ConfirmGame;
-import ru.kredwi.qa.commands.CreateGame;
-import ru.kredwi.qa.commands.DeleteGame;
-import ru.kredwi.qa.commands.DeletePlayer;
-import ru.kredwi.qa.commands.DenyGame;
-import ru.kredwi.qa.commands.Path;
-import ru.kredwi.qa.commands.Question;
-import ru.kredwi.qa.commands.StartGame;
-import ru.kredwi.qa.commands.base.CommandAbstract;
+import ru.kredwi.qa.commands.base.CommandController;
 import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IMainGame;
 import ru.kredwi.qa.game.request.GameRequestManager;
 
+/**
+ * Main plugin and game class
+ * @author Kredwi
+ * */
 public class QAPlugin extends JavaPlugin implements IMainGame {
 	
 	public static final Random RANDOM = new Random();
 	
+	/**
+	 * config version for validate configs
+	 * @author Kredwi
+	 * */
+	private static final double NEED_CONFIG_VERSION = 1.9;
+	
 	private final GameRequestManager gameRequestManager = new GameRequestManager(this);
+	
+	private final CommandController commandController = new CommandController(this);
 	
 	private static Logger logger = null;
 	
@@ -47,7 +48,7 @@ public class QAPlugin extends JavaPlugin implements IMainGame {
 		
 		saveDefaultConfig();
 		
-		if (QAConfig.VERSION.getAsDouble() != 1.9) {
+		if (QAConfig.VERSION.getAsDouble() != NEED_CONFIG_VERSION) {
 			for (int i = 0; i < 10; i++) {
 				logger.info("THE CONFIG VERSION IS NOT SUITABLE FOR THIS VERSION OF THE PLUGIN!!!! DELETE config.yml ON THE Plugins/QAPlugin PATH, AND RESTART THE SERVER");
 			}
@@ -55,36 +56,10 @@ public class QAPlugin extends JavaPlugin implements IMainGame {
 			return;
 		}
 		
-		registerCommands();
+		commandController.start();
 	}
 	
-	private void registerCommands() {
-		try {
-			CommandAbstract[] commandInstaces = new CommandAbstract[] {
-					new Question(this), new Answer(this), new Path(this),
-					new CreateGame(this), new StartGame(this), new DeleteGame(this),
-					new DeletePlayer(this), new ConfirmGame(this), new DenyGame(this)
-			};
-			
-			for (CommandAbstract commandInstance : commandInstaces) {
-				PluginCommand command = getCommand(commandInstance.info.name());
-				
-				if (Objects.isNull(command)) {
-					logger.warning(new StringBuilder("Command ")
-							.append(commandInstance.info.name())
-							.append(" is not found. Skip..").toString());
-					return;
-				}
-				
-				command.setExecutor(commandInstance);
-				command.setTabCompleter(commandInstance);
-			}
-		} catch (NullPointerException e) {
-			logger.severe("Error of loading commands: " + e.getMessage());
-			e.printStackTrace();
-			Bukkit.getPluginManager().disablePlugin(this);
-		}
-	}
+
 	
 	/**
 	 * If in config file <b>DELETE_BLOCKS_WHEN_DISABLE</b> == <i>true</i> then<br>

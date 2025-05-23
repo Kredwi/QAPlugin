@@ -8,49 +8,41 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import ru.kredwi.qa.commands.base.CommandAbstract;
+import ru.kredwi.qa.commands.base.ICommandController;
 import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IMainGame;
 
 public class DeleteGame extends CommandAbstract {
 
+	private IMainGame mainGame;
+	
 	public DeleteGame(IMainGame mainGame) {
-		super(mainGame, "deletegame", "qaplugin.commands.deletegame");
+		super("deletegame", 1, false, "qaplugin.commands.deletegame");
+		this.mainGame=mainGame;
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+	public void run(ICommandController commandController, CommandSender sender, Command command, String[] args) {
 		
-		if (!playerHavePermissions(sender)) {
-			sendError(sender, QAConfig.NOT_HAVE_PERMISSION);
-			return true;
-		}
 		
-		if (!sendMessageIfNotPlayer(sender)) return true;
-		
-		if (!hasMoreArgsThan(args.length, 0)) {
-			sendError(sender, QAConfig.GAME_NOT_FOUND);
-			return true;
-		}
-		
-		if (isGameExists(args[0])) {
-			IGame game = mainGame.getGame(args[0]);
+		if (commandController.getMainGame().getGame(args[0]) != null) {
+			IGame game = commandController.getMainGame().getGame(args[0]);
 			if (game.getGameInfo().isPlayerOwner((Player) sender)) {
 				game.deleteBuildedBlocks();
-				if (!mainGame.removeGameWithName(args[0])) {
-					sendError(sender, QAConfig.UNKOWN_PROBLEM_WITH_GAME_DELETE);
-					return true;
+				if (!commandController.getMainGame().removeGameWithName(args[0])) {
+					sender.sendMessage(QAConfig.UNKOWN_PROBLEM_WITH_GAME_DELETE.getAsString());
+					return;
 				}
-				sendSuccess(sender, QAConfig.GAME_DELETE);
-			} else sendError(sender, QAConfig.YOU_DONT_GAME_OWNER);
-		} else sendError(sender, QAConfig.GAME_NOT_FOUND);
-		return true;
+				sender.sendMessage(QAConfig.GAME_DELETE.getAsString());
+			} else sender.sendMessage(QAConfig.YOU_DONT_GAME_OWNER.getAsString());
+		} else sender.sendMessage(QAConfig.GAME_NOT_FOUND.getAsString());
 	}
 
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
 		
-		if (!playerHavePermissions(sender)) return null;
+		if (!isHaveNeedsPermissions(sender)) return null;
 		
 		return mainGame.getNamesFromGames().stream()
 			.filter(e -> e.toLowerCase().startsWith(args[0].toLowerCase()))

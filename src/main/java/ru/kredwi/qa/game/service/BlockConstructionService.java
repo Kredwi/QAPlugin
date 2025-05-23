@@ -114,24 +114,18 @@ public class BlockConstructionService implements IBlockConstructionService{
 
 	@Override
 	public List<BukkitTask> getBuildedTasks() {
-		// TODO Auto-generated method stub
 		return buildTasks;
 	}
 
 
 	@Override
 	public boolean buildIsStopped() {
-		// TODO Auto-generated method stub
 		return stopBuild;
 	}
 
 
 	@Override
 	public void setStopBuild(boolean isStop) {
-		// TODO Auto-generated method stub
 		this.stopBuild = isStop;
 	}
-	
-	
-
 }

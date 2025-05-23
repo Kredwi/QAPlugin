@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 
 import ru.kredwi.qa.QAPlugin;
 import ru.kredwi.qa.commands.base.CommandAbstract;
+import ru.kredwi.qa.commands.base.ICommandController;
 import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.exceptions.InvalidRequestData;
 import ru.kredwi.qa.game.IMainGame;
@@ -18,28 +19,18 @@ import ru.kredwi.qa.game.request.RequestInfo;
 
 public class DenyGame extends CommandAbstract {
 
+	private IMainGame mainGame;
+	
 	public DenyGame(IMainGame mainGame) {
-		super(mainGame, "denygame", "qaplugin.commands.denygame");
+		super("denygame", 1, true, "qaplugin.commands.denygame");
+		this.mainGame = mainGame;
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		
-		if (!playerHavePermissions(sender)) {
-			sender.sendMessage(QAConfig.NOT_HAVE_PERMISSION.getAsString());
-			return true;
-		}
-		
-		if (!hasMoreArgsThan(args.length, 0)) {
-			sender.sendMessage(QAConfig.NO_ARGS.getAsString());
-			return true;
-		}
-		
-		if (!sendMessageIfNotPlayer(sender)) return true;
-		
+	public void run(ICommandController commandController, CommandSender sender, Command command, String[] args) {
 		try {
 			
-			mainGame.getGameRequestManager()
+			commandController.getMainGame().getGameRequestManager()
 				.denyGame(((Player) sender).getUniqueId(), args[0]);
 			
 		} catch (InvalidRequestData e) {
@@ -52,8 +43,6 @@ public class DenyGame extends CommandAbstract {
 			}
 			
 		}
-		
-		return true;
 	}
 
 	@Override

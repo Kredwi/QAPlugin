@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 
 import ru.kredwi.qa.QAPlugin;
 import ru.kredwi.qa.commands.base.CommandAbstract;
+import ru.kredwi.qa.commands.base.ICommandController;
 import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IMainGame;
@@ -20,28 +21,22 @@ import ru.kredwi.qa.removers.IRemover;
 
 public class DeletePlayer extends CommandAbstract {
 	
+	private IMainGame mainGame;
+	
 	public DeletePlayer(IMainGame mainGame) {
-		super(mainGame, "deleteplayer", "qaplugin.commands.deleteplayer");
+		super("deleteplayer", 2, true, "qaplugin.commands.deleteplayer");
+		this.mainGame = mainGame;
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		
-		if (!playerHavePermissions(sender)) {
-			sendError(sender, QAConfig.NOT_HAVE_PERMISSION);
-			return true;
-		}
-		
-		if (!hasMoreArgsThan(args.length, 1)) {
-			sendError(sender, QAConfig.NO_ARGS);
-			return true;
-		}
+	public void run(ICommandController commandController, CommandSender sender, Command command, String[] args) {
 		
 		String gameName = args[0];
 		String playerName = args[1];
-		
-		if (isGameExists(gameName)) {
-			IGame game = mainGame.getGame(gameName);
+
+		IGame game = commandController.getMainGame().getGame(gameName);
+
+		if (Objects.nonNull(game)) {
 			Player player = Bukkit.getPlayer(playerName);
 			
 			if (Objects.isNull(player)) {
@@ -53,14 +48,12 @@ public class DeletePlayer extends CommandAbstract {
 					}
 					
 					sender.sendMessage(QAConfig.IS_PLAYER_IS_NOT_FOUND.getAsString());
-					
-					return true;
 				}
 			}
 			
 			if (game.getGameInfo().isPlayerOwner(player)) {
-				sendError(sender, QAConfig.IS_GAME_OWNER);
-				return true;
+				sender.sendMessage(QAConfig.IS_GAME_OWNER.getAsString());;
+				return;
 			}
 			
 			PlayerState playerState = game.getPlayerState(player);
@@ -69,14 +62,12 @@ public class DeletePlayer extends CommandAbstract {
 			}
 			game.getPlayers().remove(player);
 		}
-		
-		return true;
 	}
 	
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {		
 		
-		if (!playerHavePermissions(sender)) return Collections.emptyList();
+		if (!isHaveNeedsPermissions(sender)) return Collections.emptyList();
 		
 		if (args.length == 1) {
 			return mainGame.getNamesFromGames().stream()
