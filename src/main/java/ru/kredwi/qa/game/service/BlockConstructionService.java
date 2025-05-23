@@ -34,27 +34,28 @@ public class BlockConstructionService implements IBlockConstructionService{
 	public BlockConstructionService(IGamePlayer playersService, Plugin plugin) {
 		this.playersService = playersService;
 		
-		Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-			List<String> enabledBlocks = QAConfig.ENABLED_BLOCKS.getAsStringList();
-			List<BlockData> blockDataList = new ArrayList<>();
-			
-			for (String blockName : enabledBlocks) {
-				try {
-					
-					Material material = Material.valueOf(blockName);
-					
-					blockDataList.add(material.createBlockData());
-					if (QAConfig.DEBUG.getAsBoolean()) {
-						QAPlugin.getQALogger().info(material.name() + " added to pool");
-					}
-				} catch (IllegalArgumentException e) {
-					blockDataList.add(Material.BLACK_CONCRETE.createBlockData());
-					QAPlugin.getQALogger().info(blockName + " not found in Bukkit API. Used default BLACK_CONCRETE");
+		Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> 
+			this.sequenceBlockData = loadBlockData().toArray(new BlockData[0]));
+	}
+	
+	private List<BlockData> loadBlockData() {
+		List<String> enabledBlocks = QAConfig.ENABLED_BLOCKS.getAsStringList();
+		List<BlockData> blockDataList = new ArrayList<>();
+		for (String blockName : enabledBlocks) {
+			try {
+				
+				Material material = Material.valueOf(blockName);
+				
+				blockDataList.add(material.createBlockData());
+				if (QAConfig.DEBUG.getAsBoolean()) {
+					QAPlugin.getQALogger().info(material.name() + " added to pool");
 				}
+			} catch (IllegalArgumentException e) {
+				blockDataList.add(Material.BLACK_CONCRETE.createBlockData());
+				QAPlugin.getQALogger().info(blockName + " not found in Bukkit API. Used default BLACK_CONCRETE");
 			}
-			
-			sequenceBlockData = blockDataList.toArray(new BlockData[0]);
-		});
+		}
+		return blockDataList;
 	}
 	
 	

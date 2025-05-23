@@ -27,21 +27,6 @@ public class GameAnswerService implements IGameAnswer{
 		this.game = game;
 		this.plugin = plugin;
 	}
-	
-	@Override
-	public void addAnwserCount() {
-		acceptCount++;
-	}
-	
-	@Override
-	public void resetAnwserCount() {
-		acceptCount = 0;
-	}
-	
-	@Override
-	public boolean isAllAnswered() {
-		return acceptCount >= game.getPlayers().size();
-	}
 
 	@Override
 	public void processPlayerAnswers(boolean isInit) {
@@ -56,7 +41,9 @@ public class GameAnswerService implements IGameAnswer{
 				
 				if (Objects.isNull(owner)) {
 					if (QAConfig.DEBUG.getAsBoolean()) 
-						QAPlugin.getQALogger().warning("IN GAME" + game.getGameInfo().name() +" OWNER IS OFFLINE");
+						QAPlugin.getQALogger().warning("IN GAME"
+								+ game.getGameInfo().name()
+								+" OWNER IS OFFLINE");
 					return;
 				}
 				
@@ -72,8 +59,14 @@ public class GameAnswerService implements IGameAnswer{
 			state.addBuildedBlock(buildBlock);
 			resetAnwserCount();
 			
-			game.getBuildedTasks().add(new FillBlocksTask(plugin, state.getLocaton(), getDirection(state.getLocaton()), game, player, buildBlock, isInit)
-				.runTaskTimerAsynchronously(plugin, QAConfig.BUILD_DELAY.getAsInt(), QAConfig.BUILD_PERIOD.getAsInt()));
+			FillBlocksTask fbt = new FillBlocksTask(plugin, state.getLocaton(),
+					getDirection(state.getLocaton()), game, player, buildBlock,
+					!isInit ? QAConfig.SPAWN_DISPLAY_TEXTS.getAsBoolean() : isInit);
+			
+			game.getBuildedTasks().add(fbt
+				.runTaskTimerAsynchronously(plugin,
+						QAConfig.BUILD_DELAY.getAsInt(),
+						QAConfig.BUILD_PERIOD.getAsInt()));
 		}
 	}
 	
@@ -90,11 +83,27 @@ public class GameAnswerService implements IGameAnswer{
 	
 	private int neededBlockToMax(int length, int buildedBlocks, boolean add) {
 		
-		int remainingBlocks = (game.getGameInfo().blocksToWin() - (buildedBlocks - (add ? IBlockConstructionService.COUNT_OF_INIT_BLOCKS : 0)));
+		int remainingBlocks = (game.getGameInfo().blocksToWin() - (buildedBlocks - (add
+				? IBlockConstructionService.COUNT_OF_INIT_BLOCKS : 0)));
 		
 		if (remainingBlocks <= 0) return 0;
 		
 		return Math.min(length, remainingBlocks);
+	}
+	
+	@Override
+	public void addAnwserCount() {
+		acceptCount++;
+	}
+	
+	@Override
+	public void resetAnwserCount() {
+		acceptCount = 0;
+	}
+	
+	@Override
+	public boolean isAllAnswered() {
+		return acceptCount >= game.getPlayers().size();
 	}
 
 }

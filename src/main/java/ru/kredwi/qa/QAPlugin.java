@@ -2,6 +2,7 @@ package ru.kredwi.qa;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -53,6 +54,7 @@ public class QAPlugin extends JavaPlugin implements IMainGame {
 			Bukkit.getPluginManager().disablePlugin(this);
 			return;
 		}
+		
 		registerCommands();
 	}
 	
@@ -67,7 +69,7 @@ public class QAPlugin extends JavaPlugin implements IMainGame {
 			for (CommandAbstract commandInstance : commandInstaces) {
 				PluginCommand command = getCommand(commandInstance.info.name());
 				
-				if (command == null) {
+				if (Objects.isNull(command)) {
 					logger.warning(new StringBuilder("Command ")
 							.append(commandInstance.info.name())
 							.append(" is not found. Skip..").toString());
