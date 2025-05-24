@@ -154,6 +154,11 @@ public class Game implements IGame {
 	public void setStopBuild(boolean isStop) {
 		services.getBlockConstructionService().setStopBuild(isStop);
 	}
+	
+	@Override
+	public void scheduleBuildForPlayer(Player player, PlayerState state, boolean isInit) {
+		services.getBlockConstructionService().scheduleBuildForPlayer(player, state, isInit);
+	}
 
 	@Override
 	public Set<Player> getPlayers() {

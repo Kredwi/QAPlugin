@@ -39,7 +39,10 @@ public class FillBlocksTask extends BukkitRunnable {
 	
 	private int i = 0;
 
-	public FillBlocksTask(QAPlugin plugin, Location targetLocation, Vector direction, IGame game, Player player, int wordLength, boolean spawnTextDisplay) {
+	public FillBlocksTask(QAPlugin plugin, Location targetLocation,
+			Vector direction, IGame game, Player player, 
+			int wordLength, boolean spawnTextDisplay) {
+		
 	    this.targetLocation = targetLocation;
 	    this.direction = direction;
 	    this.wordLength = wordLength;

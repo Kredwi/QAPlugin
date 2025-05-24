@@ -1,6 +1,7 @@
 package ru.kredwi.qa.commands;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.bukkit.command.Command;
@@ -25,9 +26,8 @@ public class DeleteGame extends CommandAbstract {
 	@Override
 	public void run(ICommandController commandController, CommandSender sender, Command command, String[] args) {
 		
-		
-		if (commandController.getMainGame().getGame(args[0]) != null) {
-			IGame game = commandController.getMainGame().getGame(args[0]);
+		IGame game = commandController.getMainGame().getGame(args[0]);
+		if (Objects.nonNull(game)) {
 			if (game.getGameInfo().isPlayerOwner((Player) sender)) {
 				game.deleteBuildedBlocks();
 				if (!commandController.getMainGame().removeGameWithName(args[0])) {

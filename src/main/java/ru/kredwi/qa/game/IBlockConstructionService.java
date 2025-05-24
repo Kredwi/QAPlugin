@@ -4,8 +4,10 @@ import java.util.List;
 import java.util.Set;
 
 import org.bukkit.block.data.BlockData;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
+import ru.kredwi.qa.game.player.PlayerState;
 import ru.kredwi.qa.removers.IRemover;
 
 public interface IBlockConstructionService {
@@ -26,6 +28,7 @@ public interface IBlockConstructionService {
 	public void resetBuildComplete();
 	public void deleteBuildedBlocks();
 	
+	public void scheduleBuildForPlayer(Player player, PlayerState state, boolean isInit);
 	public Set<IRemover> getSummaryBuildedBlocks();
 	
 	List<BukkitTask> getBuildedTasks();

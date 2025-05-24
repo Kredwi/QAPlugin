@@ -46,9 +46,14 @@ public class StartGame extends CommandAbstract {
 			return;
 		}
 		
+		if (!game.getGameInfo().isPlayerOwner((Player) sender)) {
+			sender.sendMessage(QAConfig.IS_COMMAND_ONLYE_FOR_GAME_OWNER.getAsString());
+			return;
+		}
+		
 		Set<Player> players = game.getPlayers();
 		
-		if (players.size()< 1) {
+		if (players.isEmpty()) {
 			sender.sendMessage(QAConfig.IN_THE_GAME_NOT_FOUND_PATHS.getAsString());
 			return;
 		}

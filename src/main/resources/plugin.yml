@@ -1,7 +1,7 @@
 name: QAPlugin
 api-version: 1.19
 description: Adds a question and answer mechanic to your server!
-version: 0.5.0
+version: 0.5.1
 author: Kredwi
 main: ru.kredwi.qa.QAPlugin
 website: https://github.com/Kredwi/QAPlugin

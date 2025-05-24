@@ -43,6 +43,7 @@ public class Path extends CommandAbstract {
 				gameRequestManager.addUserRequest(player.getUniqueId(), args[0], player);
 				gameRequestManager.acceptGame(player.getUniqueId(), args[0]);
 				
+			// if player nickname is entered
 			} else if (args.length > 1 && args[1] != null) {
 				
 				Player otherPlayer = Bukkit.getPlayer(args[1]);

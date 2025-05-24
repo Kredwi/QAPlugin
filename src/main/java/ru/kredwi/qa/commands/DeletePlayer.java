@@ -37,6 +37,11 @@ public class DeletePlayer extends CommandAbstract {
 		IGame game = commandController.getMainGame().getGame(gameName);
 
 		if (Objects.nonNull(game)) {
+			if (!game.getGameInfo().isPlayerOwner((Player) sender)) {
+				sender.sendMessage(QAConfig.IS_COMMAND_ONLYE_FOR_GAME_OWNER.getAsString());;
+				return;
+			}
+			
 			Player player = Bukkit.getPlayer(playerName);
 			
 			if (Objects.isNull(player)) {
@@ -48,6 +53,7 @@ public class DeletePlayer extends CommandAbstract {
 					}
 					
 					sender.sendMessage(QAConfig.IS_PLAYER_IS_NOT_FOUND.getAsString());
+					return;
 				}
 			}
 			
