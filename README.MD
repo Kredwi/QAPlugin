@@ -2,7 +2,7 @@
 
 ## Description
 QAPlugin will add a Question/Answer minigame to your server.
-**1.19**+
+Tested in: **1.19.4**
 
 ## How to use
 1.  A player with game creation permissions uses the command `/creategame <game name>`, specifying the required arguments. (Corrected grammar and clarity.  Using "uses" is more natural.)
@@ -32,8 +32,15 @@ The plugin settings are located in the `plugins/QAPlugin/config.yml` file. Basic
 - `block-place-sound` - The sound when placing the block
 - `build-delay` - Delay before the start of construction (in ticks)
 - `build-period` - Construction period (in ticks)
+- `max-requests-size` - Max number of requests to game
+- `allow-destroy-any-block` - Allow breaking blocks by paths **(DANGEROUS FOR THE WORLD!! BLOCKS CANNOT BE RESTORED)**
+- `spawn-display-texts` - Enables spawning of display texts around blocks (can cause high server load (**1** block = **5** entites of `DisplayText`))
+- `indestructible-block-encountered` - What to do if the block cannot be broken (paths cannot continue to be built because the block cannot be broken)
+
+### Indestructible Block Encountered
+- `IGNORE` - Skips this block and does not process it.
+- `END_GAME` - Calculates the winner and ends the game.
 
 ## Links
-- [GitHub](https://github.com/Kredwi/QAPlugin)
 - [List of Bukkit materials](https://helpch.at/docs/1.19.4/org/bukkit/Material.html)
 - [List of Bukkit sounds](https://helpch.at/docs/1.19.4/org/bukkit/Sound.html)

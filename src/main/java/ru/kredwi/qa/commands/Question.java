@@ -43,6 +43,22 @@ public class Question extends CommandAbstract {
 		}
 		
 		String question = String.join(" ", args);
+		int minSymbols = QAConfig.MIN_SYMBOL_IN_ANSWER.getAsInt();
+		int maxSymbols = QAConfig.MAX_SYMBOL_IN_ANSWER.getAsInt();
+		
+		if (question.length() < minSymbols) {
+			String message = 
+					String.format(QAConfig.IN_INPUT_DATA_LITTLE_SYMBOLS.getAsString(), minSymbols);
+			sender.sendMessage(message);
+			return;
+		}
+		
+		if (question.length() > maxSymbols) {
+			String message = 
+					String.format(QAConfig.IN_INPUT_DATA_OVER_SYMBOLS.getAsString(), maxSymbols);
+			sender.sendMessage(message);
+			return;
+		}
 		
 		for (Player pl : game.getPlayers()) {
 			PlayerState playerState = game.getPlayerState(pl);

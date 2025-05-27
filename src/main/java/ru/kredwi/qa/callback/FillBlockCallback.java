@@ -48,9 +48,6 @@ public class FillBlockCallback implements Consumer<Void> {
 				// alert all players in the game of winners
 				game.alertOfPlayersWin();
 				
-				// delete all register blocks in the game
-				game.deleteBuildedBlocks();
-				
 				// and remove game from global games
 				mainGame.removeGameWithName(game.getGameInfo().name());
 				

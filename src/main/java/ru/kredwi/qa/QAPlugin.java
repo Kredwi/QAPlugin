@@ -28,7 +28,7 @@ public class QAPlugin extends JavaPlugin implements IMainGame {
 	 * config version for validate configs
 	 * @author Kredwi
 	 * */
-	private static final double NEED_CONFIG_VERSION = 1.9;
+	private static final double NEED_CONFIG_VERSION = 2.0;
 	
 	private final GameRequestManager gameRequestManager = new GameRequestManager(this);
 	
@@ -87,9 +87,17 @@ public class QAPlugin extends JavaPlugin implements IMainGame {
 	@Override
 	public boolean removeGameWithName(String gameName) {
 		IGame game = games.remove(gameName.trim().toLowerCase());
+		boolean gameIsExists = game != null;
+		
+		if (gameIsExists) {
+			game.resetAnwserCount();
+			game.resetBuildComplete();
+			game.deleteBuildedBlocks();
+		}
+		
 		boolean connectIsRemoved = connectedGames.entrySet()
 			.removeIf((e) -> e.getValue().equals(gameName.trim().toLowerCase()));
-		return connectIsRemoved & game != null;
+		return connectIsRemoved && gameIsExists;
 	}
 	
 	@Override

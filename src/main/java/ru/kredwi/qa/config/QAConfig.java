@@ -18,6 +18,8 @@ public enum QAConfig {
 	DELETE_BLOCKS_WHEN_DISABLE("delete-blocks-when-disable"),
 	SPAWN_DISPLAY_TEXTS("spawn-display-texts"),
 	MAX_REQUESTS_SIZE("max-requests-size"),
+
+	ALLOW_DESTROY_ANY_BLOCK("allow-destroy-any-block"),
 	
 	TELEPORT_PLAYER_IN_PLACE("teleport-player-in-place"),
 	CENTER_DIRECTION_IN_TELEPORT("center-direction-in-teleport"),
@@ -27,6 +29,13 @@ public enum QAConfig {
 	
 	BUILD_PERIOD("build-period"),
 	BUILD_DELAY("build-delay"),
+	
+	MIN_SYMBOL_IN_ANSWER("min-symbol-in-answer"),
+	MIN_SYMBOL_IN_QUESTION("min-symbol-in-question"),
+	MAX_SYMBOL_IN_ANSWER("max-symbol-in-answer"),
+	MAX_SYMBOL_IN_QUESTION("max-symbol-in-question"),
+	
+	INDESTRUCTIBLE_BLOCK_ENCOUNTERED("indestructible-block-encountered"),
 	
 	TEMPLATE_QUESTION("question-template"),
 	QUESTIONS_ARE_OVER("questions-are-over"),
@@ -62,7 +71,9 @@ public enum QAConfig {
 	PLAYER_ACCEPTED_REQUESTS("player-accepted-requests"),
 	NOT_HAVE_PERMISSION("not-have-permission"),
 	UNKNOWN_ERROR("unknown-error"),
-	MANY_GAME_REQUESTS("many-game-requests");
+	MANY_GAME_REQUESTS("many-game-requests"),
+	IN_INPUT_DATA_LITTLE_SYMBOLS("in-input-data-little-symbols"),
+	IN_INPUT_DATA_OVER_SYMBOLS("in-input-data-over-symbols");
 	
 	private final FileConfiguration config = JavaPlugin.getPlugin(QAPlugin.class).getConfig();
 	private String path;

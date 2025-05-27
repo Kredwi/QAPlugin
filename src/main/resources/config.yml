@@ -1,11 +1,23 @@
-version: 1.9 # Config version
+version: 2.0 # Config version
 
 debug: false # Enable debug mode (for developers)
 delete-blocks-when-disable: false # Delete blocks created by the plugin when the server is disabled?
 teleport-player-in-place: true # Teleport the player to the built block?
 center-direction-in-teleport: true # Center the player's viewing direction when teleporting?
 spawn-display-texts: true # Enables spawning of display texts around blocks (can cause high server load)
+allow-destroy-any-block: false # Allow breaking blocks by paths (DANGEROUS FOR THE WORLD!! BLOCKS CANNOT BE RESTORED)
 max-requests-size: 10 # Max number of requests to game
+
+# Limits in commands
+min-symbol-in-answer: 2
+max-symbol-in-answer: 20
+min-symbol-in-question: 5
+max-symbol-in-question: 200
+
+# What to do if the block cannot be broken (paths cannot continue to be built because the block cannot be broken)
+# END_GAME the game will simply end, and winners will be calculated
+# IGNORE the game will continue, but the bridge where blocks cannot be broken will break (not recommended)
+indestructible-block-encountered: END_GAME
 
 # Block names can be found here: https://helpch.at/docs/1.19.4/org/bukkit/Material.html
 enabled-blocks: [CYAN_CONCRETE, LIME_CONCRETE, YELLOW_CONCRETE, PURPLE_CONCRETE, BLUE_CONCRETE]
@@ -54,6 +66,13 @@ you-already-create-your-game: "§cYou have already created your game, delete the
 not-have-permission: "§cYou do not have permission to use this command."
 unknown-error: "An unknown error occurred while executing the command."
 many-game-requests: "§cYou have too many game requests. Please ask someone else to join the game"
+# {0} - minimum symbols required
+# {1} - number of input symbols
+in-input-data-little-symbols: "§cYour input has too few symbols! Minimum required: {0}. You input: {1} symbols"
+
+# {0} - maximum symbols allowed
+# {1} - number of input symbols
+in-input-data-over-symbols: "§cYour input has too many symbols! Maximum allowed: {0}. You input: {1} symbols"
 
 # Your questions
 questions:

@@ -20,7 +20,7 @@ public class CreateGame extends CommandAbstract {
 	
 	public CreateGame(QAPlugin plugin) {
 		// plugin in super cast to IMainGame
-		super("creategame", 1, true, "qaplugin.commands.creategame");
+		super("creategame", 2, true, "qaplugin.commands.creategame");
 		this.plugin = plugin;
 	}
 	

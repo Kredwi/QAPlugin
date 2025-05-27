@@ -1,5 +1,6 @@
 package ru.kredwi.qa.commands;
 
+import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
@@ -37,6 +38,26 @@ public class Answer extends CommandAbstract{
 		}
 		
 		String text = args[0];
+		
+		int minSymbols = QAConfig.MIN_SYMBOL_IN_ANSWER.getAsInt();
+		int maxSymbols = QAConfig.MAX_SYMBOL_IN_ANSWER.getAsInt();
+		
+		if (text.length() < minSymbols) {
+			String message = 
+					MessageFormat.format(QAConfig.IN_INPUT_DATA_LITTLE_SYMBOLS.getAsString(),
+							minSymbols, text.length());
+			sender.sendMessage(message);
+			return;
+		}
+		
+		if (text.length() > maxSymbols) {
+			String message = 
+					MessageFormat.format(QAConfig.IN_INPUT_DATA_OVER_SYMBOLS.getAsString(),
+							maxSymbols, text.length());
+			sender.sendMessage(message);
+			return;
+		}
+		
 		callback.accept(new PlayerAnswerData(((Player) sender), text));
 	}
 

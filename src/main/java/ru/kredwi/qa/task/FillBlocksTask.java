@@ -2,10 +2,13 @@ package ru.kredwi.qa.task;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
@@ -14,8 +17,11 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import ru.kredwi.qa.QAPlugin;
+import ru.kredwi.qa.callback.BreakIsUnbrakingCallback;
 import ru.kredwi.qa.callback.FillBlockCallback;
 import ru.kredwi.qa.callback.PlaceBlockCallback;
+import ru.kredwi.qa.callback.data.BreakIsBlockedData;
+import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.entity.displaytext.DisplayText;
 import ru.kredwi.qa.entity.displaytext.IDisplayText;
 import ru.kredwi.qa.game.IGame;
@@ -32,32 +38,56 @@ public class FillBlocksTask extends BukkitRunnable {
 	private final char[] symbols;
 	private final int wordLength;
 	private boolean spawnTextDisplay;
+	private boolean allowDestroyBlock;
+	private Predicate<BreakIsBlockedData> breakIsBlockedCallback;
 	
 	private PlayerState playerState;
 	private Consumer<Void> buildFinalCallback;
 	private Consumer<Location> placeBlockCallback;
 	
 	private int i = 0;
-
+	
 	public FillBlocksTask(QAPlugin plugin, Location targetLocation,
 			Vector direction, IGame game, Player player, 
 			int wordLength, boolean spawnTextDisplay) {
+		
+		this(plugin, targetLocation, direction,
+				game.getPlayerState(player), player,
+				wordLength, spawnTextDisplay,
+				new DisplayText(plugin, game.getPlayerState(player),spawnTextDisplay),
+				new FillBlockCallback(plugin, game, player),
+				new PlaceBlockCallback(plugin, player),
+				new BreakIsUnbrakingCallback(game, plugin));
+	}
+
+	public FillBlocksTask(QAPlugin plugin, Location targetLocation,
+			Vector direction, PlayerState playerState, Player player, 
+			int wordLength, boolean spawnTextDisplay,
+			DisplayText displayText, FillBlockCallback fillBlockCallback,
+			PlaceBlockCallback placeBlockCallback, Predicate<BreakIsBlockedData> breakIsBlockedCallback) {
 		
 	    this.targetLocation = targetLocation;
 	    this.direction = direction;
 	    this.wordLength = wordLength;
 	    this.spawnTextDisplay = spawnTextDisplay;
 	    this.plugin = plugin;
-	    this.playerState = game.getPlayerState(player);
-	    this.displayText = new DisplayText(plugin, playerState, spawnTextDisplay);
-	    this.buildFinalCallback = new FillBlockCallback(plugin, game, player);
-	    this.placeBlockCallback = new PlaceBlockCallback(plugin, player);
+	    this.playerState = playerState;
+	    this.displayText = displayText;
+	    this.buildFinalCallback = fillBlockCallback;
+	    this.placeBlockCallback = placeBlockCallback;
+	    this.breakIsBlockedCallback =  breakIsBlockedCallback;
 	    this.perpendicular = new Vector(-direction.getZ(), 0, direction.getX());
-	    if (playerState.getSymbols() == null) {
+	    this.allowDestroyBlock = QAConfig.ALLOW_DESTROY_ANY_BLOCK.getAsBoolean();
+	    
+	    if (Objects.isNull(playerState.getSymbols()) || playerState.getSymbols().length == 0) {
 	    	this.symbols = new char[] { ' ' };
 	    } else {
 	    	this.symbols = playerState.getSymbols();
 	    }
+	}
+	
+	private char getDisplaySymbol(char[] symbols) {
+		return i >= symbols.length ? ' ' : symbols[i];
 	}
 	
 	@Override
@@ -69,13 +99,6 @@ public class FillBlocksTask extends BukkitRunnable {
 			cancel();
 			return;
 		}
-		
-		char symbol;
-		if (i >= symbols.length) {
-			symbol = ' ';
-		} else {
-			symbol = symbols[i];
-		}
 
 		targetLocation.add(direction);
 		
@@ -85,35 +108,71 @@ public class FillBlocksTask extends BukkitRunnable {
 		blocksToUpdate.add(targetLocation.clone().add(perpendicular));
 		blocksToUpdate.add(targetLocation.clone().subtract(perpendicular));
 		
-		setBlockBatch(blocksToUpdate, playerState);
-		
-		if (spawnTextDisplay) {
-			blocksToUpdate.forEach(l ->
-				displayText.createTextOnBlock(l.getBlock(), symbol, targetLocation));
-		}
-		
-		placeBlockCallback.accept(targetLocation.clone());
-		
-		i++;
-	}
-	
-	private void setBlockBatch(List<Location> locations, PlayerState playerState) {
-		Bukkit.getScheduler().runTask(plugin, () -> {
-			BlockData blockData = playerState.getBlockData();
-			for (Location location : locations) {
-				
-				Block block = location.getBlock();
-				playerState.addPlayerBuildedBlocks(new BlockRemover(block));
-				block.setBlockData(blockData, false);	
-				
+		 setBlockBatch(blocksToUpdate, playerState, (locations) -> {
+			 if (spawnTextDisplay) {
+				locations.forEach(loc ->
+					displayText.createTextOnBlock(loc.getBlock(),
+							getDisplaySymbol(symbols), targetLocation));
 			}
+			
+			placeBlockCallback.accept(targetLocation.clone());
+			i++;
 		});
 	}
 	
-	public void setBuildFinalCallback(Consumer<Void> callback) {
-		this.buildFinalCallback = callback;
-	}
-	public void setPlaceBlockCallback(Consumer<Location> callback) {
-		this.placeBlockCallback = callback;
+	/**
+	 * Attempts to set blocks at the specified locations on the server's main thread,
+	 * then calls the callback with the locations where blocks were successfully set.
+	 *
+	 * @param locations the list of locations where blocks should be placed
+	 * @param playerState the player's state containing block data and other relevant information
+	 * @param callback a callback function invoked after blocks are set,
+	 *                 receiving the list of locations where blocks were placed
+	 * @author Kredwi
+	 */
+	private void setBlockBatch(List<Location> locations, PlayerState playerState,
+			Consumer<List<Location>> callback) {
+		
+		BukkitRunnable task = FillBlocksTask.this;
+		List<Location> newLocations = new ArrayList<>();
+		BlockData blockData = playerState.getBlockData();
+			
+		for (Location location : locations) {
+			
+			Block block = location.getBlock();
+				
+			if (!allowDestroyBlock && !block.getType().equals(Material.AIR)) {
+				if (QAConfig.DEBUG.getAsBoolean()) {
+					QAPlugin.getQALogger().info("Allow destroy block is false, block dont destroy...");							
+				}
+				
+				boolean callbackPredicate = breakIsBlockedCallback
+						.test(new BreakIsBlockedData(block, location));
+				
+				if (callbackPredicate) {
+					if (QAConfig.DEBUG.getAsBoolean()) {
+						QAPlugin.getQALogger().info("Skip block...");							
+					}
+					continue;
+				} else {
+					if (QAConfig.DEBUG.getAsBoolean()) {
+						QAPlugin.getQALogger().info("Stop game...");							
+					}
+					task.cancel();
+					return;
+				}
+				
+			}
+			
+			newLocations.add(location);
+		}
+		
+		Bukkit.getScheduler().runTask(plugin, () -> {
+			for (Location loc : newLocations) {
+				playerState.addPlayerBuildedBlocks(new BlockRemover(loc.getBlock()));
+				loc.getBlock().setBlockData(blockData, false);
+			}
+			callback.accept(newLocations);
+		});
 	}
 }
