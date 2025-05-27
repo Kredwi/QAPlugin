@@ -42,5 +42,6 @@ The plugin settings are located in the `plugins/QAPlugin/config.yml` file. Basic
 - `END_GAME` - Calculates the winner and ends the game.
 
 ## Links
+- [Plugin issues](https://github.com/Kredwi/QAPlugin) *(pls create issues pls)*
 - [List of Bukkit materials](https://helpch.at/docs/1.19.4/org/bukkit/Material.html)
 - [List of Bukkit sounds](https://helpch.at/docs/1.19.4/org/bukkit/Sound.html)
