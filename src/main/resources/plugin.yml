@@ -1,7 +1,7 @@
 name: QAPlugin
 api-version: 1.19
 description: Adds a question and answer mechanic to your server!
-version: 0.5.2
+version: 0.5.3
 author: Kredwi
 main: ru.kredwi.qa.QAPlugin
 website: https://github.com/Kredwi/QAPlugin
@@ -71,5 +71,5 @@ permissions:
     description: Allows players to remove players from games.
     default: op
   qaplugin.*:
-    description: Grants all admin permissions for MyPlugin.
+    description: Grants all admin permissions for QAPlugin.
     default: op

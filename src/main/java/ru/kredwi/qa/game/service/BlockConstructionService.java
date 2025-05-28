@@ -113,10 +113,12 @@ public class BlockConstructionService implements IBlockConstructionService{
 			});
 			buildTasks.clear();
 		}
-		getSummaryBuildedBlocks().removeIf((e -> {
-			e.remove();
-			return true;
-		}));
+		// in async blocks dont deleted
+		Bukkit.getScheduler().runTask(plugin, () -> getSummaryBuildedBlocks()
+				.removeIf((e -> {
+					e.remove();
+					return true;
+				})));
 	}
 	
 	public Set<IRemover> getSummaryBuildedBlocks() {

@@ -2,13 +2,13 @@
 
 ## Description
 QAPlugin will add a Question/Answer minigame to your server.
-Tested in: **1.19.4**
+Tested in: **1.21.5**
 
 ## How to use
-1.  A player with game creation permissions uses the command `/creategame <game name>`, specifying the required arguments. (Corrected grammar and clarity.  Using "uses" is more natural.)
+1.  A player with game creation permissions uses the command `/creategame <game name>`, specifying the required arguments.
 2.  The player who created the game must then create paths for the players using the command `/path <game name> [player]`.
- - **NOTE**: The direction and starting location are set based on the *command sender's* current position. (Replaced "command sender" with "command sender's" to show possession. Replaced "place of start" with "starting location" for better flow.)
-3.  After setting paths for all players, the command `/startgame` must be executed. This will initialize the game, create the necessary blocks, and teleport all players to their starting points. (Replaced "proinitsiliziruet" with a proper spelling. Replaced "to start points" with "to their starting points" for better flow. Changed order of sentences for better flow)
+ - **NOTE**: The direction and starting location are set based on the *command sender's* current position.
+3.  After setting paths for all players, the command `/startgame` must be executed. This will initialize the game, create the necessary blocks, and teleport all players to their starting points.
 
 ## Commands
 
@@ -37,11 +37,14 @@ The plugin settings are located in the `plugins/QAPlugin/config.yml` file. Basic
 - `spawn-display-texts` - Enables spawning of display texts around blocks (can cause high server load (**1** block = **5** entites of `DisplayText`))
 - `indestructible-block-encountered` - What to do if the block cannot be broken (paths cannot continue to be built because the block cannot be broken)
 
+### Why Spawn Display Texts not recommended?
+Because everything happens in one tick of the server, which means that 3 blocks are created (the main block and two perpendicular blocks on the left and right) in one tick of the server, and 5 objects are created on the same tick of the server. This can create a significant load on the server, especially if several players are playing at the same time. Therefore, we strongly recommend against enabling this feature.
+
 ### Indestructible Block Encountered
 - `IGNORE` - Skips this block and does not process it.
 - `END_GAME` - Calculates the winner and ends the game.
 
 ## Links
-- [Plugin issues](https://github.com/Kredwi/QAPlugin/issues) *(pls create issues pls)*
+- [Plugin issues](https://github.com/Kredwi/QAPlugin/issues)
 - [List of Bukkit materials](https://helpch.at/docs/1.19.4/org/bukkit/Material.html)
 - [List of Bukkit sounds](https://helpch.at/docs/1.19.4/org/bukkit/Sound.html)

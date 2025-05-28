@@ -28,7 +28,7 @@ public class QAPlugin extends JavaPlugin implements IMainGame {
 	 * config version for validate configs
 	 * @author Kredwi
 	 * */
-	private static final double NEED_CONFIG_VERSION = 2.0;
+	private static final double NEED_CONFIG_VERSION = 2.1;
 	
 	private final GameRequestManager gameRequestManager = new GameRequestManager(this);
 	

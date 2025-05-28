@@ -27,16 +27,21 @@ public class DeleteGame extends CommandAbstract {
 	public void run(ICommandController commandController, CommandSender sender, Command command, String[] args) {
 		
 		IGame game = commandController.getMainGame().getGame(args[0]);
-		if (Objects.nonNull(game)) {
-			if (game.getGameInfo().isPlayerOwner((Player) sender)) {
-				game.deleteBuildedBlocks();
-				if (!commandController.getMainGame().removeGameWithName(args[0])) {
-					sender.sendMessage(QAConfig.UNKOWN_PROBLEM_WITH_GAME_DELETE.getAsString());
-					return;
-				}
-				sender.sendMessage(QAConfig.GAME_DELETE.getAsString());
-			} else sender.sendMessage(QAConfig.YOU_DONT_GAME_OWNER.getAsString());
-		} else sender.sendMessage(QAConfig.GAME_NOT_FOUND.getAsString());
+		
+		if (Objects.isNull(game)) {
+			sender.sendMessage(QAConfig.GAME_NOT_FOUND.getAsString());
+			return;
+		}
+		
+		if (!game.getGameInfo().isPlayerOwner((Player) sender)) {
+			sender.sendMessage(QAConfig.YOU_DONT_GAME_OWNER.getAsString());
+			return;
+		}
+		
+		
+		commandController.getMainGame().removeGameWithName(args[0]);
+		
+		sender.sendMessage(QAConfig.GAME_DELETE.getAsString());
 	}
 
 	@Override

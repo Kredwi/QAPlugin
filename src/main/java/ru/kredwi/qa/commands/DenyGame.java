@@ -35,11 +35,10 @@ public class DenyGame extends CommandAbstract {
 			
 		} catch (InvalidRequestData e) {
 			
-			sender.sendMessage(QAConfig.UNKNOWN_ERROR.getAsString());
+			sender.sendMessage(QAConfig.THIS_GAME_IS_NOT_REQUESTED_YOU.getAsString());
 			
 			if (QAConfig.DEBUG.getAsBoolean()) {
 				QAPlugin.getQALogger().info(e.getMessage());
-				e.printStackTrace();
 			}
 			
 		}

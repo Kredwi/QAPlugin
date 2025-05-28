@@ -1,4 +1,4 @@
-version: 2.0 # Config version
+version: 2.1 # Config version
 
 debug: false # Enable debug mode (for developers)
 delete-blocks-when-disable: false # Delete blocks created by the plugin when the server is disabled?
@@ -48,7 +48,6 @@ in-argument-needed-number: "§cThe argument must be a number"
 game-is-created: "§aGame created successfully! Now create paths for the players."
 is-game-already-created: "§cA game with this name already exists!"
 game-not-found: "§cA game with this name was not found"
-unknown-problem-with-game-delete: "§cAn unexpected error occurred while deleting the game."
 game-delete: "§aGame deleted"
 you-dont-game-owner: "§cYou are not the owner of this game"
 is-game-owner: "§cThis is the game owner"
@@ -64,8 +63,9 @@ player-accepted-requests: "§fPlayer §6{0} §fhas accepted your invitation!"
 requests-sended: "§fRequest to join the game sent to player §6{0}." # {0} - recipient's name
 you-already-create-your-game: "§cYou have already created your game, delete the previous one."
 not-have-permission: "§cYou do not have permission to use this command."
-unknown-error: "An unknown error occurred while executing the command."
+unknown-error: "§cAn unknown error occurred while executing the command."
 many-game-requests: "§cYou have too many game requests. Please ask someone else to join the game"
+inputed-invalid-data: "§cYou have entered incorrect information, check the documentation."
 # {0} - minimum symbols required
 # {1} - number of input symbols
 in-input-data-little-symbols: "§cYour input has too few symbols! Minimum required: {0}. You input: {1} symbols"

@@ -31,17 +31,19 @@ public class ConfirmGame extends CommandAbstract {
 		
 		Player player = (Player) sender;
 		String connectedToGame = "";
-		List<RequestInfo> requests = new ArrayList<>(commandController.getMainGame().getGameRequestManager()
-				.getUserRequests(player.getUniqueId()));
+		Set<RequestInfo> requests = commandController.getMainGame().getGameRequestManager()
+				.getUserRequests(player.getUniqueId());
 		
 		if (Objects.isNull(requests) || requests.isEmpty()) {
 			sender.sendMessage(QAConfig.YOU_DONT_HAVE_GAME_REQUESTS.getAsString());
 			return;
 		}
 		
+		List<RequestInfo> securityRequests = new ArrayList<>(requests);
+		
 		if (args.length > 0) {
 			
-			if (!requests.stream()
+			if (!securityRequests.stream()
 					.anyMatch(e -> e.gameName().equalsIgnoreCase(args[0].trim()))) {
 				
 				sender.sendMessage(QAConfig.THIS_GAME_IS_NOT_REQUESTED_YOU.getAsString());
@@ -52,7 +54,7 @@ public class ConfirmGame extends CommandAbstract {
 				.getGameRequestManager().acceptGame(player.getUniqueId(), args[0]);
 			connectedToGame = args[0];
 		} else {
-			String gameName = requests.get(0).gameName();
+			String gameName = securityRequests.get(0).gameName();
 			commandController.getMainGame()
 				.getGameRequestManager().acceptGame(player.getUniqueId(), gameName);
 			connectedToGame = gameName;

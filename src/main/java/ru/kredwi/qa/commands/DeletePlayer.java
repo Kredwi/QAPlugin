@@ -10,7 +10,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import ru.kredwi.qa.QAPlugin;
 import ru.kredwi.qa.commands.base.CommandAbstract;
 import ru.kredwi.qa.commands.base.ICommandController;
 import ru.kredwi.qa.config.QAConfig;
@@ -29,45 +28,49 @@ public class DeletePlayer extends CommandAbstract {
 	}
 
 	@Override
-	public void run(ICommandController commandController, CommandSender sender, Command command, String[] args) {
+	public void run(ICommandController commandController, CommandSender sender,
+			Command command, String[] args) {
 		
 		String gameName = args[0];
 		String playerName = args[1];
 
 		IGame game = commandController.getMainGame().getGame(gameName);
 
-		if (Objects.nonNull(game)) {
-			if (!game.getGameInfo().isPlayerOwner((Player) sender)) {
-				sender.sendMessage(QAConfig.IS_COMMAND_ONLYE_FOR_GAME_OWNER.getAsString());;
-				return;
-			}
-			
-			Player player = Bukkit.getPlayer(playerName);
+		if (Objects.isNull(game)) {
+			sender.sendMessage(QAConfig.GAME_NOT_FOUND.getAsString());
+			return;
+		}
+		
+		if (!game.getGameInfo().isPlayerOwner((Player) sender)) {
+			sender.sendMessage(QAConfig.IS_COMMAND_ONLY_FOR_GAME_OWNER.getAsString());
+			return;
+		}
+		
+		// idk
+		Player player = Bukkit.getPlayer(playerName);
+		
+		if (Objects.isNull(player)) {
+			player = game.getPlayer(playerName);
 			
 			if (Objects.isNull(player)) {
-				player = game.getPlayer(playerName);
-				if (Objects.isNull(player)) {
-					
-					if (QAConfig.DEBUG.getAsBoolean()) {
-						QAPlugin.getQALogger().info("ru.kredwi.qa.commands.DeletePlayer.OnCommand PLAYER IS NULL");
-					}
-					
-					sender.sendMessage(QAConfig.IS_PLAYER_IS_NOT_FOUND.getAsString());
-					return;
-				}
-			}
-			
-			if (game.getGameInfo().isPlayerOwner(player)) {
-				sender.sendMessage(QAConfig.IS_GAME_OWNER.getAsString());;
+				sender.sendMessage(QAConfig.IS_PLAYER_IS_NOT_FOUND.getAsString());
 				return;
 			}
 			
-			PlayerState playerState = game.getPlayerState(player);
-			for (IRemover remove : playerState.getPlayerBuildedBlocks()) {
-				remove.remove();
-			}
-			game.getPlayers().remove(player);
 		}
+		
+		if (game.getGameInfo().isPlayerOwner(player)) {
+			sender.sendMessage(QAConfig.IS_GAME_OWNER.getAsString());;
+			return;
+		}
+		
+		PlayerState playerState = game.getPlayerState(player);
+		
+		for (IRemover remove : playerState.getPlayerBuildedBlocks()) {
+			remove.remove();
+		}
+		
+		game.getPlayers().remove(player);
 	}
 	
 	@Override

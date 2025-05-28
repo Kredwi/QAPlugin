@@ -54,13 +54,12 @@ public enum QAConfig {
 	GAME_IS_CREATED("game-is-created"),
 	IS_GAME_ALREADY_CREATED("is-game-already-created"),
 	GAME_NOT_FOUND("game-not-found"),
-	UNKOWN_PROBLEM_WITH_GAME_DELETE("unkown-problem-with-game-delete"),
 	GAME_DELETE("game-delete"),
 	YOU_DONT_GAME_OWNER("you-dont-game-owner"),
 	IS_GAME_OWNER("is-game-owner"),
 	IS_PLAYER_IS_NOT_FOUND("is-player-is-not-found"),
 	YOU_HAVE_NEW_GAME_REQUESTS("you-have-new-game-requests"),
-	IS_COMMAND_ONLYE_FOR_GAME_OWNER("is-command-only-for-game-owner"),
+	IS_COMMAND_ONLY_FOR_GAME_OWNER("is-command-only-for-game-owner"),
 	IN_THE_GAME_NOT_FOUND_PATHS("in-the-game-not-found-paths"),
 	PLAYERS_WIN_GAME("players-win-game"),
 	PLAYER_WIN_GAME("player-win-game"),
@@ -72,8 +71,10 @@ public enum QAConfig {
 	NOT_HAVE_PERMISSION("not-have-permission"),
 	UNKNOWN_ERROR("unknown-error"),
 	MANY_GAME_REQUESTS("many-game-requests"),
+	INPUTED_INVALID_DATA("inputed-invalid-data"),
 	IN_INPUT_DATA_LITTLE_SYMBOLS("in-input-data-little-symbols"),
-	IN_INPUT_DATA_OVER_SYMBOLS("in-input-data-over-symbols");
+	IN_INPUT_DATA_OVER_SYMBOLS("in-input-data-over-symbols"),
+	CONFIG_SUCCESS_RELOADED("config-success-reloaded");
 	
 	private final FileConfiguration config = JavaPlugin.getPlugin(QAPlugin.class).getConfig();
 	private String path;

@@ -47,7 +47,7 @@ public class StartGame extends CommandAbstract {
 		}
 		
 		if (!game.getGameInfo().isPlayerOwner((Player) sender)) {
-			sender.sendMessage(QAConfig.IS_COMMAND_ONLYE_FOR_GAME_OWNER.getAsString());
+			sender.sendMessage(QAConfig.IS_COMMAND_ONLY_FOR_GAME_OWNER.getAsString());
 			return;
 		}
 		
