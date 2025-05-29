@@ -12,6 +12,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import ru.kredwi.qa.commands.base.CommandController;
 import ru.kredwi.qa.config.QAConfig;
+import ru.kredwi.qa.event.OwnerLeftTheGame;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IMainGame;
 import ru.kredwi.qa.game.request.GameRequestManager;
@@ -28,7 +29,7 @@ public class QAPlugin extends JavaPlugin implements IMainGame {
 	 * config version for validate configs
 	 * @author Kredwi
 	 * */
-	private static final double NEED_CONFIG_VERSION = 2.1;
+	private static final double NEED_CONFIG_VERSION = 2.2;
 	
 	private final GameRequestManager gameRequestManager = new GameRequestManager(this);
 	
@@ -57,6 +58,8 @@ public class QAPlugin extends JavaPlugin implements IMainGame {
 		}
 		
 		commandController.start();
+		
+		Bukkit.getPluginManager().registerEvents(new OwnerLeftTheGame(this), this);
 	}
 	
 
@@ -71,8 +74,12 @@ public class QAPlugin extends JavaPlugin implements IMainGame {
 	public void onDisable() {
 		boolean deleteBlocks = QAConfig.DELETE_BLOCKS_WHEN_DISABLE.getAsBoolean();
 		if (deleteBlocks) {
-			games.entrySet().removeIf(e -> {
-				e.getValue().deleteBuildedBlocks();
+			games.entrySet().removeIf(g -> {
+				g.getValue().getSummaryBuildedBlocks()
+				.removeIf((b -> {
+					b.remove();
+					return true;
+				}));
 				return true;
 			});	
 		}

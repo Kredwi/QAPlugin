@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 import ru.kredwi.qa.commands.base.CommandAbstract;
@@ -19,27 +20,40 @@ public class DeleteGame extends CommandAbstract {
 	private IMainGame mainGame;
 	
 	public DeleteGame(IMainGame mainGame) {
-		super("deletegame", 1, false, "qaplugin.commands.deletegame");
+		super("deletegame", 0, false, "qaplugin.commands.deletegame");
 		this.mainGame=mainGame;
 	}
 
 	@Override
 	public void run(ICommandController commandController, CommandSender sender, Command command, String[] args) {
 		
-		IGame game = commandController.getMainGame().getGame(args[0]);
+		IGame game = null;
+		
+		if (sender instanceof Player) {
+			game = mainGame.getGameFromPlayer((Player) sender);
+		}
+		
+		if (args.length == 0 && Objects.isNull(game)) {
+			sender.sendMessage(QAConfig.YOU_NOT_CONNECTED_TO_GAME.getAsString());
+			return;
+		}
+		
+		if (args.length >0) {
+			game = commandController.getMainGame().getGame(args[0]);
+		}
 		
 		if (Objects.isNull(game)) {
 			sender.sendMessage(QAConfig.GAME_NOT_FOUND.getAsString());
 			return;
 		}
 		
-		if (!game.getGameInfo().isPlayerOwner((Player) sender)) {
+		if (!(sender instanceof ConsoleCommandSender) && !game.getGameInfo().isPlayerOwner((Player) sender)) {
 			sender.sendMessage(QAConfig.YOU_DONT_GAME_OWNER.getAsString());
 			return;
 		}
 		
 		
-		commandController.getMainGame().removeGameWithName(args[0]);
+		commandController.getMainGame().removeGameWithName(game.getGameInfo().name());
 		
 		sender.sendMessage(QAConfig.GAME_DELETE.getAsString());
 	}

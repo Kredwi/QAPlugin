@@ -16,6 +16,7 @@ import ru.kredwi.qa.commands.base.CommandAbstract;
 import ru.kredwi.qa.commands.base.ICommandController;
 import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.exceptions.RequestsOutOfBounds;
+import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IMainGame;
 import ru.kredwi.qa.game.request.GameRequestManager;
 
@@ -39,12 +40,19 @@ public class Path extends CommandAbstract {
 		try {
 			// if player nickname is not entered
 			if (args.length == 1 && args[0] != null) {
+
+				if (sendMessageIfNotOwner(player, args[0])) return;
 				
 				gameRequestManager.addUserRequest(player.getUniqueId(), args[0], player);
 				gameRequestManager.acceptGame(player.getUniqueId(), args[0]);
+				// if requests already maximum player dont create game
+				// TODO rewrite this
+				
 				
 			// if player nickname is entered
 			} else if (args.length > 1 && args[1] != null) {
+				
+				if (sendMessageIfNotOwner(player, args[0])) return;
 				
 				Player otherPlayer = Bukkit.getPlayer(args[1]);
 				
@@ -70,7 +78,7 @@ public class Path extends CommandAbstract {
 			
 		}
 	}
-
+	
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
 		
@@ -90,6 +98,16 @@ public class Path extends CommandAbstract {
 		}
 		
 		return Collections.emptyList();
+	}
+	
+	private boolean sendMessageIfNotOwner(Player player, String gameName) {
+		IGame game = mainGame.getGame(gameName);
+		
+		if (!game.getGameInfo().isPlayerOwner(player)) {
+			player.sendMessage(QAConfig.IS_COMMAND_ONLY_FOR_GAME_OWNER.getAsString());
+			return true;
+		}
+		return false;
 	}
 
 }

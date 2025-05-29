@@ -1,11 +1,13 @@
-version: 2.1 # Config version
+version: 2.2 # Config version
 
 debug: false # Enable debug mode (for developers)
 delete-blocks-when-disable: false # Delete blocks created by the plugin when the server is disabled?
+delete-game-if-owner-leave: false # Delete game if owner is leave from the server
 teleport-player-in-place: true # Teleport the player to the built block?
 center-direction-in-teleport: true # Center the player's viewing direction when teleporting?
 spawn-display-texts: true # Enables spawning of display texts around blocks (can cause high server load)
 allow-destroy-any-block: false # Allow breaking blocks by paths (DANGEROUS FOR THE WORLD!! BLOCKS CANNOT BE RESTORED)
+spawn-place-particle: true # Spawn place particles
 max-requests-size: 10 # Max number of requests to game
 
 # Limits in commands
@@ -28,6 +30,10 @@ block-place-sound: BLOCK_SCAFFOLDING_PLACE # Sound played when a block is placed
 
 build-delay: 0 # Delay before building starts (in ticks)
 build-period: 10 # Building period (in ticks)
+
+# Particles can be found here: https://helpch.at/docs/1.19.4/org/bukkit/Particle.html
+place-particle: SPIT # Particle with spawned in player location
+particle-count: 1 # Count the number of particles
 
 # Message templates
 question-template: "§6Question§8: §f§r{0}" # {0} - question text

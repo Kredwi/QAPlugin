@@ -2,12 +2,17 @@ package ru.kredwi.qa.config;
 
 import java.util.List;
 
+import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import ru.kredwi.qa.QAPlugin;
 
+/**
+ * Plugin.reloadConfig() is not worked with this
+ * TODO fix this (JavaPlugin.getPlugin(QAPlugin.class).getConfig() getted one time)
+ * */
 public enum QAConfig {
 	
 	VERSION("version"),
@@ -18,11 +23,16 @@ public enum QAConfig {
 	DELETE_BLOCKS_WHEN_DISABLE("delete-blocks-when-disable"),
 	SPAWN_DISPLAY_TEXTS("spawn-display-texts"),
 	MAX_REQUESTS_SIZE("max-requests-size"),
+	DELETE_GAME_IF_OWNER_LEAVE("delete-game-if-owner-leave"),
 
 	ALLOW_DESTROY_ANY_BLOCK("allow-destroy-any-block"),
 	
 	TELEPORT_PLAYER_IN_PLACE("teleport-player-in-place"),
 	CENTER_DIRECTION_IN_TELEPORT("center-direction-in-teleport"),
+
+	SPAWN_PLACE_PARTICLE("spawn-place-particle"),
+	PLACE_PARTICLE("place-particle"),
+	PARTICLE_COUNT("particle-count"),
 	
 	WIN_SOUND("win-sound"),
 	BLOCK_PLACE_SOUND("block-place-sound"),
@@ -73,8 +83,7 @@ public enum QAConfig {
 	MANY_GAME_REQUESTS("many-game-requests"),
 	INPUTED_INVALID_DATA("inputed-invalid-data"),
 	IN_INPUT_DATA_LITTLE_SYMBOLS("in-input-data-little-symbols"),
-	IN_INPUT_DATA_OVER_SYMBOLS("in-input-data-over-symbols"),
-	CONFIG_SUCCESS_RELOADED("config-success-reloaded");
+	IN_INPUT_DATA_OVER_SYMBOLS("in-input-data-over-symbols");
 	
 	private final FileConfiguration config = JavaPlugin.getPlugin(QAPlugin.class).getConfig();
 	private String path;
@@ -106,6 +115,16 @@ public enum QAConfig {
 		} catch (NullPointerException | IllegalArgumentException e) {
 			QAPlugin.getQALogger().warning(value + " is not found in Bukkit API. Used default BLOCK_LEVER_CLICK");
 			return Sound.BLOCK_LEVER_CLICK;
+		}
+	}
+	
+	public Particle getAsParticle() {
+		String value =config.getString(path);
+		try {
+			return Particle.valueOf(value);
+		} catch (NullPointerException | IllegalArgumentException e) {
+			QAPlugin.getQALogger().warning(value + " is not found in Bukkit API. Used default DRIP_LAVA");
+			return Particle.DRIP_LAVA;
 		}
 	}
 	
