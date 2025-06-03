@@ -83,7 +83,14 @@ public enum QAConfig {
 	MANY_GAME_REQUESTS("many-game-requests"),
 	INPUTED_INVALID_DATA("inputed-invalid-data"),
 	IN_INPUT_DATA_LITTLE_SYMBOLS("in-input-data-little-symbols"),
-	IN_INPUT_DATA_OVER_SYMBOLS("in-input-data-over-symbols");
+	IN_INPUT_DATA_OVER_SYMBOLS("in-input-data-over-symbols"),
+	
+	DB_ENABLE("database.enable"),
+	DB_HOST("database.host"),
+	DB_PORT("database.port"),
+	DB_DATABASE("database.database"),
+	DB_USERNAME("database.username"),
+	DB_PASSWORD("database.password");
 	
 	private final FileConfiguration config = JavaPlugin.getPlugin(QAPlugin.class).getConfig();
 	private String path;

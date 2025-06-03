@@ -19,6 +19,7 @@ import ru.kredwi.qa.exceptions.RequestsOutOfBounds;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IMainGame;
 import ru.kredwi.qa.game.request.GameRequestManager;
+import ru.kredwi.qa.sql.SQLManager;
 
 public class Path extends CommandAbstract {
 	
@@ -33,7 +34,7 @@ public class Path extends CommandAbstract {
 	}
 	
 	@Override
-	public void run(ICommandController commandController, CommandSender sender, Command command, String[] args) {
+	public void run(ICommandController commandController, SQLManager sqlManager, CommandSender sender, Command command, String[] args) {
 		
 		Player player = (Player) sender;
 		

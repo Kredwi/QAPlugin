@@ -13,6 +13,7 @@ import ru.kredwi.qa.commands.base.ICommandController;
 import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.impl.Game;
+import ru.kredwi.qa.sql.SQLManager;
 
 public class CreateGame extends CommandAbstract {
 	
@@ -25,7 +26,7 @@ public class CreateGame extends CommandAbstract {
 	}
 	
 	@Override
-	public void run(ICommandController commandController, CommandSender sender, Command command, String[] args) {
+	public void run(ICommandController commandController, SQLManager sqlManager, CommandSender sender, Command command, String[] args) {
 		int maxBlocks;
 		try {
 			maxBlocks = Math.abs(Integer.parseInt(args[1]));

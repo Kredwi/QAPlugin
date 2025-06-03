@@ -1,5 +1,6 @@
 package ru.kredwi.qa.commands.base;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -26,6 +27,7 @@ import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.exceptions.QAException;
 import ru.kredwi.qa.exceptions.RequestsOutOfBounds;
 import ru.kredwi.qa.game.IMainGame;
+import ru.kredwi.qa.sql.SQLManager;
 
 public class CommandController implements CommandExecutor, ICommandController {
 
@@ -43,6 +45,12 @@ public class CommandController implements CommandExecutor, ICommandController {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		try {
+			
+			SQLManager manager = plugin.getSqlManager();
+			
+			if (QAConfig.DB_ENABLE.getAsBoolean() && manager.connectionNonExists()) {
+				throw new SQLException("SQL Connection is not setted. Please reload server or create new issue in github.");
+			}
 			
 			ICommand command = commands.get(cmd.getName());
 			
@@ -69,11 +77,14 @@ public class CommandController implements CommandExecutor, ICommandController {
 				return true;
 			}
 			
-			command.run(this, sender, cmd, args);
+			command.run(this, manager, sender, cmd, args);
 			
 		} catch (RequestsOutOfBounds e) {
 			sender.sendMessage(QAConfig.MANY_GAME_REQUESTS.getAsString());
 		} catch (QAException e) {
+			e.printStackTrace();
+			sender.sendMessage(QAConfig.UNKNOWN_ERROR.getAsString());
+		} catch (SQLException e) {
 			e.printStackTrace();
 			sender.sendMessage(QAConfig.UNKNOWN_ERROR.getAsString());
 		}

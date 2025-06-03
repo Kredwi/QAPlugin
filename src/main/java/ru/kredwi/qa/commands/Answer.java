@@ -15,6 +15,7 @@ import ru.kredwi.qa.commands.base.CommandAbstract;
 import ru.kredwi.qa.commands.base.ICommandController;
 import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.game.IMainGame;
+import ru.kredwi.qa.sql.SQLManager;
 
 public class Answer extends CommandAbstract{
 	
@@ -30,7 +31,7 @@ public class Answer extends CommandAbstract{
 	}
 	
 	@Override
-	public void run(ICommandController commandController, CommandSender sender, Command cmd, String[] args) {
+	public void run(ICommandController commandController, SQLManager sqlManager, CommandSender sender, Command cmd, String[] args) {
 		
 		if (!isHaveNeedsPermissions(sender)) {
 			sender.sendMessage(QAConfig.NOT_HAVE_PERMISSION.getAsString());

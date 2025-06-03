@@ -17,6 +17,7 @@ import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IMainGame;
 import ru.kredwi.qa.game.player.PlayerState;
 import ru.kredwi.qa.removers.IRemover;
+import ru.kredwi.qa.sql.SQLManager;
 
 public class DeletePlayer extends CommandAbstract {
 	
@@ -28,7 +29,7 @@ public class DeletePlayer extends CommandAbstract {
 	}
 
 	@Override
-	public void run(ICommandController commandController, CommandSender sender,
+	public void run(ICommandController commandController, SQLManager sqlManager, CommandSender sender,
 			Command command, String[] args) {
 		
 		String gameName = args[0];

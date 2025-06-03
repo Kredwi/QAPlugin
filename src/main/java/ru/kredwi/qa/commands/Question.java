@@ -13,6 +13,7 @@ import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IMainGame;
 import ru.kredwi.qa.game.player.PlayerState;
+import ru.kredwi.qa.sql.SQLManager;
 
 public class Question extends CommandAbstract {
 	
@@ -21,7 +22,7 @@ public class Question extends CommandAbstract {
 	}
 
 	@Override
-	public void run(ICommandController commandController, CommandSender sender, Command command, String[] args) {
+	public void run(ICommandController commandController, SQLManager sqlManager, CommandSender sender, Command command, String[] args) {
 		
 		if (args.length < 1) {
 			sender.sendMessage(QAConfig.NO_ARGS.getAsString());

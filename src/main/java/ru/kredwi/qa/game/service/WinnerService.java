@@ -3,6 +3,7 @@ package ru.kredwi.qa.game.service;
 import java.text.MessageFormat;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import org.bukkit.entity.Player;
 
@@ -11,14 +12,17 @@ import ru.kredwi.qa.game.IBlockConstructionService;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IWinnerService;
 import ru.kredwi.qa.game.player.PlayerState;
+import ru.kredwi.qa.sql.DatabaseActions;
 
 public class WinnerService implements IWinnerService {
 
 	private List<Player> winners = new LinkedList<>();
+	private DatabaseActions databaseActions;
 	private IGame game;
 	
-	public WinnerService(IGame game) {
+	public WinnerService(IGame game, DatabaseActions databaseActions) {
 		this.game = game;
+		this.databaseActions = databaseActions;
 	}
 	
 	@Override
@@ -29,9 +33,16 @@ public class WinnerService implements IWinnerService {
 				>= game.getGameInfo().blocksToWin();
 	}
 
+	/**
+	 * Added winners to winner pull and update database
+	 * @author Kredwi
+	 * */
 	@Override
 	public void addWinner(Player player) {
-		winners.add(player);
+		this.winners.add(player);
+		if (QAConfig.DB_ENABLE.getAsBoolean()) {
+			CompletableFuture.runAsync(() -> databaseActions.addPlayerWinCount(player.getUniqueId()));
+		}
 	}
 
 	@Override

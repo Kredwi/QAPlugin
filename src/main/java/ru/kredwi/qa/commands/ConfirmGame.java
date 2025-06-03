@@ -16,6 +16,7 @@ import ru.kredwi.qa.commands.base.ICommandController;
 import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.game.IMainGame;
 import ru.kredwi.qa.game.request.RequestInfo;
+import ru.kredwi.qa.sql.SQLManager;
 
 public class ConfirmGame extends CommandAbstract {
 	
@@ -27,7 +28,7 @@ public class ConfirmGame extends CommandAbstract {
 	}
 
 	@Override
-	public void run(ICommandController commandController, CommandSender sender, Command command, String[] args) {
+	public void run(ICommandController commandController, SQLManager sqlManager, CommandSender sender, Command command, String[] args) {
 		
 		Player player = (Player) sender;
 		String connectedToGame = "";

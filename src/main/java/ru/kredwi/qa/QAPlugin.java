@@ -1,5 +1,6 @@
 package ru.kredwi.qa;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -16,6 +17,7 @@ import ru.kredwi.qa.event.OwnerLeftTheGame;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IMainGame;
 import ru.kredwi.qa.game.request.GameRequestManager;
+import ru.kredwi.qa.sql.SQLManager;
 
 /**
  * Main plugin and game class
@@ -29,11 +31,13 @@ public class QAPlugin extends JavaPlugin implements IMainGame {
 	 * config version for validate configs
 	 * @author Kredwi
 	 * */
-	private static final double NEED_CONFIG_VERSION = 2.2;
+	private static final double NEED_CONFIG_VERSION = 2.3;
 	
 	private final GameRequestManager gameRequestManager = new GameRequestManager(this);
 	
 	private final CommandController commandController = new CommandController(this);
+	
+	private final SQLManager sqlManager = new SQLManager();
 	
 	private static Logger logger = null;
 	
@@ -55,6 +59,16 @@ public class QAPlugin extends JavaPlugin implements IMainGame {
 			}
 			Bukkit.getPluginManager().disablePlugin(this);
 			return;
+		}
+		
+		if (QAConfig.DB_ENABLE.getAsBoolean()) {
+			try {
+				sqlManager.connect();
+				sqlManager.createTables();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				Bukkit.getPluginManager().disablePlugin(this);
+			}
 		}
 		
 		commandController.start();
@@ -82,6 +96,13 @@ public class QAPlugin extends JavaPlugin implements IMainGame {
 				}));
 				return true;
 			});	
+		}
+		if (QAConfig.DB_ENABLE.getAsBoolean()) {
+			try {
+				sqlManager.disconnect();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -135,5 +156,9 @@ public class QAPlugin extends JavaPlugin implements IMainGame {
 	
 	public static Logger getQALogger() {
 		return logger;
+	}
+
+	public SQLManager getSqlManager() {
+		return sqlManager;
 	}
  }

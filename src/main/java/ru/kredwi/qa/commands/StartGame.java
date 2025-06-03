@@ -14,6 +14,7 @@ import ru.kredwi.qa.commands.base.ICommandController;
 import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IMainGame;
+import ru.kredwi.qa.sql.SQLManager;
 
 /**
  * Initializes the game by performing the following actions:
@@ -37,7 +38,7 @@ public class StartGame extends CommandAbstract {
 	}
 	
 	@Override
-	public void run(ICommandController commandController, CommandSender sender, Command command, String[] args) {
+	public void run(ICommandController commandController, SQLManager sqlManager, CommandSender sender, Command command, String[] args) {
 		
 		IGame game = commandController.getMainGame().getGame(args[0]);
 		

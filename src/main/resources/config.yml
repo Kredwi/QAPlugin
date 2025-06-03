@@ -1,4 +1,4 @@
-version: 2.2 # Config version
+version: 2.3 # Config version
 
 debug: false # Enable debug mode (for developers)
 delete-blocks-when-disable: false # Delete blocks created by the plugin when the server is disabled?
@@ -15,6 +15,14 @@ min-symbol-in-answer: 2
 max-symbol-in-answer: 20
 min-symbol-in-question: 5
 max-symbol-in-question: 200
+
+database:
+    enable: true
+    host: localhost
+    port: 3306
+    database: QAPlugin
+    username: root
+    password: 
 
 # What to do if the block cannot be broken (paths cannot continue to be built because the block cannot be broken)
 # END_GAME the game will simply end, and winners will be calculated

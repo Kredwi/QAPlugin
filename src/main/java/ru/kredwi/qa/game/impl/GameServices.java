@@ -22,9 +22,9 @@ public class GameServices {
 	
 	public GameServices(IGame game, QAPlugin plugin) {
 		this.questionManager = new QuestionService(game,game);
-		this.gameAnswer = new GameAnswerService(game);
+		this.gameAnswer = new GameAnswerService(game, plugin.getSqlManager());
 		this.blockConstructionService = new BlockConstructionService(game, plugin);
-		this.winnerService = new WinnerService(game);
+		this.winnerService = new WinnerService(game, plugin.getSqlManager());
 		this.gamePlayer = new GamePlayerService();
 	}
 

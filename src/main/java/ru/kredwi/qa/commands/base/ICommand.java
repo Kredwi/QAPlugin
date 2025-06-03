@@ -6,6 +6,7 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.permissions.Permissible;
 
 import ru.kredwi.qa.exceptions.QAException;
+import ru.kredwi.qa.sql.SQLManager;
 
 public interface ICommand extends TabCompleter{
 	public String getName();
@@ -13,7 +14,7 @@ public interface ICommand extends TabCompleter{
 	public boolean isSkipCheckArgs();
 	public boolean isCommandOnlyForPlayer();
 	public boolean isHaveNeedsPermissions(Permissible permissible);
-	public void run(ICommandController commandController,
+	public void run(ICommandController commandController, SQLManager sqlManager,
 			CommandSender sender, Command cmd, String[] args)
 		throws QAException;
 }
