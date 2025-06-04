@@ -1,4 +1,4 @@
-version: 2.3 # Config version
+version: 2.4 # Config version
 
 debug: false # Enable debug mode (for developers)
 delete-blocks-when-disable: false # Delete blocks created by the plugin when the server is disabled?
@@ -16,13 +16,26 @@ max-symbol-in-answer: 20
 min-symbol-in-question: 5
 max-symbol-in-question: 200
 
+# Sector for winner firework
+# For flicker and trail see https://helpch.at/docs/1.19.4/org/bukkit/FireworkEffect.Builder.html
+# For colors see https://helpch.at/docs/1.19.4/org/bukkit/Color.html
+# For effect type see https://helpch.at/docs/1.19.4/org/bukkit/FireworkEffect.Type.html
+end-game-winner-firework:
+    enable: true # Enable firework for winner.
+    flicker: true # Set whether the firework effect should flicker.
+    trail: true # Set whether the firework effect should have a trail.
+    type: STAR # The type or shape of the effect.
+    colors: [ORANGE, BLUE] # Add several primary colors to the firework effect.
+    fades: [PURPLE] # Add several fade colors to the firework effect.
+    
+# Data base section
 database:
-    enable: true
-    host: localhost
-    port: 3306
-    database: QAPlugin
-    username: root
-    password: 
+    enable: false # enable using database
+    username: root # username for database account
+    password: # password for database account
+    host: localhost # host of database (ip)
+    port: 3306 # port of database
+    database: QAPlugin # database name for plugin
 
 # What to do if the block cannot be broken (paths cannot continue to be built because the block cannot be broken)
 # END_GAME the game will simply end, and winners will be calculated

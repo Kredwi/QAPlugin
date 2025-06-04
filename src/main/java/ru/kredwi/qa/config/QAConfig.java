@@ -1,7 +1,12 @@
 package ru.kredwi.qa.config;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
+import org.bukkit.Color;
+import org.bukkit.FireworkEffect.Type;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -90,8 +95,17 @@ public enum QAConfig {
 	DB_PORT("database.port"),
 	DB_DATABASE("database.database"),
 	DB_USERNAME("database.username"),
-	DB_PASSWORD("database.password");
+	DB_PASSWORD("database.password"),
 	
+	FIREWORK_FOR_WINNER_ENABLE("end-game-winner-firework.enable"),
+	FIREWORK_FOR_WINNER_FLICKER("end-game-winner-firework.flicker"),
+	FIREWORK_FOR_WINNER_TRAIL("end-game-winner-firework.trail"),
+	FIREWORK_FOR_WINNER_TYPE("end-game-winner-firework.type"),
+	FIREWORK_FOR_WINNER_COLORS("end-game-winner-firework.colors"),
+	FIREWORK_FOR_WINNER_FADES("end-game-winner-firework.fades");
+	
+	
+	private static final HashMap<String, Color> TEMP_COLORS = new HashMap<>();
 	private final FileConfiguration config = JavaPlugin.getPlugin(QAPlugin.class).getConfig();
 	private String path;
 	
@@ -115,27 +129,87 @@ public enum QAConfig {
 		return config.getDouble(path);
 	}
 	
-	public Sound getAsSound() {
-		String value =config.getString(path);
-		try {
-			return Sound.valueOf(value);
-		} catch (NullPointerException | IllegalArgumentException e) {
-			QAPlugin.getQALogger().warning(value + " is not found in Bukkit API. Used default BLOCK_LEVER_CLICK");
-			return Sound.BLOCK_LEVER_CLICK;
+	public List<String> getAsStringList() {
+		return config.getStringList(path);
+	}
+	
+	public List<Color> getAsBukkitColorList() {
+		List<Color> colors = new ArrayList<>();
+		
+		for (String s : config.getStringList(path)) {
+			Color color = getAsBukkitColor(s);
+			
+			colors.add(color);
 		}
+		
+		if (colors.isEmpty()) return List.of(getDefaultBukkitColor("all colors"));
+		
+		return colors;
+	}
+	
+	public Sound getAsSound() {
+		return new AsObjectUtils<Sound>()
+				.getAsGeneric(Sound.class, Sound.BLOCK_LEVER_CLICK);
 	}
 	
 	public Particle getAsParticle() {
-		String value =config.getString(path);
+		return new AsObjectUtils<Particle>()
+				.getAsGeneric(Particle.class, Particle.DRIP_LAVA);
+	}
+	
+	public Type getAsFireworkType() {
+		return new AsObjectUtils<Type>()
+				.getAsGeneric(Type.class, Type.STAR);
+	}
+	
+	/**
+	 * facepalm method
+	 * */
+	public Color getAsBukkitColor(String name) {
+		
+		Color tempColor = TEMP_COLORS.get(name);
+		if (tempColor != null) return tempColor;
+		
 		try {
-			return Particle.valueOf(value);
-		} catch (NullPointerException | IllegalArgumentException e) {
-			QAPlugin.getQALogger().warning(value + " is not found in Bukkit API. Used default DRIP_LAVA");
-			return Particle.DRIP_LAVA;
+			Field[] DeclaredFields = Color.class.getFields();
+			
+			for (Field field : DeclaredFields) {
+				if (field.getName().equalsIgnoreCase(name)) {
+					Object colorField = field.get(null);
+					if (colorField instanceof Color) {
+						Color color = (Color) colorField;
+						TEMP_COLORS.put(name, color);
+						return color;
+					} else {
+						continue;
+					}
+				}
+			}
+
+			return getDefaultBukkitColor(name);
+		} catch (IllegalArgumentException | IllegalAccessException e) {
+			return getDefaultBukkitColor(name);
 		}
 	}
 	
-	public List<String> getAsStringList() {
-		return config.getStringList(path);
+	private Color getDefaultBukkitColor(String name) {
+		final Color defaultColor = Color.BLACK;
+		if (DEBUG.getAsBoolean()) {
+			QAPlugin.getQALogger().info(name + " is not found in Bukkit API. Used default Color.BLACK");
+		}
+		return defaultColor;
+	}
+	
+	public class AsObjectUtils<T extends Enum<T>> {
+		
+		public T getAsGeneric(Class<T> enumClass, T defaultValue) {
+			String value =config.getString(path);
+			try {
+				return Enum.valueOf(enumClass, value);
+			} catch (NullPointerException | IllegalArgumentException e) {
+				QAPlugin.getQALogger().warning(value + " is not found in Bukkit API. Used default " + defaultValue.name());
+				return defaultValue;
+			}
+		}
 	}
 }

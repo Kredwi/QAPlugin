@@ -69,5 +69,4 @@ public class WinnerService implements IWinnerService {
 			}
 		}
 	}
-
 }

@@ -55,7 +55,7 @@ public class FillBlocksTask extends BukkitRunnable {
 				game.getPlayerState(player), player,
 				wordLength, spawnTextDisplay,
 				new DisplayText(plugin, game.getPlayerState(player),spawnTextDisplay),
-				new FillBlockCallback(plugin, game, player),
+				new FillBlockCallback(plugin, plugin, game, player),
 				new PlaceBlockCallback(plugin, player),
 				new BreakIsUnbrakingCallback(game, plugin));
 	}
