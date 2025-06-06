@@ -16,18 +16,23 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
+import ru.kredwi.qa.PluginWrapper;
 import ru.kredwi.qa.QAPlugin;
-import ru.kredwi.qa.callback.BreakIsUnbrakingCallback;
-import ru.kredwi.qa.callback.FillBlockCallback;
-import ru.kredwi.qa.callback.PlaceBlockCallback;
+import ru.kredwi.qa.callback.BlockBreakDeniedCallback;
+import ru.kredwi.qa.callback.BlockPlacementCallback;
+import ru.kredwi.qa.callback.ConstructionStageEndCallback;
 import ru.kredwi.qa.callback.data.BreakIsBlockedData;
-import ru.kredwi.qa.config.QAConfig;
+import ru.kredwi.qa.config.ConfigKeys;
 import ru.kredwi.qa.entity.displaytext.DisplayText;
 import ru.kredwi.qa.entity.displaytext.IDisplayText;
 import ru.kredwi.qa.game.IGame;
+import ru.kredwi.qa.game.IMainGame;
 import ru.kredwi.qa.game.player.PlayerState;
 import ru.kredwi.qa.removers.BlockRemover;
 
+/**
+ * Fill block timer task
+ * */
 public class FillBlocksTask extends BukkitRunnable {
 	
 	private final Plugin plugin;
@@ -37,34 +42,37 @@ public class FillBlocksTask extends BukkitRunnable {
 	private final IDisplayText displayText;
 	private final char[] symbols;
 	private final int wordLength;
+	
+	private boolean debug;
 	private boolean spawnTextDisplay;
 	private boolean allowDestroyBlock;
-	private Predicate<BreakIsBlockedData> breakIsBlockedCallback;
 	
 	private PlayerState playerState;
+	
+	private Predicate<BreakIsBlockedData> breakIsBlockedCallback;
 	private Consumer<Void> buildFinalCallback;
 	private Consumer<Location> placeBlockCallback;
 	
 	private int i = 0;
 	
-	public FillBlocksTask(QAPlugin plugin, Location targetLocation,
+	public FillBlocksTask(PluginWrapper plugin, IMainGame gameManager, Location targetLocation,
 			Vector direction, IGame game, Player player, 
 			int wordLength, boolean spawnTextDisplay) {
 		
 		this(plugin, targetLocation, direction,
-				game.getPlayerState(player), player,
+				game.getPlayerService().getPlayerState(player), player,
 				wordLength, spawnTextDisplay,
-				new DisplayText(plugin, game.getPlayerState(player),spawnTextDisplay),
-				new FillBlockCallback(plugin, plugin, game, player),
-				new PlaceBlockCallback(plugin, player),
-				new BreakIsUnbrakingCallback(game, plugin));
+				new DisplayText(plugin, game.getPlayerService().getPlayerState(player),spawnTextDisplay),
+				new ConstructionStageEndCallback(plugin, gameManager, game, player),
+				new BlockPlacementCallback(plugin, player),
+				new BlockBreakDeniedCallback(plugin, gameManager, game));
 	}
 
-	public FillBlocksTask(QAPlugin plugin, Location targetLocation,
+	public FillBlocksTask(PluginWrapper plugin, Location targetLocation,
 			Vector direction, PlayerState playerState, Player player, 
 			int wordLength, boolean spawnTextDisplay,
-			DisplayText displayText, FillBlockCallback fillBlockCallback,
-			PlaceBlockCallback placeBlockCallback, Predicate<BreakIsBlockedData> breakIsBlockedCallback) {
+			DisplayText displayText, ConstructionStageEndCallback fillBlockCallback,
+			BlockPlacementCallback placeBlockCallback, Predicate<BreakIsBlockedData> breakIsBlockedCallback) {
 		
 	    this.targetLocation = targetLocation;
 	    this.direction = direction;
@@ -77,7 +85,8 @@ public class FillBlocksTask extends BukkitRunnable {
 	    this.placeBlockCallback = placeBlockCallback;
 	    this.breakIsBlockedCallback =  breakIsBlockedCallback;
 	    this.perpendicular = new Vector(-direction.getZ(), 0, direction.getX());
-	    this.allowDestroyBlock = QAConfig.ALLOW_DESTROY_ANY_BLOCK.getAsBoolean();
+	    this.allowDestroyBlock = plugin.getConfigManager().getAsBoolean(ConfigKeys.ALLOW_DESTROY_ANY_BLOCK);
+	    this.debug = plugin.getConfigManager().getAsBoolean(ConfigKeys.DEBUG);
 	    
 	    if (Objects.isNull(playerState.getSymbols()) || playerState.getSymbols().length == 0) {
 	    	this.symbols = new char[] { ' ' };
@@ -142,7 +151,7 @@ public class FillBlocksTask extends BukkitRunnable {
 			Block block = location.getBlock();
 				
 			if (!allowDestroyBlock && !block.getType().equals(Material.AIR)) {
-				if (QAConfig.DEBUG.getAsBoolean()) {
+				if (debug) {
 					QAPlugin.getQALogger().info("Allow destroy block is false, block dont destroy...");							
 				}
 				
@@ -150,12 +159,12 @@ public class FillBlocksTask extends BukkitRunnable {
 						.test(new BreakIsBlockedData(block, location));
 				
 				if (callbackPredicate) {
-					if (QAConfig.DEBUG.getAsBoolean()) {
+					if (debug) {
 						QAPlugin.getQALogger().info("Skip block...");							
 					}
 					continue;
 				} else {
-					if (QAConfig.DEBUG.getAsBoolean()) {
+					if (debug) {
 						QAPlugin.getQALogger().info("Stop game...");							
 					}
 					task.cancel();

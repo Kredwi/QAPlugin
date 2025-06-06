@@ -1,5 +1,14 @@
 package ru.kredwi.qa.commands;
 
+import static ru.kredwi.qa.config.ConfigKeys.DEBUG;
+import static ru.kredwi.qa.config.ConfigKeys.GAME_NOT_FOUND;
+import static ru.kredwi.qa.config.ConfigKeys.IS_COMMAND_ONLY_FOR_GAME_OWNER;
+import static ru.kredwi.qa.config.ConfigKeys.IS_PLAYER_IS_NOT_FOUND;
+import static ru.kredwi.qa.config.ConfigKeys.MANY_GAME_REQUESTS;
+import static ru.kredwi.qa.config.ConfigKeys.NO_ARGS;
+import static ru.kredwi.qa.config.ConfigKeys.REQUESTS_SENDED;
+import static ru.kredwi.qa.config.ConfigKeys.YOU_HAVE_NEW_GAME_REQUESTS;
+
 import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.List;
@@ -14,27 +23,29 @@ import org.bukkit.entity.Player;
 import ru.kredwi.qa.QAPlugin;
 import ru.kredwi.qa.commands.base.CommandAbstract;
 import ru.kredwi.qa.commands.base.ICommandController;
-import ru.kredwi.qa.config.QAConfig;
+import ru.kredwi.qa.config.ConfigAs;
 import ru.kredwi.qa.exceptions.RequestsOutOfBounds;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IMainGame;
 import ru.kredwi.qa.game.request.GameRequestManager;
-import ru.kredwi.qa.sql.SQLManager;
+
 
 public class Path extends CommandAbstract {
 	
 	private final GameRequestManager gameRequestManager;
+	private ConfigAs cm;
 	private IMainGame mainGame;
 	
-	public Path(IMainGame mainGame) {
+	public Path(IMainGame mainGame, ConfigAs cm) {
 		super("path", 1, true, true, "qaplugin.commands.path");
 		
 		this.gameRequestManager = mainGame.getGameRequestManager();
 		this.mainGame = mainGame;
+		this.cm = cm;
 	}
 	
 	@Override
-	public void run(ICommandController commandController, SQLManager sqlManager, CommandSender sender, Command command, String[] args) {
+	public void run(ICommandController commandController, CommandSender sender, Command command, String[] args) {
 		
 		Player player = (Player) sender;
 		
@@ -42,7 +53,7 @@ public class Path extends CommandAbstract {
 			// if player nickname is not entered
 			if (args.length == 1 && args[0] != null) {
 
-				if (sendMessageIfNotOwner(player, args[0])) return;
+				if (sendMessagesIfNegativeConditions(player, args[0])) return;
 				
 				gameRequestManager.addUserRequest(player.getUniqueId(), args[0], player);
 				gameRequestManager.acceptGame(player.getUniqueId(), args[0]);
@@ -53,27 +64,27 @@ public class Path extends CommandAbstract {
 			// if player nickname is entered
 			} else if (args.length > 1 && args[1] != null) {
 				
-				if (sendMessageIfNotOwner(player, args[0])) return;
+				if (sendMessagesIfNegativeConditions(player, args[0])) return;
 				
 				Player otherPlayer = Bukkit.getPlayer(args[1]);
 				
 				if (Objects.isNull(otherPlayer)) {
-					sender.sendMessage(QAConfig.IS_PLAYER_IS_NOT_FOUND.getAsString());
+					sender.sendMessage(cm.getAsString(IS_PLAYER_IS_NOT_FOUND));
 					return;
 				}
 				
 				gameRequestManager.addUserRequest(otherPlayer.getUniqueId(), args[0], player);
 				
-				otherPlayer.sendMessage(MessageFormat.format(QAConfig.YOU_HAVE_NEW_GAME_REQUESTS.getAsString(), args[0]));
-				player.sendMessage(MessageFormat.format(QAConfig.REQUESTS_SENDED.getAsString(), otherPlayer.getName())); 
+				otherPlayer.sendMessage(MessageFormat.format(cm.getAsString(YOU_HAVE_NEW_GAME_REQUESTS), args[0]));
+				player.sendMessage(MessageFormat.format(cm.getAsString(REQUESTS_SENDED), otherPlayer.getName())); 
 			} else {
-				sender.sendMessage(QAConfig.NO_ARGS.getAsString());
+				sender.sendMessage(cm.getAsString(NO_ARGS));
 			}	
 		} catch (RequestsOutOfBounds e) {
 			
-			sender.sendMessage(QAConfig.MANY_GAME_REQUESTS.getAsString());
+			sender.sendMessage(cm.getAsString(MANY_GAME_REQUESTS));
 			
-			if (QAConfig.DEBUG.getAsBoolean()) {
+			if (cm.getAsBoolean(DEBUG)) {
 				QAPlugin.getQALogger().info("EXCEPTION IN PATH REQUESTS OUT OF BOUNDS: "+e.getMessage());
 			}
 			
@@ -93,7 +104,7 @@ public class Path extends CommandAbstract {
 		
 		if (args.length == 2) {
 			return Bukkit.getOnlinePlayers().stream()
-					.map(e -> e.getName())
+					.map(Player::getName)
 					.filter(e -> e.startsWith(args[1]))
 					.collect(Collectors.toList());
 		}
@@ -101,11 +112,16 @@ public class Path extends CommandAbstract {
 		return Collections.emptyList();
 	}
 	
-	private boolean sendMessageIfNotOwner(Player player, String gameName) {
+	private boolean sendMessagesIfNegativeConditions(Player player, String gameName) {
 		IGame game = mainGame.getGame(gameName);
 		
+		if (Objects.isNull(game)) {
+			player.sendMessage(cm.getAsString(GAME_NOT_FOUND));
+			return true;
+		}
+		
 		if (!game.getGameInfo().isPlayerOwner(player)) {
-			player.sendMessage(QAConfig.IS_COMMAND_ONLY_FOR_GAME_OWNER.getAsString());
+			player.sendMessage(cm.getAsString(IS_COMMAND_ONLY_FOR_GAME_OWNER));
 			return true;
 		}
 		return false;

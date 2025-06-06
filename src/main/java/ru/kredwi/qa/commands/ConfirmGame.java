@@ -1,5 +1,9 @@
 package ru.kredwi.qa.commands;
 
+import static ru.kredwi.qa.config.ConfigKeys.THIS_GAME_IS_NOT_REQUESTED_YOU;
+import static ru.kredwi.qa.config.ConfigKeys.YOU_CONNECTED_TO;
+import static ru.kredwi.qa.config.ConfigKeys.YOU_DONT_HAVE_GAME_REQUESTS;
+
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,22 +17,23 @@ import org.bukkit.entity.Player;
 
 import ru.kredwi.qa.commands.base.CommandAbstract;
 import ru.kredwi.qa.commands.base.ICommandController;
-import ru.kredwi.qa.config.QAConfig;
+import ru.kredwi.qa.config.ConfigAs;
 import ru.kredwi.qa.game.IMainGame;
 import ru.kredwi.qa.game.request.RequestInfo;
-import ru.kredwi.qa.sql.SQLManager;
 
 public class ConfirmGame extends CommandAbstract {
 	
+	private ConfigAs cm;
 	private IMainGame mainGame;
 	
-	public ConfirmGame(IMainGame mainGame) {
+	public ConfirmGame(ConfigAs cm, IMainGame mainGame) {
 		super("acceptgame", 1, true, "qaplugin.commands.acceptgame");
 		this.mainGame = mainGame;
+		this.cm = cm;
 	}
 
 	@Override
-	public void run(ICommandController commandController, SQLManager sqlManager, CommandSender sender, Command command, String[] args) {
+	public void run(ICommandController commandController, CommandSender sender, Command command, String[] args) {
 		
 		Player player = (Player) sender;
 		String connectedToGame = "";
@@ -36,7 +41,7 @@ public class ConfirmGame extends CommandAbstract {
 				.getUserRequests(player.getUniqueId());
 		
 		if (Objects.isNull(requests) || requests.isEmpty()) {
-			sender.sendMessage(QAConfig.YOU_DONT_HAVE_GAME_REQUESTS.getAsString());
+			sender.sendMessage(cm.getAsString(YOU_DONT_HAVE_GAME_REQUESTS));
 			return;
 		}
 		
@@ -47,7 +52,7 @@ public class ConfirmGame extends CommandAbstract {
 			if (!securityRequests.stream()
 					.anyMatch(e -> e.gameName().equalsIgnoreCase(args[0].trim()))) {
 				
-				sender.sendMessage(QAConfig.THIS_GAME_IS_NOT_REQUESTED_YOU.getAsString());
+				sender.sendMessage(cm.getAsString(THIS_GAME_IS_NOT_REQUESTED_YOU));
 				return;
 			}
 			
@@ -60,7 +65,7 @@ public class ConfirmGame extends CommandAbstract {
 				.getGameRequestManager().acceptGame(player.getUniqueId(), gameName);
 			connectedToGame = gameName;
 		}
-		sender.sendMessage(MessageFormat.format(QAConfig.YOU_CONNECTED_TO.getAsString(), connectedToGame));
+		sender.sendMessage(MessageFormat.format(cm.getAsString(YOU_CONNECTED_TO), connectedToGame));
 	}
 
 	@Override
@@ -79,11 +84,11 @@ public class ConfirmGame extends CommandAbstract {
 			
 			if (args.length == 0) {
 				return UserRequests.stream()
-						.map(e -> e.gameName()).toList();
+						.map(RequestInfo::gameName).toList();
 			}
 			
 			return UserRequests.stream()
-					.map(e -> e.gameName())
+					.map(RequestInfo::gameName)
 					.filter(e -> e.toLowerCase().startsWith(args[0].toLowerCase()))
 					.toList();
 		}

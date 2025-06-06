@@ -1,5 +1,9 @@
 package ru.kredwi.qa.game.service;
 
+import static ru.kredwi.qa.config.ConfigKeys.DB_ENABLE;
+import static ru.kredwi.qa.config.ConfigKeys.DEBUG;
+import static ru.kredwi.qa.config.ConfigKeys.IN_THE_GAME_NOT_FOUND_PATHS;
+
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
@@ -8,7 +12,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import ru.kredwi.qa.QAPlugin;
-import ru.kredwi.qa.config.QAConfig;
+import ru.kredwi.qa.config.ConfigAs;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IGameAnswer;
 import ru.kredwi.qa.game.player.PlayerState;
@@ -17,27 +21,29 @@ import ru.kredwi.qa.sql.DatabaseActions;
 public class GameAnswerService implements IGameAnswer{
 
 	private DatabaseActions dbActions;
+	private ConfigAs cm;
 	private IGame game;
 	
 	private int acceptCount = 0;
 	
-	public GameAnswerService(IGame game, DatabaseActions dbActions) {
+	public GameAnswerService(ConfigAs cm, IGame game, DatabaseActions dbActions) {
 		this.game = game;
+		this.cm = cm;
 		this.dbActions = dbActions;
 	}
 
 	@Override
 	public void processPlayerAnswers(boolean isInit) {
-		for (Map.Entry<Player, PlayerState> playerState : game.getPlayerAndStatesArray()) {
+		for (Map.Entry<Player, PlayerState> playerState : game.getPlayerService().getPlayerAndStatesArray()) {
 			
-			if (isInit && QAConfig.DB_ENABLE.getAsBoolean()) {
+			if (isInit && cm.getAsBoolean(DB_ENABLE)) {
 				CompletableFuture.runAsync(() -> {
 					dbActions.addPlayerIfNonExists(playerState.getKey().getUniqueId());
 					dbActions.setPlayerLastPlayedNow(playerState.getKey().getUniqueId());
 				});
 			}
 			
-			if (game.buildIsStopped()) {
+			if (game.getBlockConstruction().buildIsStopped()) {
 				return;
 			}
 			
@@ -45,19 +51,19 @@ public class GameAnswerService implements IGameAnswer{
 				Player owner = Bukkit.getPlayer(game.getGameInfo().ownerUUID());
 				
 				if (Objects.isNull(owner)) {
-					if (QAConfig.DEBUG.getAsBoolean()) 
+					if (cm.getAsBoolean(DEBUG)) 
 						QAPlugin.getQALogger().warning("IN GAME"
 								+ game.getGameInfo().name()
 								+" OWNER IS OFFLINE");
 					return;
 				}
 				
-				owner.sendMessage(QAConfig.IN_THE_GAME_NOT_FOUND_PATHS.getAsString());
+				owner.sendMessage(cm.getAsString(IN_THE_GAME_NOT_FOUND_PATHS));
 				return;
 			}
 			
 			resetAnwserCount();
-			game.scheduleBuildForPlayer(playerState.getKey(),playerState.getValue(), isInit);
+			game.getBlockConstruction().scheduleBuildForPlayer(playerState.getKey(),playerState.getValue(), isInit);
 		}
 	}
 	
@@ -73,7 +79,7 @@ public class GameAnswerService implements IGameAnswer{
 	
 	@Override
 	public boolean isAllAnswered() {
-		return acceptCount >= game.getPlayers().size();
+		return acceptCount >= game.getPlayerService().getPlayers().size();
 	}
 
 }

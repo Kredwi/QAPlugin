@@ -11,6 +11,8 @@ public interface IMainGame {
 	void addGame(IGame game);
 
 	IGame getGame(String gameName);
+	
+	Set<IGame> getGames();
 
 	void connectPlayerToGame(Player player, IGame game);
 

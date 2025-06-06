@@ -7,17 +7,16 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Display.Billboard;
 import org.bukkit.entity.TextDisplay;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Transformation;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
-
+import ru.kredwi.qa.PluginWrapper;
 import ru.kredwi.qa.QAPlugin;
-import ru.kredwi.qa.config.QAConfig;
+import ru.kredwi.qa.config.ConfigKeys;
+import ru.kredwi.qa.game.player.PlayerState;
 import ru.kredwi.qa.removers.DisplayRemover;
 import ru.kredwi.qa.utils.LocationUtils;
-import ru.kredwi.qa.game.player.PlayerState;
 
 public class DisplayText implements IDisplayText {
 	
@@ -35,11 +34,11 @@ public class DisplayText implements IDisplayText {
 			);
 	
 	private PlayerState playerState;
-	private Plugin plugin;
+	private PluginWrapper plugin;
 	
 	private boolean spawnDisplayText;
 	
-	public DisplayText(Plugin plugin, PlayerState playerState,  boolean spawnDisplayText) {
+	public DisplayText(PluginWrapper plugin, PlayerState playerState,  boolean spawnDisplayText) {
 		this.plugin = plugin;
 		this.playerState = playerState;
 		this.spawnDisplayText = spawnDisplayText;
@@ -49,7 +48,7 @@ public class DisplayText implements IDisplayText {
 	public void createTextOnBlock(Block block, char symbol, Location targetLocation) {
 
 		if (!spawnDisplayText) {
-			if (QAConfig.DEBUG.getAsBoolean()) {
+			if (plugin.getConfigManager().getAsBoolean(ConfigKeys.DEBUG)) {
 				QAPlugin.getQALogger().info("display text spawn is cancel");
 			}
 			return;

@@ -1,5 +1,11 @@
 package ru.kredwi.qa.commands;
 
+import static ru.kredwi.qa.config.ConfigKeys.GAME_IS_CREATED;
+import static ru.kredwi.qa.config.ConfigKeys.IN_ARGUMENT_NEEDED_NUMBER;
+import static ru.kredwi.qa.config.ConfigKeys.IS_GAME_ALREADY_CREATED;
+import static ru.kredwi.qa.config.ConfigKeys.YOU_ALREADY_CREATE_YOUR_GAME;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -7,31 +13,29 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import ru.kredwi.qa.QAPlugin;
 import ru.kredwi.qa.commands.base.CommandAbstract;
 import ru.kredwi.qa.commands.base.ICommandController;
-import ru.kredwi.qa.config.QAConfig;
+import ru.kredwi.qa.config.ConfigAs;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.impl.Game;
-import ru.kredwi.qa.sql.SQLManager;
 
 public class CreateGame extends CommandAbstract {
 	
-	private QAPlugin plugin;
+	private ConfigAs cm;
 	
-	public CreateGame(QAPlugin plugin) {
+	public CreateGame(ConfigAs cm) {
 		// plugin in super cast to IMainGame
 		super("creategame", 2, true, "qaplugin.commands.creategame");
-		this.plugin = plugin;
+		this.cm = cm;
 	}
 	
 	@Override
-	public void run(ICommandController commandController, SQLManager sqlManager, CommandSender sender, Command command, String[] args) {
+	public void run(ICommandController commandController, CommandSender sender, Command command, String[] args) {
 		int maxBlocks;
 		try {
 			maxBlocks = Math.abs(Integer.parseInt(args[1]));
 		} catch(NumberFormatException e) {
-			sender.sendMessage(QAConfig.IN_ARGUMENT_NEEDED_NUMBER.getAsString());
+			sender.sendMessage(cm.getAsString(IN_ARGUMENT_NEEDED_NUMBER));
 			return;
 		}
 		
@@ -40,23 +44,33 @@ public class CreateGame extends CommandAbstract {
 			
 			Player player = (Player)sender;
 			if (Objects.nonNull(commandController.getMainGame().getGameFromPlayer(player))) {
-				sender.sendMessage(QAConfig.YOU_ALREADY_CREATE_YOUR_GAME.getAsString());
+				sender.sendMessage(cm.getAsString(YOU_ALREADY_CREATE_YOUR_GAME));
 				return;
 			}
 			
-			commandController.getMainGame().addGame(new Game(args[0], player, maxBlocks, plugin));
+			commandController.getMainGame().addGame(new Game(args[0], player, maxBlocks,
+					commandController.getPlugin(), commandController.getSQLManager(), commandController.getMainGame()));
 			
-			sender.sendMessage(QAConfig.GAME_IS_CREATED.getAsString());
+			sender.sendMessage(cm.getAsString(GAME_IS_CREATED));
 			
 		} else {
-			sender.sendMessage(QAConfig.IS_GAME_ALREADY_CREATED.getAsString());
+			sender.sendMessage(cm.getAsString(IS_GAME_ALREADY_CREATED));
 			return;
 		}
 	}
 
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
-		// TODO Auto-generated method stub
+		if (args.length == 2) {
+			int i = 0;
+			List<String> numbers = new ArrayList<>(10);
+			
+			while (i > numbers.size()) {
+				numbers.set(i, String.valueOf(i));
+			}
+			
+			return numbers;
+		}
 		return null;
 	}
 

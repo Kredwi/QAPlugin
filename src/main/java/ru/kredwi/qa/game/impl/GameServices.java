@@ -1,17 +1,20 @@
 package ru.kredwi.qa.game.impl;
 
-import ru.kredwi.qa.QAPlugin;
+import ru.kredwi.qa.PluginWrapper;
+import ru.kredwi.qa.config.ConfigKeys;
 import ru.kredwi.qa.game.IBlockConstructionService;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IGameAnswer;
 import ru.kredwi.qa.game.IGamePlayer;
 import ru.kredwi.qa.game.IGameQuestionManager;
+import ru.kredwi.qa.game.IMainGame;
 import ru.kredwi.qa.game.IWinnerService;
 import ru.kredwi.qa.game.service.BlockConstructionService;
 import ru.kredwi.qa.game.service.GameAnswerService;
 import ru.kredwi.qa.game.service.GamePlayerService;
 import ru.kredwi.qa.game.service.QuestionService;
 import ru.kredwi.qa.game.service.WinnerService;
+import ru.kredwi.qa.sql.SQLManager;
 
 public class GameServices {
 	private final IGameQuestionManager questionManager;
@@ -20,12 +23,13 @@ public class GameServices {
 	private final IWinnerService winnerService;
 	private final IGamePlayer gamePlayer;
 	
-	public GameServices(IGame game, QAPlugin plugin) {
-		this.questionManager = new QuestionService(game,game);
-		this.gameAnswer = new GameAnswerService(game, plugin.getSqlManager());
+	public GameServices(PluginWrapper plugin, IMainGame gameManager, IGame game, SQLManager sqlManager) {
+		this.gameAnswer = new GameAnswerService(plugin.getConfigManager(), game, sqlManager);
 		this.blockConstructionService = new BlockConstructionService(game, plugin);
-		this.winnerService = new WinnerService(game, plugin.getSqlManager());
-		this.gamePlayer = new GamePlayerService();
+		this.winnerService = new WinnerService(plugin.getConfigManager(), game, sqlManager);
+		this.gamePlayer = new GamePlayerService(plugin.getConfigManager().getAsBoolean(ConfigKeys.DEBUG));
+		
+		this.questionManager = new QuestionService(plugin.getConfigManager(), getGamePlayer());
 	}
 
 	public IGameQuestionManager getQuestionManager() {

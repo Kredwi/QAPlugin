@@ -1,10 +1,13 @@
 package ru.kredwi.qa.commands.base;
 
-import org.bukkit.plugin.Plugin;
-
+import ru.kredwi.qa.PluginWrapper;
+import ru.kredwi.qa.config.ConfigAs;
 import ru.kredwi.qa.game.IMainGame;
+import ru.kredwi.qa.sql.SQLManager;
 
 public interface ICommandController {
-	public Plugin getPlugin();
+	public PluginWrapper getPlugin();
 	public IMainGame getMainGame();
+	public SQLManager getSQLManager();
+	public ConfigAs getConfigManager();
 }

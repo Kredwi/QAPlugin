@@ -1,5 +1,11 @@
 package ru.kredwi.qa.game.service;
 
+import static ru.kredwi.qa.config.ConfigKeys.BUILD_DELAY;
+import static ru.kredwi.qa.config.ConfigKeys.BUILD_PERIOD;
+import static ru.kredwi.qa.config.ConfigKeys.DEBUG;
+import static ru.kredwi.qa.config.ConfigKeys.ENABLED_BLOCKS;
+import static ru.kredwi.qa.config.ConfigKeys.SPAWN_DISPLAY_TEXTS;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -15,10 +21,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
+import ru.kredwi.qa.PluginWrapper;
 import ru.kredwi.qa.QAPlugin;
-import ru.kredwi.qa.config.QAConfig;
+import ru.kredwi.qa.config.ConfigAs;
 import ru.kredwi.qa.game.IBlockConstructionService;
 import ru.kredwi.qa.game.IGame;
+import ru.kredwi.qa.game.IMainGame;
 import ru.kredwi.qa.game.player.PlayerState;
 import ru.kredwi.qa.removers.IRemover;
 import ru.kredwi.qa.task.FillBlocksTask;
@@ -27,7 +35,9 @@ public class BlockConstructionService implements IBlockConstructionService{
 
 	private List<BukkitTask> buildTasks = new LinkedList<>();
 	
-	private QAPlugin plugin;
+	private PluginWrapper plugin;
+	private IMainGame gameManager;
+	private ConfigAs cm;
 	
 	private int buildCompleted =1;
 	
@@ -36,9 +46,11 @@ public class BlockConstructionService implements IBlockConstructionService{
 	
 	private IGame game;
 	
-	public BlockConstructionService(IGame game, QAPlugin plugin) {
+	public BlockConstructionService(IGame game, PluginWrapper plugin) {
 		this.game = game;
 		this.plugin = plugin;
+		this.gameManager = plugin.getGameManager();
+		this.cm = plugin.getConfigManager();
 		
 		Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> 
 			this.sequenceBlockData = loadBlockData().toArray(new BlockData[0]));
@@ -51,14 +63,14 @@ public class BlockConstructionService implements IBlockConstructionService{
 
 		state.addBuildedBlock(buildBlock);
 		
-		FillBlocksTask fbt = new FillBlocksTask(plugin, state.getLocaton(),
+		FillBlocksTask fbt = new FillBlocksTask(plugin, gameManager, state.getLocaton(),
 				getDirection(state.getLocaton()), game, player, buildBlock,
-				!isInit ? QAConfig.SPAWN_DISPLAY_TEXTS.getAsBoolean() : isInit);
+				!isInit ? cm.getAsBoolean(SPAWN_DISPLAY_TEXTS) : isInit);
 		
 		getBuildedTasks().add(fbt
 			.runTaskTimerAsynchronously(plugin,
-					QAConfig.BUILD_DELAY.getAsInt(),
-					QAConfig.BUILD_PERIOD.getAsInt()));
+					cm.getAsInt(BUILD_DELAY),
+					cm.getAsInt(BUILD_PERIOD)));
 	}
 	
 	private Vector getDirection(Location targetLocation) {
@@ -83,7 +95,7 @@ public class BlockConstructionService implements IBlockConstructionService{
 	}
 	
 	private List<BlockData> loadBlockData() {
-		List<String> enabledBlocks = QAConfig.ENABLED_BLOCKS.getAsStringList();
+		List<String> enabledBlocks = cm.getAsStringList(ENABLED_BLOCKS);
 		List<BlockData> blockDataList = new ArrayList<>();
 		for (String blockName : enabledBlocks) {
 			try {
@@ -91,7 +103,7 @@ public class BlockConstructionService implements IBlockConstructionService{
 				Material material = Material.valueOf(blockName);
 				
 				blockDataList.add(material.createBlockData());
-				if (QAConfig.DEBUG.getAsBoolean()) {
+				if (cm.getAsBoolean(DEBUG)) {
 					QAPlugin.getQALogger().info(material.name() + " added to pool");
 				}
 			} catch (IllegalArgumentException e) {
@@ -124,7 +136,7 @@ public class BlockConstructionService implements IBlockConstructionService{
 	public Set<IRemover> getSummaryBuildedBlocks() {
 		Set<IRemover> blocks = new HashSet<>();
 		
-		for (PlayerState state : game.getStates()) {
+		for (PlayerState state : game.getPlayerService().getStates()) {
 			blocks.addAll(state.getPlayerBuildedBlocks());
 		}
 		
@@ -149,7 +161,7 @@ public class BlockConstructionService implements IBlockConstructionService{
 	@Override
 	public BlockData getRandomBlockData() {
 		if (Objects.isNull(sequenceBlockData)) {
-			if (QAConfig.DEBUG.getAsBoolean()) {
+			if (cm.getAsBoolean(DEBUG)) {
 				QAPlugin.getQALogger().warning("sequenceBlockData IS NOT INITILIZE. Used default BLACK_CONCRETE.");
 			}
 			return Material.BLACK_CONCRETE.createBlockData();

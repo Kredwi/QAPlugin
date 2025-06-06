@@ -1,30 +1,27 @@
 package ru.kredwi.qa;
 
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import ru.kredwi.qa.commands.base.CommandController;
-import ru.kredwi.qa.config.QAConfig;
+import ru.kredwi.qa.config.ConfigAs;
+import ru.kredwi.qa.config.ConfigKeys;
+import ru.kredwi.qa.config.impl.ConfigManager;
 import ru.kredwi.qa.event.FireworkDamageListener;
 import ru.kredwi.qa.event.OwnerLeftTheGame;
-import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IMainGame;
-import ru.kredwi.qa.game.request.GameRequestManager;
+import ru.kredwi.qa.game.impl.GameManager;
 import ru.kredwi.qa.sql.SQLManager;
 
 /**
  * Main plugin and game class
  * @author Kredwi
  * */
-public class QAPlugin extends JavaPlugin implements IMainGame {
+public class QAPlugin extends JavaPlugin implements PluginWrapper {
 	
 	public static final Random RANDOM = new Random();
 	
@@ -32,20 +29,25 @@ public class QAPlugin extends JavaPlugin implements IMainGame {
 	 * config version for validate configs
 	 * @author Kredwi
 	 * */
-	private static final double NEED_CONFIG_VERSION = 2.4;
-	
-	private final GameRequestManager gameRequestManager = new GameRequestManager(this);
-	
-	private final CommandController commandController = new CommandController(this);
-	
-	private final SQLManager sqlManager = new SQLManager();
+	private static final double NEED_CONFIG_VERSION = 2.5;
 	
 	private static Logger logger = null;
 	
-	// key: Player Name value: Game name
-	private Map<String, String> connectedGames = new HashMap<>();
+	private CommandController commandController;
+
+	private ConfigAs configManager;
 	
-	private Map<String, IGame> games = new HashMap<>();
+	private IMainGame gameManager;
+	
+	private SQLManager sqlManager;
+	
+	@Override
+	public void onLoad() {
+		this.configManager = new ConfigManager(getConfig());
+		this.gameManager = new GameManager(configManager);
+		this.sqlManager = new SQLManager(configManager);
+		this.commandController = new CommandController(this);
+	}
 	
 	@Override
 	public void onEnable() {
@@ -54,7 +56,7 @@ public class QAPlugin extends JavaPlugin implements IMainGame {
 		
 		saveDefaultConfig();
 		
-		if (QAConfig.VERSION.getAsDouble() != NEED_CONFIG_VERSION) {
+		if (configManager.getAsDouble(ConfigKeys.VERSION) != NEED_CONFIG_VERSION) {
 			for (int i = 0; i < 10; i++) {
 				logger.info("THE CONFIG VERSION IS NOT SUITABLE FOR THIS VERSION OF THE PLUGIN!!!! DELETE config.yml ON THE Plugins/QAPlugin PATH, AND RESTART THE SERVER");
 			}
@@ -62,7 +64,7 @@ public class QAPlugin extends JavaPlugin implements IMainGame {
 			return;
 		}
 		
-		if (QAConfig.DB_ENABLE.getAsBoolean()) {
+		if (configManager.getAsBoolean(ConfigKeys.DB_ENABLE)) {
 			try {
 				sqlManager.connect();
 				sqlManager.createTables();
@@ -74,7 +76,7 @@ public class QAPlugin extends JavaPlugin implements IMainGame {
 		
 		commandController.start();
 		
-		Bukkit.getPluginManager().registerEvents(new OwnerLeftTheGame(this), this);
+		Bukkit.getPluginManager().registerEvents(new OwnerLeftTheGame(configManager, gameManager), this);
 		Bukkit.getPluginManager().registerEvents(new FireworkDamageListener(), this);
 	}
 	
@@ -88,10 +90,10 @@ public class QAPlugin extends JavaPlugin implements IMainGame {
 	 * */
 	@Override
 	public void onDisable() {
-		boolean deleteBlocks = QAConfig.DELETE_BLOCKS_WHEN_DISABLE.getAsBoolean();
+		boolean deleteBlocks = configManager.getAsBoolean(ConfigKeys.DELETE_BLOCKS_WHEN_DISABLE);
 		if (deleteBlocks) {
-			games.entrySet().removeIf(g -> {
-				g.getValue().getSummaryBuildedBlocks()
+			gameManager.getGames().removeIf(g -> {
+				g.getBlockConstruction().getSummaryBuildedBlocks()
 				.removeIf((b -> {
 					b.remove();
 					return true;
@@ -99,68 +101,36 @@ public class QAPlugin extends JavaPlugin implements IMainGame {
 				return true;
 			});	
 		}
-		if (QAConfig.DB_ENABLE.getAsBoolean()) {
+		if (configManager.getAsBoolean(ConfigKeys.DB_ENABLE)) {
 			try {
 				sqlManager.disconnect();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
 		}
-	}
-	
-	/**
-	 * Method delete games and connected players to this game
-	 * @param gameName name of game
-	 * @return <i>true</i> if game is deleted
-	 * @author Kredwi
-	 * */
-	@Override
-	public boolean removeGameWithName(String gameName) {
-		IGame game = games.remove(gameName.trim().toLowerCase());
-		boolean gameIsExists = game != null;
 		
-		if (gameIsExists) {
-			game.resetAnwserCount();
-			game.resetBuildComplete();
-			game.deleteBuildedBlocks();
-		}
-		
-		boolean connectIsRemoved = connectedGames.entrySet()
-			.removeIf((e) -> e.getValue().equals(gameName.trim().toLowerCase()));
-		return connectIsRemoved && gameIsExists;
+		this.configManager = null;
+		this.commandController = null;
+		this.gameManager = null;
+		this.sqlManager = null;
 	}
 	
 	@Override
-	public IGame getGame(String gameName) {
-		return gameName == null ? null : games.get(gameName.trim().toLowerCase());
-	}
-	@Override
-	public void addGame(IGame game) {
-		this.games.put(game.getGameInfo().name(), game);
-	}
-	@Override
-	public void connectPlayerToGame(Player player, IGame game) {
-		connectedGames.put(player.getName(), game.getGameInfo().name());
-	}
-	@Override
-	public IGame getGameFromPlayer(Player player) {
-		return getGame(connectedGames.get(player.getName()));
-	}
-	@Override
-	public Set<String> getNamesFromGames() {
-		return games.keySet();
+	public SQLManager getSqlManager() {
+		return sqlManager;
 	}
 
 	@Override
-	public GameRequestManager getGameRequestManager() {
-		return gameRequestManager;
+	public IMainGame getGameManager() {
+		return gameManager;
+	}
+
+	@Override
+	public ConfigAs getConfigManager() {
+		return configManager;
 	}
 	
 	public static Logger getQALogger() {
 		return logger;
-	}
-
-	public SQLManager getSqlManager() {
-		return sqlManager;
 	}
  }

@@ -1,5 +1,9 @@
 package ru.kredwi.qa.commands;
 
+import static ru.kredwi.qa.config.ConfigKeys.GAME_NOT_FOUND;
+import static ru.kredwi.qa.config.ConfigKeys.IN_THE_GAME_NOT_FOUND_PATHS;
+import static ru.kredwi.qa.config.ConfigKeys.IS_COMMAND_ONLY_FOR_GAME_OWNER;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -11,10 +15,9 @@ import org.bukkit.entity.Player;
 
 import ru.kredwi.qa.commands.base.CommandAbstract;
 import ru.kredwi.qa.commands.base.ICommandController;
-import ru.kredwi.qa.config.QAConfig;
+import ru.kredwi.qa.config.ConfigAs;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IMainGame;
-import ru.kredwi.qa.sql.SQLManager;
 
 /**
  * Initializes the game by performing the following actions:
@@ -30,37 +33,42 @@ import ru.kredwi.qa.sql.SQLManager;
  */
 public class StartGame extends CommandAbstract {
 
+	private ConfigAs cm;
 	private IMainGame mainGame;
 	
-	public StartGame(IMainGame mainGame) {
+	public StartGame(IMainGame mainGame, ConfigAs cm) {
 		super("startgame", 1, true, "qaplugin.commands.startgame");
 		this.mainGame = mainGame;
+		this.cm = cm;
 	}
 	
 	@Override
-	public void run(ICommandController commandController, SQLManager sqlManager, CommandSender sender, Command command, String[] args) {
+	public void run(ICommandController commandController, CommandSender sender, Command command, String[] args) {
 		
 		IGame game = commandController.getMainGame().getGame(args[0]);
 		
 		if (Objects.isNull(game)) {
-			sender.sendMessage(QAConfig.GAME_NOT_FOUND.getAsString());
+			sender.sendMessage(cm.getAsString(GAME_NOT_FOUND));
 			return;
 		}
 		
 		if (!game.getGameInfo().isPlayerOwner((Player) sender)) {
-			sender.sendMessage(QAConfig.IS_COMMAND_ONLY_FOR_GAME_OWNER.getAsString());
+			sender.sendMessage(cm.getAsString(IS_COMMAND_ONLY_FOR_GAME_OWNER));
 			return;
 		}
 		
-		Set<Player> players = game.getPlayers();
+		Set<Player> players = game.getPlayerService().getPlayers();
 		
 		if (players.isEmpty()) {
-			sender.sendMessage(QAConfig.IN_THE_GAME_NOT_FOUND_PATHS.getAsString());
+			sender.sendMessage(cm.getAsString(IN_THE_GAME_NOT_FOUND_PATHS));
 			return;
 		}
+		
+		game.getQuestionManager().loadQuestions();
+		
 		game.setStart(true);
 		// INIT BLOCKS
-		game.processPlayerAnswers(true);
+		game.getGameAnswer().processPlayerAnswers(true);
 		
 		return;
 	}

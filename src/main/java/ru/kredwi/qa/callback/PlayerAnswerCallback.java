@@ -1,5 +1,11 @@
 package ru.kredwi.qa.callback;
 
+import static ru.kredwi.qa.config.ConfigKeys.ALREADY_ANSWER;
+import static ru.kredwi.qa.config.ConfigKeys.GAME_IS_NOT_STARTED;
+import static ru.kredwi.qa.config.ConfigKeys.PLAYER_ANSWER;
+import static ru.kredwi.qa.config.ConfigKeys.YOU_ANSWER;
+import static ru.kredwi.qa.config.ConfigKeys.YOU_NOT_CONNECTED_TO_GAME;
+
 import java.text.MessageFormat;
 import java.util.Objects;
 import java.util.Set;
@@ -8,23 +14,24 @@ import java.util.function.Consumer;
 import org.bukkit.entity.Player;
 
 import ru.kredwi.qa.callback.data.PlayerAnswerData;
-import ru.kredwi.qa.config.QAConfig;
+import ru.kredwi.qa.config.ConfigAs;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IMainGame;
 import ru.kredwi.qa.game.player.PlayerState;
 
 public class PlayerAnswerCallback implements Consumer<PlayerAnswerData> {
 	
+	private ConfigAs cm;
 	private IMainGame mainGame;
-	
 
-	public PlayerAnswerCallback(IMainGame mainGame) {
+	public PlayerAnswerCallback(IMainGame mainGame, ConfigAs cm) {
 		this.mainGame = mainGame;
+		this.cm = cm;
 	}
 	
 	private void notifyPlayers(Player player, Set<Player> sendTo) {
 		sendTo.forEach(to -> 
-			to.sendMessage(MessageFormat.format(QAConfig.PLAYER_ANSWER.getAsString(),
+			to.sendMessage(MessageFormat.format(cm.getAsString(PLAYER_ANSWER),
 					player.getName())));
 	}
 
@@ -33,39 +40,39 @@ public class PlayerAnswerCallback implements Consumer<PlayerAnswerData> {
 		IGame game = mainGame.getGameFromPlayer(data.player());
 		
 		if (Objects.isNull(game)) {
-			data.player().sendMessage(QAConfig.YOU_NOT_CONNECTED_TO_GAME.getAsString());
+			data.player().sendMessage(cm.getAsString(YOU_NOT_CONNECTED_TO_GAME));
 			return;
 		}
 		
 		if (!game.isStart()) {
-			data.player().sendMessage(QAConfig.GAME_IS_NOT_STARTED.getAsString());
+			data.player().sendMessage(cm.getAsString(GAME_IS_NOT_STARTED));
 			return;
 		}
 		
-		PlayerState playerState = game.getPlayerState(data.player());
+		PlayerState playerState = game.getPlayerService().getPlayerState(data.player());
 		
 		if (Objects.isNull(playerState)) {
-			data.player().sendMessage(QAConfig.YOU_NOT_CONNECTED_TO_GAME.getAsString());
+			data.player().sendMessage(cm.getAsString(YOU_NOT_CONNECTED_TO_GAME));
 			return;
 		}
 		
 		if (playerState.isAnswered()) {
-			data.player().sendMessage(QAConfig.ALREADY_ANSWER.getAsString());
+			data.player().sendMessage(cm.getAsString(ALREADY_ANSWER));
 			return;
 		}
 		playerState.setAnswer(true);
 		
-		data.player().sendMessage(MessageFormat.format(QAConfig.YOU_ANSWER.getAsString(), data.text()));
+		data.player().sendMessage(MessageFormat.format(cm.getAsString(YOU_ANSWER), data.text()));
 		
-		game.addAnwserCount();
+		game.getGameAnswer().addAnwserCount();
 		
 		playerState.setSymbols(data.text().toCharArray());
 		playerState.setAnswerCount(data.text().length());
 		
-		notifyPlayers(data.player(), game.getPlayers());
+		notifyPlayers(data.player(), game.getPlayerService().getPlayers());
 		
-		if (game.isAllAnswered()) {
-			game.processPlayerAnswers(false);
+		if (game.getGameAnswer().isAllAnswered()) {
+			game.getGameAnswer().processPlayerAnswers(false);
 		}	
 	}
 }

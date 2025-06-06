@@ -1,5 +1,10 @@
 package ru.kredwi.qa.commands;
 
+import static ru.kredwi.qa.config.ConfigKeys.GAME_DELETE;
+import static ru.kredwi.qa.config.ConfigKeys.GAME_NOT_FOUND;
+import static ru.kredwi.qa.config.ConfigKeys.YOU_DONT_GAME_OWNER;
+import static ru.kredwi.qa.config.ConfigKeys.YOU_NOT_CONNECTED_TO_GAME;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -11,22 +16,23 @@ import org.bukkit.entity.Player;
 
 import ru.kredwi.qa.commands.base.CommandAbstract;
 import ru.kredwi.qa.commands.base.ICommandController;
-import ru.kredwi.qa.config.QAConfig;
+import ru.kredwi.qa.config.ConfigAs;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IMainGame;
-import ru.kredwi.qa.sql.SQLManager;
 
 public class DeleteGame extends CommandAbstract {
 
+	private ConfigAs cm;
 	private IMainGame mainGame;
 	
-	public DeleteGame(IMainGame mainGame) {
+	public DeleteGame(IMainGame mainGame, ConfigAs cm) {
 		super("deletegame", 0, false, "qaplugin.commands.deletegame");
 		this.mainGame=mainGame;
+		this.cm = cm;
 	}
 
 	@Override
-	public void run(ICommandController commandController, SQLManager sqlManager, CommandSender sender, Command command, String[] args) {
+	public void run(ICommandController commandController, CommandSender sender, Command command, String[] args) {
 		
 		IGame game = null;
 		
@@ -35,7 +41,7 @@ public class DeleteGame extends CommandAbstract {
 		}
 		
 		if (args.length == 0 && Objects.isNull(game)) {
-			sender.sendMessage(QAConfig.YOU_NOT_CONNECTED_TO_GAME.getAsString());
+			sender.sendMessage(cm.getAsString(YOU_NOT_CONNECTED_TO_GAME));
 			return;
 		}
 		
@@ -44,19 +50,19 @@ public class DeleteGame extends CommandAbstract {
 		}
 		
 		if (Objects.isNull(game)) {
-			sender.sendMessage(QAConfig.GAME_NOT_FOUND.getAsString());
+			sender.sendMessage(cm.getAsString(GAME_NOT_FOUND));
 			return;
 		}
 		
 		if (!(sender instanceof ConsoleCommandSender) && !game.getGameInfo().isPlayerOwner((Player) sender)) {
-			sender.sendMessage(QAConfig.YOU_DONT_GAME_OWNER.getAsString());
+			sender.sendMessage(cm.getAsString(YOU_DONT_GAME_OWNER));
 			return;
 		}
 		
 		
 		commandController.getMainGame().removeGameWithName(game.getGameInfo().name());
 		
-		sender.sendMessage(QAConfig.GAME_DELETE.getAsString());
+		sender.sendMessage(cm.getAsString(GAME_DELETE));
 	}
 
 	@Override

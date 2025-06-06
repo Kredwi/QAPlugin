@@ -1,5 +1,12 @@
 package ru.kredwi.qa.game.request;
 
+import static ru.kredwi.qa.config.ConfigKeys.GAME_ADD_PLAYER_ARELADY_STARTED;
+import static ru.kredwi.qa.config.ConfigKeys.GAME_NOT_FOUND;
+import static ru.kredwi.qa.config.ConfigKeys.IS_PLAYER_IS_NOT_FOUND;
+import static ru.kredwi.qa.config.ConfigKeys.MAX_REQUESTS_SIZE;
+import static ru.kredwi.qa.config.ConfigKeys.PATH_CREATED;
+import static ru.kredwi.qa.config.ConfigKeys.PLAYER_ACCEPTED_REQUESTS;
+
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,7 +21,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import ru.kredwi.qa.QAPlugin;
-import ru.kredwi.qa.config.QAConfig;
+import ru.kredwi.qa.config.ConfigAs;
 import ru.kredwi.qa.exceptions.InvalidRequestData;
 import ru.kredwi.qa.exceptions.RequestsOutOfBounds;
 import ru.kredwi.qa.game.IGame;
@@ -28,10 +35,11 @@ public class GameRequestManager {
 	// ONE UUID IS PLAYER UUID
 	// TWO SET<RequestInfo> IF LIST OF REQUESTED GAMES
 	private Map<UUID, Set<RequestInfo>> userRequests = new HashMap<>();
+	private ConfigAs cm;
 	
-	
-	public GameRequestManager(IMainGame mainGame) {
+	public GameRequestManager(ConfigAs cm, IMainGame mainGame) {
 		this.mainGame = mainGame;
+		this.cm = cm;
 	}
 	
 	public void acceptGame(UUID playerUUID, String gameName) {
@@ -83,11 +91,11 @@ public class GameRequestManager {
 		
 		if (Objects.nonNull(game)) {
 			
-			if (game.isStart()) sender.sendMessage(QAConfig.GAME_ADD_PLAYER_ARELADY_STARTED.getAsString());
+			if (game.isStart()) sender.sendMessage(cm.getAsString(GAME_ADD_PLAYER_ARELADY_STARTED));
 			
 			Player otherPlayer = Bukkit.getPlayer(playerName);
 			if (Objects.isNull(otherPlayer)) {
-				sender.sendMessage(QAConfig.IS_PLAYER_IS_NOT_FOUND.getAsString());
+				sender.sendMessage(cm.getAsString(IS_PLAYER_IS_NOT_FOUND));
 				return;
 			}
 			
@@ -95,12 +103,12 @@ public class GameRequestManager {
 			mainGame.connectPlayerToGame(otherPlayer, game);
 			
 			if (game.getGameInfo().isPlayerOwner(otherPlayer)) {
-				sender.sendMessage(QAConfig.PATH_CREATED.getAsString());
+				sender.sendMessage(cm.getAsString(PATH_CREATED));
 			} else {
-				sender.sendMessage(MessageFormat.format(QAConfig.PLAYER_ACCEPTED_REQUESTS.getAsString(), otherPlayer.getName()));
+				sender.sendMessage(MessageFormat.format(cm.getAsString(PLAYER_ACCEPTED_REQUESTS), otherPlayer.getName()));
 			}
 			
-		} else sender.sendMessage(QAConfig.GAME_NOT_FOUND.getAsString());
+		} else sender.sendMessage(cm.getAsString(GAME_NOT_FOUND));
 	}
 	
 	public void denyGame(UUID playerUUID, String gameName) throws InvalidRequestData {
@@ -128,14 +136,15 @@ public class GameRequestManager {
 		
 		requests.add(new RequestInfo(gameName, sender, sender.getLocation().clone()));
 		
-		if (requests.size() >= QAConfig.MAX_REQUESTS_SIZE.getAsInt())
+		if (requests.size() >= cm.getAsInt(MAX_REQUESTS_SIZE))
 			throw new RequestsOutOfBounds("Game requests out of bounds");
 		
 		this.userRequests.put(playerUUID, requests);
 	}
 	
 	private void addPlayer(Player player, Location location, IGame game) {
-		game.addPath(player, new PlayerState(location.clone().add(0,-1,0), game.getRandomBlockData()));
+		game.getPlayerService().addPath(player, new PlayerState(location.clone().add(0,-1,0),
+				game.getBlockConstruction().getRandomBlockData()));
 	}
 	
 	public Set<RequestInfo> getUserRequests(UUID playerUUID) {

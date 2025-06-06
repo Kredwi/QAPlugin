@@ -1,5 +1,8 @@
 package ru.kredwi.qa.commands;
 
+import static ru.kredwi.qa.config.ConfigKeys.DEBUG;
+import static ru.kredwi.qa.config.ConfigKeys.THIS_GAME_IS_NOT_REQUESTED_YOU;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -12,23 +15,24 @@ import org.bukkit.entity.Player;
 import ru.kredwi.qa.QAPlugin;
 import ru.kredwi.qa.commands.base.CommandAbstract;
 import ru.kredwi.qa.commands.base.ICommandController;
-import ru.kredwi.qa.config.QAConfig;
+import ru.kredwi.qa.config.ConfigAs;
 import ru.kredwi.qa.exceptions.InvalidRequestData;
 import ru.kredwi.qa.game.IMainGame;
 import ru.kredwi.qa.game.request.RequestInfo;
-import ru.kredwi.qa.sql.SQLManager;
 
 public class DenyGame extends CommandAbstract {
 
+	private ConfigAs cm;
 	private IMainGame mainGame;
 	
-	public DenyGame(IMainGame mainGame) {
+	public DenyGame(IMainGame mainGame, ConfigAs cm) {
 		super("denygame", 1, true, "qaplugin.commands.denygame");
 		this.mainGame = mainGame;
+		this.cm = cm;
 	}
 
 	@Override
-	public void run(ICommandController commandController, SQLManager sqlManager, CommandSender sender, Command command, String[] args) {
+	public void run(ICommandController commandController, CommandSender sender, Command command, String[] args) {
 		try {
 			
 			commandController.getMainGame().getGameRequestManager()
@@ -36,10 +40,10 @@ public class DenyGame extends CommandAbstract {
 			
 		} catch (InvalidRequestData e) {
 			
-			sender.sendMessage(QAConfig.THIS_GAME_IS_NOT_REQUESTED_YOU.getAsString());
+			sender.sendMessage(cm.getAsString(THIS_GAME_IS_NOT_REQUESTED_YOU));
 			
-			if (QAConfig.DEBUG.getAsBoolean()) {
-				QAPlugin.getQALogger().info(e.getMessage());
+			if (cm.getAsBoolean(DEBUG)) {
+				QAPlugin.getQALogger().info(e::getMessage);
 			}
 			
 		}
@@ -55,7 +59,7 @@ public class DenyGame extends CommandAbstract {
 			return Objects.isNull(requests)
 					? Collections.emptyList()
 					: requests.stream()
-					.map(e -> e.gameName())
+					.map(RequestInfo::gameName)
 					.toList();
 			
 		}

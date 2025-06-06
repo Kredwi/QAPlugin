@@ -1,5 +1,13 @@
 package ru.kredwi.qa.commands.base;
 
+import static ru.kredwi.qa.config.ConfigKeys.COMMAND_ONLY_FOR_PLAYERS;
+import static ru.kredwi.qa.config.ConfigKeys.DB_ENABLE;
+import static ru.kredwi.qa.config.ConfigKeys.DEBUG;
+import static ru.kredwi.qa.config.ConfigKeys.MANY_GAME_REQUESTS;
+import static ru.kredwi.qa.config.ConfigKeys.NOT_HAVE_PERMISSION;
+import static ru.kredwi.qa.config.ConfigKeys.NO_ARGS;
+import static ru.kredwi.qa.config.ConfigKeys.UNKNOWN_ERROR;
+
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,8 +19,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 
+import ru.kredwi.qa.PluginWrapper;
 import ru.kredwi.qa.QAPlugin;
 import ru.kredwi.qa.commands.Answer;
 import ru.kredwi.qa.commands.ConfirmGame;
@@ -20,10 +28,10 @@ import ru.kredwi.qa.commands.CreateGame;
 import ru.kredwi.qa.commands.DeleteGame;
 import ru.kredwi.qa.commands.DeletePlayer;
 import ru.kredwi.qa.commands.DenyGame;
+import ru.kredwi.qa.commands.NewQuestion;
 import ru.kredwi.qa.commands.Path;
-import ru.kredwi.qa.commands.Question;
 import ru.kredwi.qa.commands.StartGame;
-import ru.kredwi.qa.config.QAConfig;
+import ru.kredwi.qa.config.ConfigAs;
 import ru.kredwi.qa.exceptions.QAException;
 import ru.kredwi.qa.exceptions.RequestsOutOfBounds;
 import ru.kredwi.qa.game.IMainGame;
@@ -31,11 +39,17 @@ import ru.kredwi.qa.sql.SQLManager;
 
 public class CommandController implements CommandExecutor, ICommandController {
 
-	private Map<String, ICommand> commands = new HashMap<>(); 
+	private Map<String, ICommand> commands = new HashMap<>();
+	private SQLManager sqlManager;
 	private QAPlugin plugin;
+	private IMainGame gameManager;
+	private ConfigAs cm;
 	
 	public CommandController(QAPlugin plugin) {
 		this.plugin=plugin;
+		this.sqlManager = plugin.getSqlManager();
+		this.gameManager = plugin.getGameManager();
+		this.cm = plugin.getConfigManager();
 	}
 	
 	public void start() {
@@ -46,16 +60,14 @@ public class CommandController implements CommandExecutor, ICommandController {
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		try {
 			
-			SQLManager manager = plugin.getSqlManager();
-			
-			if (QAConfig.DB_ENABLE.getAsBoolean() && manager.connectionNonExists()) {
+			if (cm.getAsBoolean(DB_ENABLE) && sqlManager.connectionNonExists()) {
 				throw new SQLException("SQL Connection is not setted. Please reload server or create new issue in github.");
 			}
 			
 			ICommand command = commands.get(cmd.getName());
 			
 			if (Objects.isNull(command)) {
-				if (QAConfig.DEBUG.getAsBoolean()) {
+				if (cm.getAsBoolean(DEBUG)) {
 					QAPlugin.getQALogger().severe("ERROR OF COMMAND EXECUTOR FOR " + cmd.getName() + "IS NULL");
 				}
 				sender.sendMessage("Command executor is not found");
@@ -63,30 +75,30 @@ public class CommandController implements CommandExecutor, ICommandController {
 			}
 			
 			if (command.isCommandOnlyForPlayer() && !(sender instanceof Player)) {
-				sender.sendMessage(QAConfig.COMMAND_ONLY_FOR_PLAYERS.getAsString());
+				sender.sendMessage(cm.getAsString(COMMAND_ONLY_FOR_PLAYERS));
 				return true;
 			}
 			
 			if (!command.isHaveNeedsPermissions(sender)) {
-				sender.sendMessage(QAConfig.NOT_HAVE_PERMISSION.getAsString());
+				sender.sendMessage(cm.getAsString(NOT_HAVE_PERMISSION));
 				return true;
 			}
 
 			if (!command.isSkipCheckArgs() && !(args.length >= command.needArgs())) {
-				sender.sendMessage(QAConfig.NO_ARGS.getAsString());
+				sender.sendMessage(cm.getAsString(NO_ARGS));
 				return true;
 			}
 			
-			command.run(this, manager, sender, cmd, args);
+			command.run(this, sender, cmd, args);
 			
 		} catch (RequestsOutOfBounds e) {
-			sender.sendMessage(QAConfig.MANY_GAME_REQUESTS.getAsString());
+			sender.sendMessage(cm.getAsString(MANY_GAME_REQUESTS));
 		} catch (QAException e) {
 			e.printStackTrace();
-			sender.sendMessage(QAConfig.UNKNOWN_ERROR.getAsString());
+			sender.sendMessage(cm.getAsString(UNKNOWN_ERROR));
 		} catch (SQLException e) {
 			e.printStackTrace();
-			sender.sendMessage(QAConfig.UNKNOWN_ERROR.getAsString());
+			sender.sendMessage(cm.getAsString(UNKNOWN_ERROR));
 		}
 		return true;
 	}
@@ -94,9 +106,9 @@ public class CommandController implements CommandExecutor, ICommandController {
 	private void registerCommands() {
 		try {
 			ICommand[] commandInstaces = new ICommand[] {
-					new Question(plugin), new Answer(plugin), new Path(plugin),
-					new CreateGame(plugin), new StartGame(plugin), new DeleteGame(plugin),
-					new DeletePlayer(plugin), new ConfirmGame(plugin), new DenyGame(plugin)
+					new NewQuestion(cm), new Answer(cm, gameManager), new Path(gameManager, cm),
+					new CreateGame(cm), new StartGame(gameManager, cm), new DeleteGame(gameManager, cm),
+					new DeletePlayer(gameManager, cm), new ConfirmGame(cm, gameManager), new DenyGame(gameManager, cm)
 			};
 			
 			for (ICommand commandInstance : commandInstaces) {
@@ -126,13 +138,23 @@ public class CommandController implements CommandExecutor, ICommandController {
 	}
 
 	@Override
-	public Plugin getPlugin() {
+	public PluginWrapper getPlugin() {
 		return plugin;
 	}
 
 	@Override
 	public IMainGame getMainGame() {
-		return plugin;
+		return gameManager;
+	}
+
+	@Override
+	public SQLManager getSQLManager() {
+		return sqlManager;
+	}
+
+	@Override
+	public ConfigAs getConfigManager() {
+		return plugin.getConfigManager();
 	}
 
 }

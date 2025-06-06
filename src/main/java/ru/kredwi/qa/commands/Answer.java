@@ -1,5 +1,11 @@
 package ru.kredwi.qa.commands;
 
+import static ru.kredwi.qa.config.ConfigKeys.IN_INPUT_DATA_LITTLE_SYMBOLS;
+import static ru.kredwi.qa.config.ConfigKeys.IN_INPUT_DATA_OVER_SYMBOLS;
+import static ru.kredwi.qa.config.ConfigKeys.MAX_SYMBOL_IN_ANSWER;
+import static ru.kredwi.qa.config.ConfigKeys.MIN_SYMBOL_IN_ANSWER;
+import static ru.kredwi.qa.config.ConfigKeys.NOT_HAVE_PERMISSION;
+
 import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.List;
@@ -13,39 +19,40 @@ import ru.kredwi.qa.callback.PlayerAnswerCallback;
 import ru.kredwi.qa.callback.data.PlayerAnswerData;
 import ru.kredwi.qa.commands.base.CommandAbstract;
 import ru.kredwi.qa.commands.base.ICommandController;
-import ru.kredwi.qa.config.QAConfig;
+import ru.kredwi.qa.config.ConfigAs;
 import ru.kredwi.qa.game.IMainGame;
-import ru.kredwi.qa.sql.SQLManager;
 
 public class Answer extends CommandAbstract{
 	
+	private ConfigAs cm;
 	private Consumer<PlayerAnswerData> callback;
 
-	public Answer(IMainGame mainGame) {
-		this(mainGame, new PlayerAnswerCallback(mainGame));
+	public Answer(ConfigAs configManager, IMainGame mainGame) {
+		this(configManager, mainGame, new PlayerAnswerCallback(mainGame, configManager));
 	}
 	
-	public Answer(IMainGame mainGame, Consumer<PlayerAnswerData> callback) {
+	public Answer(ConfigAs configManager, IMainGame mainGame, Consumer<PlayerAnswerData> callback) {
 		super("answer", false, "qaplugin.commands.answer");
+		this.cm = configManager;
 		this.callback = callback;
 	}
 	
 	@Override
-	public void run(ICommandController commandController, SQLManager sqlManager, CommandSender sender, Command cmd, String[] args) {
+	public void run(ICommandController commandController, CommandSender sender, Command cmd, String[] args) {
 		
 		if (!isHaveNeedsPermissions(sender)) {
-			sender.sendMessage(QAConfig.NOT_HAVE_PERMISSION.getAsString());
+			sender.sendMessage(cm.getAsString(NOT_HAVE_PERMISSION));
 			return;
 		}
 		
 		String text = args[0];
 		
-		int minSymbols = QAConfig.MIN_SYMBOL_IN_ANSWER.getAsInt();
-		int maxSymbols = QAConfig.MAX_SYMBOL_IN_ANSWER.getAsInt();
+		int minSymbols = cm.getAsInt(MIN_SYMBOL_IN_ANSWER);
+		int maxSymbols = cm.getAsInt(MAX_SYMBOL_IN_ANSWER);
 		
 		if (text.length() < minSymbols) {
 			String message = 
-					MessageFormat.format(QAConfig.IN_INPUT_DATA_LITTLE_SYMBOLS.getAsString(),
+					MessageFormat.format(cm.getAsString(IN_INPUT_DATA_LITTLE_SYMBOLS),
 							minSymbols, text.length());
 			sender.sendMessage(message);
 			return;
@@ -53,7 +60,7 @@ public class Answer extends CommandAbstract{
 		
 		if (text.length() > maxSymbols) {
 			String message = 
-					MessageFormat.format(QAConfig.IN_INPUT_DATA_OVER_SYMBOLS.getAsString(),
+					MessageFormat.format(cm.getAsString(IN_INPUT_DATA_OVER_SYMBOLS),
 							maxSymbols, text.length());
 			sender.sendMessage(message);
 			return;

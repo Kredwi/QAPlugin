@@ -37,6 +37,24 @@ The plugin settings are located in the `plugins/QAPlugin/config.yml` file. Basic
 - `spawn-display-texts` - Enables spawning of display texts around blocks (can cause high server load (**1** block = **5** entites of `DisplayText`))
 - `indestructible-block-encountered` - What to do if the block cannot be broken (paths cannot continue to be built because the block cannot be broken)
 
+- `end-game-winner-firework` - Сектор фейеверка который при завершении игры, у победителей появится врзыв фейеверка
+ - `enable - Включает данный эффект у побителей
+ - `flicker` - Set whether the firework effect should flicker.
+ - `trail` - Set whether the firework effect should have a trail.
+ - `type` - The type or shape of the effect.
+ - `colors` - Массив в массиве, который содержит rgb основных цветов для взрыва фейеверка
+ - `fades` - Массив в массиве, который содержит основные цвета для затухания фейеверка
+
+- `database`
+ - `enable` - enable using database
+ - `username` - username for database account
+ - `password` - password for database account
+ - `host` - host of database (ip)
+ - `port` - port of database
+ - `database` - database name for plugin
+
+*and other...*
+
 ### Why Spawn Display Texts not recommended?
 Because everything happens in one tick of the server, which means that 3 blocks are created (the main block and two perpendicular blocks on the left and right) in one tick of the server, and 5 objects are created on the same tick of the server. This can create a significant load on the server, especially if several players are playing at the same time. Therefore, we strongly recommend against enabling this feature.
 

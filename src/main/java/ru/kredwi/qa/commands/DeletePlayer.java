@@ -1,5 +1,10 @@
 package ru.kredwi.qa.commands;
 
+import static ru.kredwi.qa.config.ConfigKeys.GAME_NOT_FOUND;
+import static ru.kredwi.qa.config.ConfigKeys.IS_COMMAND_ONLY_FOR_GAME_OWNER;
+import static ru.kredwi.qa.config.ConfigKeys.IS_GAME_OWNER;
+import static ru.kredwi.qa.config.ConfigKeys.IS_PLAYER_IS_NOT_FOUND;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -12,24 +17,25 @@ import org.bukkit.entity.Player;
 
 import ru.kredwi.qa.commands.base.CommandAbstract;
 import ru.kredwi.qa.commands.base.ICommandController;
-import ru.kredwi.qa.config.QAConfig;
+import ru.kredwi.qa.config.ConfigAs;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IMainGame;
 import ru.kredwi.qa.game.player.PlayerState;
 import ru.kredwi.qa.removers.IRemover;
-import ru.kredwi.qa.sql.SQLManager;
 
 public class DeletePlayer extends CommandAbstract {
 	
+	private ConfigAs cm;
 	private IMainGame mainGame;
 	
-	public DeletePlayer(IMainGame mainGame) {
+	public DeletePlayer(IMainGame mainGame, ConfigAs cm) {
 		super("deleteplayer", 2, true, "qaplugin.commands.deleteplayer");
 		this.mainGame = mainGame;
+		this.cm = cm;
 	}
 
 	@Override
-	public void run(ICommandController commandController, SQLManager sqlManager, CommandSender sender,
+	public void run(ICommandController commandController, CommandSender sender,
 			Command command, String[] args) {
 		
 		String gameName = args[0];
@@ -38,12 +44,12 @@ public class DeletePlayer extends CommandAbstract {
 		IGame game = commandController.getMainGame().getGame(gameName);
 
 		if (Objects.isNull(game)) {
-			sender.sendMessage(QAConfig.GAME_NOT_FOUND.getAsString());
+			sender.sendMessage(cm.getAsString(GAME_NOT_FOUND));
 			return;
 		}
 		
 		if (!game.getGameInfo().isPlayerOwner((Player) sender)) {
-			sender.sendMessage(QAConfig.IS_COMMAND_ONLY_FOR_GAME_OWNER.getAsString());
+			sender.sendMessage(cm.getAsString(IS_COMMAND_ONLY_FOR_GAME_OWNER));
 			return;
 		}
 		
@@ -51,27 +57,26 @@ public class DeletePlayer extends CommandAbstract {
 		Player player = Bukkit.getPlayer(playerName);
 		
 		if (Objects.isNull(player)) {
-			player = game.getPlayer(playerName);
+			player = game.getPlayerService().getPlayer(playerName);
 			
 			if (Objects.isNull(player)) {
-				sender.sendMessage(QAConfig.IS_PLAYER_IS_NOT_FOUND.getAsString());
+				sender.sendMessage(cm.getAsString(IS_PLAYER_IS_NOT_FOUND));
 				return;
 			}
 			
 		}
 		
 		if (game.getGameInfo().isPlayerOwner(player)) {
-			sender.sendMessage(QAConfig.IS_GAME_OWNER.getAsString());;
+			sender.sendMessage(cm.getAsString(IS_GAME_OWNER));
 			return;
 		}
 		
-		PlayerState playerState = game.getPlayerState(player);
+		PlayerState playerState = game.getPlayerService().getPlayerState(player);
 		
-		for (IRemover remove : playerState.getPlayerBuildedBlocks()) {
-			remove.remove();
-		}
+		playerState.getPlayerBuildedBlocks()
+			.forEach(IRemover::remove);
 		
-		game.getPlayers().remove(player);
+		game.getPlayerService().getPlayers().remove(player);
 	}
 	
 	@Override
@@ -92,8 +97,8 @@ public class DeletePlayer extends CommandAbstract {
 				return Collections.emptyList();
 			}
 			
-			return game.getPlayers().stream()
-					.map(e -> e.getName())
+			return game.getPlayerService().getPlayers().stream()
+					.map(Player::getName)
 					.filter(e -> e.startsWith(args[1]))
 					.collect(Collectors.toList());
 		}

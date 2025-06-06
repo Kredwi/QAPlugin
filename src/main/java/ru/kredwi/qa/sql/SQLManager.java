@@ -1,5 +1,13 @@
 package ru.kredwi.qa.sql;
 
+import static ru.kredwi.qa.config.ConfigKeys.DB_DATABASE;
+import static ru.kredwi.qa.config.ConfigKeys.DB_ENABLE;
+import static ru.kredwi.qa.config.ConfigKeys.DB_HOST;
+import static ru.kredwi.qa.config.ConfigKeys.DB_PASSWORD;
+import static ru.kredwi.qa.config.ConfigKeys.DB_PORT;
+import static ru.kredwi.qa.config.ConfigKeys.DB_USERNAME;
+import static ru.kredwi.qa.config.ConfigKeys.DEBUG;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -9,7 +17,7 @@ import java.sql.Timestamp;
 import java.util.UUID;
 
 import ru.kredwi.qa.QAPlugin;
-import ru.kredwi.qa.config.QAConfig;
+import ru.kredwi.qa.config.ConfigAs;
 
 public class SQLManager implements DatabaseActions {
 	
@@ -20,7 +28,12 @@ public class SQLManager implements DatabaseActions {
 			+ ");";
 	
 	private Connection connection;
-
+	private ConfigAs cm;
+	
+	public SQLManager(ConfigAs cm) {
+		this.cm = cm;
+	}
+	
 	public void createTables() throws SQLException, ExceptionInInitializerError {
 		if (connectionNonExists()) {
 			throw new ExceptionInInitializerError("SQL Connection is not initilized.");
@@ -32,15 +45,15 @@ public class SQLManager implements DatabaseActions {
 	
 	public void connect() throws SQLException {
 
-		if (!QAConfig.DB_ENABLE.getAsBoolean()) return;
+		if (!cm.getAsBoolean(DB_ENABLE)) return;
 		
 		if (connectionNonExists()) {
 			
-			String host = QAConfig.DB_HOST.getAsString();
-			int port = QAConfig.DB_PORT.getAsInt();
-			String databaseName = QAConfig.DB_DATABASE.getAsString();
-			String username = QAConfig.DB_USERNAME.getAsString();
-			String password = QAConfig.DB_PASSWORD.getAsString();
+			String host = cm.getAsString(DB_HOST);
+			int port = cm.getAsInt(DB_PORT);
+			String databaseName = cm.getAsString(DB_DATABASE);
+			String username = cm.getAsString(DB_USERNAME);
+			String password = cm.getAsString(DB_PASSWORD);
 			
 			Connection newConnection = DriverManager.getConnection(
 					"jdbc:mysql://"+host+":"+port+"/" + databaseName,
@@ -58,20 +71,20 @@ public class SQLManager implements DatabaseActions {
 	
 	public boolean connectionExists() throws SQLException {
 		
-		if (!QAConfig.DB_ENABLE.getAsBoolean()) return false;
+		if (!cm.getAsBoolean(DB_ENABLE)) return false;
 		
 		return connection != null && !connection.isClosed();
 	}
 	
 	public boolean connectionNonExists() throws SQLException {
 		
-		if (!QAConfig.DB_ENABLE.getAsBoolean()) return false;
+		if (!cm.getAsBoolean(DB_ENABLE)) return false;
 		
 		return connection == null || connection.isClosed();
 	}
 	
 	public Connection getConnection() {
-		if (!QAConfig.DB_ENABLE.getAsBoolean()) return null;
+		if (!cm.getAsBoolean(DB_ENABLE)) return null;
 		return connection;
 	}
 
@@ -82,7 +95,7 @@ public class SQLManager implements DatabaseActions {
 	@Override
 	public void addPlayerWinCount(UUID uuid) {
 		
-		if (!QAConfig.DB_ENABLE.getAsBoolean()) return;
+		if (!cm.getAsBoolean(DB_ENABLE)) return;
 		
 		String sql = "UPDATE `players` SET `wins` = `wins` + 1 WHERE `uuid` = ?;";
 		try (PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -91,7 +104,7 @@ public class SQLManager implements DatabaseActions {
 			
 			int rowsUpdated = statement.executeUpdate();
 			if (rowsUpdated == 0) {
-				if (QAConfig.DEBUG.getAsBoolean()) {
+				if (cm.getAsBoolean(DEBUG)) {
 					QAPlugin.getQALogger().warning("Player in addPlayerWinCount is not found");
 				}
 			}
@@ -104,7 +117,7 @@ public class SQLManager implements DatabaseActions {
 	@Override
 	public void setPlayerLastPlayedNow(UUID uuid) {
 		
-		if (!QAConfig.DB_ENABLE.getAsBoolean()) return;
+		if (!cm.getAsBoolean(DB_ENABLE)) return;
 		
 		String sql = "UPDATE `players` SET `last_played` = ? WHERE `uuid` = ?;";
 		try (PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -114,7 +127,7 @@ public class SQLManager implements DatabaseActions {
 			
 			int rowsUpdated = statement.executeUpdate();
 			if (rowsUpdated == 0) {
-				if (QAConfig.DEBUG.getAsBoolean()) {
+				if (cm.getAsBoolean(DEBUG)) {
 					QAPlugin.getQALogger().warning("Player in addPlayerWinCount is not found");
 				}
 			}
@@ -127,7 +140,7 @@ public class SQLManager implements DatabaseActions {
 	@Override
 	public void addPlayerIfNonExists(UUID uuid) {
 		
-		if (!QAConfig.DB_ENABLE.getAsBoolean()) return;
+		if (!cm.getAsBoolean(DB_ENABLE)) return;
 		
 		String sql = "INSERT IGNORE INTO players (uuid, last_played, wins) VALUES (?, ?, 0);";
 		try (PreparedStatement statement = connection.prepareStatement(sql)) {
