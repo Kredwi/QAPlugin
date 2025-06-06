@@ -37,13 +37,13 @@ The plugin settings are located in the `plugins/QAPlugin/config.yml` file. Basic
 - `spawn-display-texts` - Enables spawning of display texts around blocks (can cause high server load (**1** block = **5** entites of `DisplayText`))
 - `indestructible-block-encountered` - What to do if the block cannot be broken (paths cannot continue to be built because the block cannot be broken)
 
-- `end-game-winner-firework` - Сектор фейеверка который при завершении игры, у победителей появится врзыв фейеверка
- - `enable - Включает данный эффект у побителей
+- `end-game-winner-firework` - The fireworks sector, which at the end of the game, the winners will receive a fireworks display.
+ - `enable - Enables this effect in side effects
  - `flicker` - Set whether the firework effect should flicker.
  - `trail` - Set whether the firework effect should have a trail.
  - `type` - The type or shape of the effect.
- - `colors` - Массив в массиве, который содержит rgb основных цветов для взрыва фейеверка
- - `fades` - Массив в массиве, который содержит основные цвета для затухания фейеверка
+ - `colors` - An array within an array that contains rgb primary colors for a fireworks explosion
+ - `fades` - An array within an array that contains the primary colors for fading the fireworks
 
 - `database`
  - `enable` - enable using database
