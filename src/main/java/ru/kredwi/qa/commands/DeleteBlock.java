@@ -80,7 +80,8 @@ public class DeleteBlock extends CommandAbstract{
 		}
 		
 		Iterator<IRemover> iterator = buildedBlocks.iterator();
-		
+
+		// TODO if `spawn-display-texts` disabled this will break
 		for (int i =0; i < ((deleteBlock * 6) * (COUNT_OF_INIT_BLOCKS + 1))
 				&& iterator.hasNext(); i++) {
 			IRemover remover = iterator.next();
