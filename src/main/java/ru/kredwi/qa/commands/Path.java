@@ -1,6 +1,7 @@
 package ru.kredwi.qa.commands;
 
-import static ru.kredwi.qa.config.ConfigKeys.DEBUG;
+import static ru.kredwi.qa.config.ConfigKeys.*;
+import static ru.kredwi.qa.config.ConfigKeys.ENABLE_REQUESTS;
 import static ru.kredwi.qa.config.ConfigKeys.GAME_NOT_FOUND;
 import static ru.kredwi.qa.config.ConfigKeys.IS_COMMAND_ONLY_FOR_GAME_OWNER;
 import static ru.kredwi.qa.config.ConfigKeys.IS_PLAYER_IS_NOT_FOUND;
@@ -23,7 +24,7 @@ import org.bukkit.entity.Player;
 import ru.kredwi.qa.QAPlugin;
 import ru.kredwi.qa.commands.base.CommandAbstract;
 import ru.kredwi.qa.commands.base.ICommandController;
-import ru.kredwi.qa.config.ConfigAs;
+import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.exceptions.RequestsOutOfBounds;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IMainGame;
@@ -33,10 +34,10 @@ import ru.kredwi.qa.game.request.GameRequestManager;
 public class Path extends CommandAbstract {
 	
 	private final GameRequestManager gameRequestManager;
-	private ConfigAs cm;
+	private QAConfig cm;
 	private IMainGame mainGame;
 	
-	public Path(IMainGame mainGame, ConfigAs cm) {
+	public Path(IMainGame mainGame, QAConfig cm) {
 		super("path", 1, true, true, "qaplugin.commands.path");
 		
 		this.gameRequestManager = mainGame.getGameRequestManager();
@@ -50,16 +51,31 @@ public class Path extends CommandAbstract {
 		Player player = (Player) sender;
 		
 		try {
+			
+			if (!cm.getAsBoolean(ENABLE_REQUESTS) && args.length > 1) {
+				
+				if (sendMessagesIfNegativeConditions(player, args[0])) return;
+				
+				Player otherPlayer = Bukkit.getPlayer(args[1]);
+				
+				if (Objects.isNull(otherPlayer)) {
+					sender.sendMessage(cm.getAsString(IS_PLAYER_IS_NOT_FOUND));
+					return;
+				}
+				
+				gameRequestManager.connectPlayersToGame(args[0], otherPlayer.getName(),
+						player, player.getLocation().clone());
+				
+				return;
+			}
+			
 			// if player nickname is not entered
 			if (args.length == 1 && args[0] != null) {
 
 				if (sendMessagesIfNegativeConditions(player, args[0])) return;
 				
-				gameRequestManager.addUserRequest(player.getUniqueId(), args[0], player);
-				gameRequestManager.acceptGame(player.getUniqueId(), args[0]);
-				// if requests already maximum player dont create game
-				// TODO rewrite this
-				
+				gameRequestManager.connectPlayersToGame(args[0], sender.getName(),
+						player, player.getLocation().clone());
 				
 			// if player nickname is entered
 			} else if (args.length > 1 && args[1] != null) {
@@ -124,6 +140,12 @@ public class Path extends CommandAbstract {
 			player.sendMessage(cm.getAsString(IS_COMMAND_ONLY_FOR_GAME_OWNER));
 			return true;
 		}
+		
+		if (game.isStart()) {
+			player.sendMessage(cm.getAsString(GAME_IS_CREATED));
+			return true;
+		}
+		
 		return false;
 	}
 

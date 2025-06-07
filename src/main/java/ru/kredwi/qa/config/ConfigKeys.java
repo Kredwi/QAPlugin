@@ -8,6 +8,7 @@ public interface ConfigKeys {
 	String DELETE_BLOCKS_WHEN_DISABLE = "delete-blocks-when-disable";
 	String SPAWN_DISPLAY_TEXTS = "spawn-display-texts";
 	String MAX_REQUESTS_SIZE = "max-requests-size";
+	String ENABLE_REQUESTS = "enable-requests";
 	String DELETE_GAME_IF_OWNER_LEAVE = "delete-game-if-owner-leave";
 	String ALLOW_DESTROY_ANY_BLOCK = "allow-destroy-any-block";
 	String TELEPORT_PLAYER_IN_PLACE = "teleport-player-in-place";
@@ -58,6 +59,7 @@ public interface ConfigKeys {
 	String UNKNOWN_ERROR = "unknown-error";
 	String MANY_GAME_REQUESTS = "many-game-requests";
 	String INPUTED_INVALID_DATA = "inputed-invalid-data";
+	String PLUGIN_SUCCESS_RELOADED = "plugin-success-reloaded";
 	String IN_INPUT_DATA_LITTLE_SYMBOLS = "in-input-data-little-symbols";
 	String IN_INPUT_DATA_OVER_SYMBOLS = "in-input-data-over-symbols";
 	String DB_ENABLE = "database.enable";

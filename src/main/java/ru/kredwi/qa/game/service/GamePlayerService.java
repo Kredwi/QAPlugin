@@ -1,11 +1,12 @@
 package ru.kredwi.qa.game.service;
 
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.entity.Player;
 
@@ -15,7 +16,7 @@ import ru.kredwi.qa.game.player.PlayerState;
 
 public class GamePlayerService implements IGamePlayer {
 
-	private Map<Player, PlayerState> states = new HashMap<>();
+	private Map<Player, PlayerState> states = new ConcurrentHashMap<>();
 	private boolean debug;
 	
 	public GamePlayerService(boolean debug) {
@@ -64,6 +65,6 @@ public class GamePlayerService implements IGamePlayer {
 	}
 	@Override
 	public Set<Map.Entry<Player, PlayerState>> getPlayerAndStatesArray() {
-		return states.entrySet();
+		return new HashSet<>(states.entrySet());
 	}
 }

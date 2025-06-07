@@ -17,7 +17,7 @@ import org.bukkit.entity.Player;
 
 import ru.kredwi.qa.commands.base.CommandAbstract;
 import ru.kredwi.qa.commands.base.ICommandController;
-import ru.kredwi.qa.config.ConfigAs;
+import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IMainGame;
 import ru.kredwi.qa.game.player.PlayerState;
@@ -25,10 +25,10 @@ import ru.kredwi.qa.removers.IRemover;
 
 public class DeletePlayer extends CommandAbstract {
 	
-	private ConfigAs cm;
+	private QAConfig cm;
 	private IMainGame mainGame;
 	
-	public DeletePlayer(IMainGame mainGame, ConfigAs cm) {
+	public DeletePlayer(IMainGame mainGame, QAConfig cm) {
 		super("deleteplayer", 2, true, "qaplugin.commands.deleteplayer");
 		this.mainGame = mainGame;
 		this.cm = cm;

@@ -15,7 +15,7 @@ import java.util.function.Predicate;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import ru.kredwi.qa.QAPlugin;
-import ru.kredwi.qa.config.ConfigAs;
+import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.exceptions.QuestionsAreOverException;
 import ru.kredwi.qa.game.IGamePlayer;
 import ru.kredwi.qa.game.IGameQuestionManager;
@@ -25,10 +25,10 @@ public class QuestionService implements IGameQuestionManager{
 	
 	private Map<Question, Boolean> questions = new HashMap<>();
 	
-	private ConfigAs cm;
+	private QAConfig cm;
 	private IGamePlayer playerService;
 	
-	public QuestionService(ConfigAs cm, IGamePlayer playerService) {
+	public QuestionService(QAConfig cm, IGamePlayer playerService) {
 		this.cm = cm;
 		this.playerService = playerService;
 	}

@@ -1,7 +1,7 @@
 name: QAPlugin
 api-version: 1.19
 description: Adds a question and answer mechanic to your server!
-version: 0.5.7
+version: 0.5.8
 author: Kredwi
 main: ru.kredwi.qa.QAPlugin
 website: https://github.com/Kredwi/QAPlugin
@@ -42,6 +42,14 @@ commands:
     description: Remove a player from the game.
     usage: /deleteplayer <game name> <player name>
     permission: qaplugin.commands.deleteplayer
+  deleteblock:
+    description: Delete layers from the path for Player
+    usage: /deleteblock <game name>
+    permission: qaplugin.commands.deleteblock
+  qareload:
+    description: Reload plugin configuratin.
+    usage: /qareload
+    permission: qaplugin.commands.reload
 permissions:
   qaplugin.commands.answer:
     description: Allows players to answer questions.
@@ -69,6 +77,9 @@ permissions:
     default: op
   qaplugin.commands.deleteplayer:
     description: Allows players to remove players from games.
+    default: op
+  qaplugin.commands.reload:
+    description: Allows players to reload plugin.
     default: op
   qaplugin.*:
     description: Grants all admin permissions for QAPlugin.

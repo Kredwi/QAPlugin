@@ -21,7 +21,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import ru.kredwi.qa.QAPlugin;
-import ru.kredwi.qa.config.ConfigAs;
+import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.exceptions.InvalidRequestData;
 import ru.kredwi.qa.exceptions.RequestsOutOfBounds;
 import ru.kredwi.qa.game.IGame;
@@ -35,9 +35,9 @@ public class GameRequestManager {
 	// ONE UUID IS PLAYER UUID
 	// TWO SET<RequestInfo> IF LIST OF REQUESTED GAMES
 	private Map<UUID, Set<RequestInfo>> userRequests = new HashMap<>();
-	private ConfigAs cm;
+	private QAConfig cm;
 	
-	public GameRequestManager(ConfigAs cm, IMainGame mainGame) {
+	public GameRequestManager(QAConfig cm, IMainGame mainGame) {
 		this.mainGame = mainGame;
 		this.cm = cm;
 	}
@@ -85,7 +85,7 @@ public class GameRequestManager {
 	 * 
 	 * @author Kredwi
 	 * */
-	private void connectPlayersToGame(String gameName, String playerName, Player sender, Location startLocation) {
+	public void connectPlayersToGame(String gameName, String playerName, Player sender, Location startLocation) {
 		
 		IGame game = mainGame.getGame(gameName);
 		

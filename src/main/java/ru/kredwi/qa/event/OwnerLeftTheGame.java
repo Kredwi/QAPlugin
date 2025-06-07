@@ -10,16 +10,16 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import ru.kredwi.qa.QAPlugin;
-import ru.kredwi.qa.config.ConfigAs;
+import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IMainGame;
 
 public class OwnerLeftTheGame implements Listener {
 	
-	private ConfigAs cm;
+	private QAConfig cm;
 	private IMainGame mainGame;
 	
-	public OwnerLeftTheGame(ConfigAs cm, IMainGame mainGame) {
+	public OwnerLeftTheGame(QAConfig cm, IMainGame mainGame) {
 		this.cm = cm;
 		this.mainGame = mainGame;
 	}

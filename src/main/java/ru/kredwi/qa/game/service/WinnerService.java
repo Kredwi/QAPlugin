@@ -1,18 +1,23 @@
 package ru.kredwi.qa.game.service;
 
 import static ru.kredwi.qa.config.ConfigKeys.DB_ENABLE;
+import static ru.kredwi.qa.config.ConfigKeys.DEBUG;
 import static ru.kredwi.qa.config.ConfigKeys.PLAYERS_WIN_GAME;
 import static ru.kredwi.qa.config.ConfigKeys.PLAYER_WIN_GAME;
 import static ru.kredwi.qa.config.ConfigKeys.WIN_SOUND;
 
 import java.text.MessageFormat;
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 import org.bukkit.entity.Player;
 
-import ru.kredwi.qa.config.ConfigAs;
+import ru.kredwi.qa.QAPlugin;
+import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.game.IBlockConstructionService;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IWinnerService;
@@ -21,12 +26,12 @@ import ru.kredwi.qa.sql.DatabaseActions;
 
 public class WinnerService implements IWinnerService {
 
-	private List<Player> winners = new LinkedList<>();
+	private List<Player> winners = Collections.synchronizedList(new ArrayList<>());
 	private DatabaseActions databaseActions;
-	private ConfigAs cm;
+	private QAConfig cm;
 	private IGame game;
 	
-	public WinnerService(ConfigAs cm, IGame game, DatabaseActions databaseActions) {
+	public WinnerService(QAConfig cm, IGame game, DatabaseActions databaseActions) {
 		this.cm = cm;
 		this.game = game;
 		this.databaseActions = databaseActions;
@@ -54,15 +59,25 @@ public class WinnerService implements IWinnerService {
 
 	@Override
 	public List<Player> getWinners() {
-		return winners;
+		return new ArrayList<>(this.winners);
 	}
 
 	@Override
 	public void alertOfPlayersWin() {
+		Set<Player> players = this.game.getPlayerService().getPlayers();
+		
+		if (Objects.isNull(players) || players.isEmpty()) {
+			if (cm.getAsBoolean(DEBUG)) {
+					QAPlugin.getQALogger().info("IN alertOfPlayerWin PLAYERS IS EMPTY !!!");
+			}	
+			return;
+		}
+		
+		List<Player> winners = this.getWinners();
 		
 		boolean winCountCondition = winners.size() > 1;
 		
-		for (Player p : game.getPlayerService().getPlayers()) {
+		for (Player p : players) {
 			if (winCountCondition) {
 				for (Player win : winners) {
 					p.sendMessage(MessageFormat.format(cm.getAsString(PLAYERS_WIN_GAME),

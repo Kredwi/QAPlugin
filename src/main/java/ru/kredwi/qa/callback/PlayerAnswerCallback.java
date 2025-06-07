@@ -14,17 +14,17 @@ import java.util.function.Consumer;
 import org.bukkit.entity.Player;
 
 import ru.kredwi.qa.callback.data.PlayerAnswerData;
-import ru.kredwi.qa.config.ConfigAs;
+import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IMainGame;
 import ru.kredwi.qa.game.player.PlayerState;
 
 public class PlayerAnswerCallback implements Consumer<PlayerAnswerData> {
 	
-	private ConfigAs cm;
+	private QAConfig cm;
 	private IMainGame mainGame;
 
-	public PlayerAnswerCallback(IMainGame mainGame, ConfigAs cm) {
+	public PlayerAnswerCallback(IMainGame mainGame, QAConfig cm) {
 		this.mainGame = mainGame;
 		this.cm = cm;
 	}

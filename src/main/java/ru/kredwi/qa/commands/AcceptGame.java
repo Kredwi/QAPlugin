@@ -17,16 +17,16 @@ import org.bukkit.entity.Player;
 
 import ru.kredwi.qa.commands.base.CommandAbstract;
 import ru.kredwi.qa.commands.base.ICommandController;
-import ru.kredwi.qa.config.ConfigAs;
+import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.game.IMainGame;
 import ru.kredwi.qa.game.request.RequestInfo;
 
-public class ConfirmGame extends CommandAbstract {
+public class AcceptGame extends CommandAbstract {
 	
-	private ConfigAs cm;
+	private QAConfig cm;
 	private IMainGame mainGame;
 	
-	public ConfirmGame(ConfigAs cm, IMainGame mainGame) {
+	public AcceptGame(QAConfig cm, IMainGame mainGame) {
 		super("acceptgame", 1, true, "qaplugin.commands.acceptgame");
 		this.mainGame = mainGame;
 		this.cm = cm;

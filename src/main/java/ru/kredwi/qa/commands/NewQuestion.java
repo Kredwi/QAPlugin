@@ -19,7 +19,7 @@ import org.bukkit.entity.Player;
 import ru.kredwi.qa.QAPlugin;
 import ru.kredwi.qa.commands.base.CommandAbstract;
 import ru.kredwi.qa.commands.base.ICommandController;
-import ru.kredwi.qa.config.ConfigAs;
+import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IGameQuestionManager;
 import ru.kredwi.qa.game.player.PlayerState;
@@ -27,9 +27,9 @@ import ru.kredwi.qa.game.service.data.Question;
 
 public class NewQuestion extends CommandAbstract {
 	
-	private ConfigAs cm;
+	private QAConfig cm;
 	
-	public NewQuestion(ConfigAs cm) {
+	public NewQuestion(QAConfig cm) {
 		super("question", 1, true, true, "qaplugin.commands.question");
 		this.cm = cm;
 	}

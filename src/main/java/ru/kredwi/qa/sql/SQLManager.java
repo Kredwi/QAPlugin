@@ -17,7 +17,7 @@ import java.sql.Timestamp;
 import java.util.UUID;
 
 import ru.kredwi.qa.QAPlugin;
-import ru.kredwi.qa.config.ConfigAs;
+import ru.kredwi.qa.config.QAConfig;
 
 public class SQLManager implements DatabaseActions {
 	
@@ -28,9 +28,9 @@ public class SQLManager implements DatabaseActions {
 			+ ");";
 	
 	private Connection connection;
-	private ConfigAs cm;
+	private QAConfig cm;
 	
-	public SQLManager(ConfigAs cm) {
+	public SQLManager(QAConfig cm) {
 		this.cm = cm;
 	}
 	
@@ -109,7 +109,6 @@ public class SQLManager implements DatabaseActions {
 				}
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -132,7 +131,6 @@ public class SQLManager implements DatabaseActions {
 				}
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -150,7 +148,6 @@ public class SQLManager implements DatabaseActions {
 			
 			statement.executeUpdate();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

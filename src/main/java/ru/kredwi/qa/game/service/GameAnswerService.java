@@ -12,7 +12,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import ru.kredwi.qa.QAPlugin;
-import ru.kredwi.qa.config.ConfigAs;
+import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IGameAnswer;
 import ru.kredwi.qa.game.player.PlayerState;
@@ -21,12 +21,12 @@ import ru.kredwi.qa.sql.DatabaseActions;
 public class GameAnswerService implements IGameAnswer{
 
 	private DatabaseActions dbActions;
-	private ConfigAs cm;
+	private QAConfig cm;
 	private IGame game;
 	
 	private int acceptCount = 0;
 	
-	public GameAnswerService(ConfigAs cm, IGame game, DatabaseActions dbActions) {
+	public GameAnswerService(QAConfig cm, IGame game, DatabaseActions dbActions) {
 		this.game = game;
 		this.cm = cm;
 		this.dbActions = dbActions;

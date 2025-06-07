@@ -19,12 +19,12 @@ import org.bukkit.entity.Player;
 
 import ru.kredwi.qa.PluginWrapper;
 import ru.kredwi.qa.QAPlugin;
-import ru.kredwi.qa.config.ConfigAs;
+import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.utils.LocationUtils;
 
 public class BlockPlacementCallback implements Consumer<Location> {
 
-	private ConfigAs configManager;
+	private QAConfig configManager;
 	private PluginWrapper plugin;
 	private Player player;
 	

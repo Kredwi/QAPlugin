@@ -1,13 +1,13 @@
 package ru.kredwi.qa.utils;
 
 import ru.kredwi.qa.QAPlugin;
-import ru.kredwi.qa.config.ConfigAs;
+import ru.kredwi.qa.config.QAConfig;
 
-public class AsObjectUtils<T extends Enum<T>> {
+public class EnumConverter<T extends Enum<T>> {
 	
-	private ConfigAs config;
+	private QAConfig config;
 	
-	public AsObjectUtils(ConfigAs config) {
+	public EnumConverter(QAConfig config) {
 		this.config = config;
 	}
 	

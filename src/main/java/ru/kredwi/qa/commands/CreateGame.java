@@ -15,15 +15,15 @@ import org.bukkit.entity.Player;
 
 import ru.kredwi.qa.commands.base.CommandAbstract;
 import ru.kredwi.qa.commands.base.ICommandController;
-import ru.kredwi.qa.config.ConfigAs;
+import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.impl.Game;
 
 public class CreateGame extends CommandAbstract {
 	
-	private ConfigAs cm;
+	private QAConfig cm;
 	
-	public CreateGame(ConfigAs cm) {
+	public CreateGame(QAConfig cm) {
 		// plugin in super cast to IMainGame
 		super("creategame", 2, true, "qaplugin.commands.creategame");
 		this.cm = cm;

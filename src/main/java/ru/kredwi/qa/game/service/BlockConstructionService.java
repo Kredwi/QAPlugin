@@ -12,6 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -23,10 +24,14 @@ import org.bukkit.util.Vector;
 
 import ru.kredwi.qa.PluginWrapper;
 import ru.kredwi.qa.QAPlugin;
-import ru.kredwi.qa.config.ConfigAs;
+import ru.kredwi.qa.callback.BlockBreakDeniedCallback;
+import ru.kredwi.qa.callback.data.BreakIsBlockedData;
+import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.game.IBlockConstructionService;
 import ru.kredwi.qa.game.IGame;
+import ru.kredwi.qa.game.IGamePlayer;
 import ru.kredwi.qa.game.IMainGame;
+import ru.kredwi.qa.game.IWinnerService;
 import ru.kredwi.qa.game.player.PlayerState;
 import ru.kredwi.qa.removers.IRemover;
 import ru.kredwi.qa.task.FillBlocksTask;
@@ -37,7 +42,8 @@ public class BlockConstructionService implements IBlockConstructionService{
 	
 	private PluginWrapper plugin;
 	private IMainGame gameManager;
-	private ConfigAs cm;
+	private QAConfig cm;
+	private Predicate<BreakIsBlockedData> breakDeniedCallback;
 	
 	private int buildCompleted =1;
 	
@@ -46,11 +52,12 @@ public class BlockConstructionService implements IBlockConstructionService{
 	
 	private IGame game;
 	
-	public BlockConstructionService(IGame game, PluginWrapper plugin) {
+	public BlockConstructionService(IGame game, PluginWrapper plugin, IGamePlayer gamePlayer, IWinnerService winnerService) {
 		this.game = game;
 		this.plugin = plugin;
 		this.gameManager = plugin.getGameManager();
 		this.cm = plugin.getConfigManager();
+		this.breakDeniedCallback = new BlockBreakDeniedCallback(plugin, gameManager, game.getGameInfo(), gamePlayer, winnerService);
 		
 		Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> 
 			this.sequenceBlockData = loadBlockData().toArray(new BlockData[0]));
@@ -65,7 +72,7 @@ public class BlockConstructionService implements IBlockConstructionService{
 		
 		FillBlocksTask fbt = new FillBlocksTask(plugin, gameManager, state.getLocaton(),
 				getDirection(state.getLocaton()), game, player, buildBlock,
-				!isInit ? cm.getAsBoolean(SPAWN_DISPLAY_TEXTS) : isInit);
+				!isInit ? cm.getAsBoolean(SPAWN_DISPLAY_TEXTS) : isInit, breakDeniedCallback);
 		
 		getBuildedTasks().add(fbt
 			.runTaskTimerAsynchronously(plugin,

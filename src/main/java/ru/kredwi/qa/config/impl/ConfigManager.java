@@ -11,11 +11,11 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import ru.kredwi.qa.QAPlugin;
-import ru.kredwi.qa.config.ConfigAs;
+import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.config.ConfigKeys;
-import ru.kredwi.qa.utils.AsObjectUtils;
+import ru.kredwi.qa.utils.EnumConverter;
 
-public class ConfigManager implements ConfigAs {
+public class ConfigManager implements QAConfig {
 
 	private FileConfiguration config;
 	
@@ -45,19 +45,19 @@ public class ConfigManager implements ConfigAs {
 
 	@Override
 	public Sound getAsSound(@NonNull String path) {
-		return new AsObjectUtils<Sound>(this)
+		return new EnumConverter<Sound>(this)
 				.getAsGeneric(path, Sound.class, Sound.BLOCK_LEVER_CLICK);
 	}
 
 	@Override
 	public Particle getAsParticle(@NonNull String path) {
-		return new AsObjectUtils<Particle>(this)
+		return new EnumConverter<Particle>(this)
 				.getAsGeneric(path, Particle.class, Particle.DRIP_LAVA);
 	}
 
 	@Override
 	public Type getAsFireworkType(@NonNull String path) {
-		return new AsObjectUtils<Type>(this)
+		return new EnumConverter<Type>(this)
 				.getAsGeneric(path, Type.class, Type.STAR);
 	}
 
@@ -108,6 +108,11 @@ public class ConfigManager implements ConfigAs {
 			QAPlugin.getQALogger().info(name + " is not found in Bukkit API. Used default Color.BLACK");
 		}
 		return defaultColor;
+	}
+
+	@Override
+	public void setConfig(@NonNull FileConfiguration config) {
+		this.config = config;
 	}
 	
 

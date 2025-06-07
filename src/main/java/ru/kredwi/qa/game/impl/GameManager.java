@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 import org.bukkit.entity.Player;
 
-import ru.kredwi.qa.config.ConfigAs;
+import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IMainGame;
 import ru.kredwi.qa.game.request.GameRequestManager;
@@ -20,7 +20,7 @@ public class GameManager implements IMainGame {
 	
 	private Map<String, IGame> games = new HashMap<>();
 	
-	public GameManager(ConfigAs cm) {
+	public GameManager(QAConfig cm) {
 		gameRequestManager = new GameRequestManager(cm, this);
 	}
 	

@@ -19,9 +19,9 @@ public class Game implements IGame {
 	private boolean isStart;
 	
 	public Game(String name, Player owner, int blocksToWin, PluginWrapper plugin, SQLManager sqlManager, IMainGame gameManager) {
-		this.services = new GameServices(plugin, gameManager, this, sqlManager);
 		this.gameInfo = new GameInfo(name.trim().toLowerCase(),
 				owner.getUniqueId(), blocksToWin);
+		this.services = new GameServices(plugin, gameManager, this, sqlManager);
 	}
 	
 	@Override

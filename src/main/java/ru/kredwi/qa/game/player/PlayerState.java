@@ -1,7 +1,7 @@
 package ru.kredwi.qa.game.player;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.block.data.BlockData;
@@ -10,7 +10,7 @@ import ru.kredwi.qa.removers.IRemover;
 
 public class PlayerState {
 	
-	private Set<IRemover> playerBuildedBlocks = new HashSet<>();
+	private List<IRemover> playerBuildedBlocks = new ArrayList<>();
 	
 	private char[] symbols;
 	private boolean answered = false;
@@ -68,7 +68,7 @@ public class PlayerState {
 		this.symbols = symbols;
 	}
 
-	public Set<IRemover> getPlayerBuildedBlocks() {
+	public List<IRemover> getPlayerBuildedBlocks() {
 		return playerBuildedBlocks;
 	}
 

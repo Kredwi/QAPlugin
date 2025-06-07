@@ -8,7 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import ru.kredwi.qa.commands.base.CommandController;
-import ru.kredwi.qa.config.ConfigAs;
+import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.config.ConfigKeys;
 import ru.kredwi.qa.config.impl.ConfigManager;
 import ru.kredwi.qa.event.FireworkDamageListener;
@@ -29,13 +29,13 @@ public class QAPlugin extends JavaPlugin implements PluginWrapper {
 	 * config version for validate configs
 	 * @author Kredwi
 	 * */
-	private static final double NEED_CONFIG_VERSION = 2.5;
+	private static final double NEED_CONFIG_VERSION = 2.6;
 	
 	private static Logger logger = null;
 	
 	private CommandController commandController;
 
-	private ConfigAs configManager;
+	private QAConfig configManager;
 	
 	private IMainGame gameManager;
 	
@@ -126,7 +126,7 @@ public class QAPlugin extends JavaPlugin implements PluginWrapper {
 	}
 
 	@Override
-	public ConfigAs getConfigManager() {
+	public QAConfig getConfigManager() {
 		return configManager;
 	}
 	

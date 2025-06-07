@@ -19,20 +19,20 @@ import ru.kredwi.qa.callback.PlayerAnswerCallback;
 import ru.kredwi.qa.callback.data.PlayerAnswerData;
 import ru.kredwi.qa.commands.base.CommandAbstract;
 import ru.kredwi.qa.commands.base.ICommandController;
-import ru.kredwi.qa.config.ConfigAs;
+import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.game.IMainGame;
 
 public class Answer extends CommandAbstract{
 	
-	private ConfigAs cm;
+	private QAConfig cm;
 	private Consumer<PlayerAnswerData> callback;
 
-	public Answer(ConfigAs configManager, IMainGame mainGame) {
+	public Answer(QAConfig configManager, IMainGame mainGame) {
 		this(configManager, mainGame, new PlayerAnswerCallback(mainGame, configManager));
 	}
 	
-	public Answer(ConfigAs configManager, IMainGame mainGame, Consumer<PlayerAnswerData> callback) {
-		super("answer", false, "qaplugin.commands.answer");
+	public Answer(QAConfig configManager, IMainGame mainGame, Consumer<PlayerAnswerData> callback) {
+		super("answer", true, "qaplugin.commands.answer");
 		this.cm = configManager;
 		this.callback = callback;
 	}

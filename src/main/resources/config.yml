@@ -1,4 +1,4 @@
-version: 2.5 # Config version
+version: 2.6 # Config version
 
 debug: false # Enable debug mode (for developers)
 delete-blocks-when-disable: false # Delete blocks created by the plugin when the server is disabled?
@@ -8,6 +8,7 @@ center-direction-in-teleport: true # Center the player's viewing direction when 
 spawn-display-texts: true # Enables spawning of display texts around blocks (can cause high server load)
 allow-destroy-any-block: false # Allow breaking blocks by paths (DANGEROUS FOR THE WORLD!! BLOCKS CANNOT BE RESTORED)
 spawn-place-particle: true # Spawn place particles
+enable-requests: true # Send an invite to the game instead of adding it at the beginning
 max-requests-size: 10 # Max number of requests to game
 
 # Limits in commands
@@ -26,6 +27,7 @@ end-game-winner-firework:
     type: STAR # The type or shape of the effect.
     colors: [[255, 165, 0], [255, 255, 0]] # (RGB) Add several primary colors to the firework effect.
     fades: [[128, 0, 128]] # (RGB) Add several fade colors to the firework effect.
+
 # Data base section
 database:
     enable: false # enable using database
@@ -37,7 +39,7 @@ database:
 
 # What to do if the block cannot be broken (paths cannot continue to be built because the block cannot be broken)
 # END_GAME the game will simply end, and winners will be calculated
-# IGNORE the game will continue, but the bridge where blocks cannot be broken will break (not recommended)
+# IGNORE the game will continue, but the bridge where blocks cannot be broken will break
 indestructible-block-encountered: END_GAME
 
 # Block names can be found here: https://helpch.at/docs/1.19.4/org/bukkit/Material.html
@@ -90,6 +92,7 @@ you-already-create-your-game: "§cYou have already created your game, delete the
 not-have-permission: "§cYou do not have permission to use this command."
 unknown-error: "§cAn unknown error occurred while executing the command."
 many-game-requests: "§cYou have too many game requests. Please ask someone else to join the game"
+plugin-success-reloaded: "§aPlugin successfuly reloaded"
 inputed-invalid-data: "§cYou have entered incorrect information, check the documentation."
 # {0} - minimum symbols required
 # {1} - number of input symbols

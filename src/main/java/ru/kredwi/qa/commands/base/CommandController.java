@@ -23,15 +23,17 @@ import org.bukkit.entity.Player;
 import ru.kredwi.qa.PluginWrapper;
 import ru.kredwi.qa.QAPlugin;
 import ru.kredwi.qa.commands.Answer;
-import ru.kredwi.qa.commands.ConfirmGame;
+import ru.kredwi.qa.commands.AcceptGame;
 import ru.kredwi.qa.commands.CreateGame;
+import ru.kredwi.qa.commands.DeleteBlock;
 import ru.kredwi.qa.commands.DeleteGame;
 import ru.kredwi.qa.commands.DeletePlayer;
 import ru.kredwi.qa.commands.DenyGame;
 import ru.kredwi.qa.commands.NewQuestion;
 import ru.kredwi.qa.commands.Path;
+import ru.kredwi.qa.commands.QAReload;
 import ru.kredwi.qa.commands.StartGame;
-import ru.kredwi.qa.config.ConfigAs;
+import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.exceptions.QAException;
 import ru.kredwi.qa.exceptions.RequestsOutOfBounds;
 import ru.kredwi.qa.game.IMainGame;
@@ -43,7 +45,7 @@ public class CommandController implements CommandExecutor, ICommandController {
 	private SQLManager sqlManager;
 	private QAPlugin plugin;
 	private IMainGame gameManager;
-	private ConfigAs cm;
+	private QAConfig cm;
 	
 	public CommandController(QAPlugin plugin) {
 		this.plugin=plugin;
@@ -108,7 +110,8 @@ public class CommandController implements CommandExecutor, ICommandController {
 			ICommand[] commandInstaces = new ICommand[] {
 					new NewQuestion(cm), new Answer(cm, gameManager), new Path(gameManager, cm),
 					new CreateGame(cm), new StartGame(gameManager, cm), new DeleteGame(gameManager, cm),
-					new DeletePlayer(gameManager, cm), new ConfirmGame(cm, gameManager), new DenyGame(gameManager, cm)
+					new DeletePlayer(gameManager, cm), new AcceptGame(cm, gameManager), new DenyGame(gameManager, cm),
+					new QAReload(), new DeleteBlock(gameManager)
 			};
 			
 			for (ICommand commandInstance : commandInstaces) {
@@ -153,7 +156,7 @@ public class CommandController implements CommandExecutor, ICommandController {
 	}
 
 	@Override
-	public ConfigAs getConfigManager() {
+	public QAConfig getConfigManager() {
 		return plugin.getConfigManager();
 	}
 

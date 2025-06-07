@@ -6,9 +6,10 @@ import org.bukkit.Color;
 import org.bukkit.FireworkEffect.Type;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-public interface ConfigAs {
+public interface QAConfig {
 	
 	String getAsString(@NonNull String path);
 	boolean getAsBoolean(@NonNull String path);
@@ -22,4 +23,5 @@ public interface ConfigAs {
 	
 	List<Color> getAsBukkitColorList(@NonNull String path);
 	List<String> getAsStringList(@NonNull String path);
+	void setConfig(@NonNull FileConfiguration config);
 }
