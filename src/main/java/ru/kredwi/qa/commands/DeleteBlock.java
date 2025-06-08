@@ -1,6 +1,6 @@
 package ru.kredwi.qa.commands;
 
-import static ru.kredwi.qa.config.ConfigKeys.IN_ARGUMENT_NEEDED_NUMBER;
+import static ru.kredwi.qa.config.ConfigKeys.*;
 import static ru.kredwi.qa.config.ConfigKeys.IS_PLAYER_IS_NOT_FOUND;
 import static ru.kredwi.qa.config.ConfigKeys.YOU_DONT_GAME_OWNER;
 import static ru.kredwi.qa.config.ConfigKeys.YOU_NOT_CONNECTED_TO_GAME;
@@ -80,10 +80,7 @@ public class DeleteBlock extends CommandAbstract{
 		}
 		
 		Iterator<IRemover> iterator = buildedBlocks.iterator();
-
-		// TODO if `spawn-display-texts` disabled this will break
-		for (int i =0; i < ((deleteBlock * 6) * (COUNT_OF_INIT_BLOCKS + 1))
-				&& iterator.hasNext(); i++) {
+		for (int i =0; i < deleteBlock * (COUNT_OF_INIT_BLOCKS + 1) && iterator.hasNext(); i++) {
 			IRemover remover = iterator.next();
 			remover.remove();
 			iterator.remove();

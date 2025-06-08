@@ -6,6 +6,7 @@ import static ru.kredwi.qa.config.ConfigKeys.IS_GAME_ALREADY_CREATED;
 import static ru.kredwi.qa.config.ConfigKeys.YOU_ALREADY_CREATE_YOUR_GAME;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -61,12 +62,14 @@ public class CreateGame extends CommandAbstract {
 
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
+		
+		if (!isHaveNeedsPermissions(sender)) return Collections.emptyList();
+		
 		if (args.length == 2) {
-			int i = 0;
 			List<String> numbers = new ArrayList<>(10);
 			
-			while (i > numbers.size()) {
-				numbers.set(i, String.valueOf(i));
+			for (int i =0; i < numbers.size(); i++) {
+				numbers.add(String.valueOf(i));
 			}
 			
 			return numbers;

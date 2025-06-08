@@ -1,5 +1,6 @@
 package ru.kredwi.qa.callback;
 
+import static ru.kredwi.qa.config.ConfigKeys.DEBUG;
 import static ru.kredwi.qa.config.ConfigKeys.INDESTRUCTIBLE_BLOCK_ENCOUNTERED;
 
 import java.util.ConcurrentModificationException;
@@ -43,6 +44,11 @@ public class BlockBreakDeniedCallback implements Predicate<BreakIsBlockedData>{
 		this.plugin = plugin;
 	}
 	
+	
+	/**
+	 * 
+	 * @return continue iterator?
+	 * */
 	@Override
 	public boolean test(BreakIsBlockedData event) {
 		try {
@@ -58,13 +64,18 @@ public class BlockBreakDeniedCallback implements Predicate<BreakIsBlockedData>{
 				QAPlugin.getQALogger().warning("ERROR IN BLOCK BREAK DENIED CALLBACK !!!");
 				e.printStackTrace();
 			}
-			return ignoreIteration();
+			return false;
 		}
 	}
 	
 	private synchronized boolean endGame() {
 		
-		if (isGameEnd) return false;
+		if (isGameEnd) {
+			if (plugin.getConfigManager().getAsBoolean(DEBUG)) {
+				QAPlugin.getQALogger().info("Game already end.");
+			}
+			return false;
+		};
 		
 		this.isGameEnd = true;
 		

@@ -1,5 +1,6 @@
 package ru.kredwi.qa.commands;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.bukkit.command.Command;
@@ -13,8 +14,7 @@ import ru.kredwi.qa.exceptions.QAException;
 public class QAReload extends CommandAbstract{
 
 	public QAReload() {
-		super("qareload", true, "qaplugin.commands.reload");
-		// TODO Auto-generated constructor stub
+		super("qareload", false, "qaplugin.commands.reload");
 	}
 
 	@Override
@@ -30,7 +30,7 @@ public class QAReload extends CommandAbstract{
 
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
-		// TODO Auto-generated method stub
+		if (!isHaveNeedsPermissions(sender)) return Collections.emptyList();
 		return null;
 	}
 

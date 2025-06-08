@@ -14,7 +14,7 @@ import org.joml.Vector3f;
 import ru.kredwi.qa.PluginWrapper;
 import ru.kredwi.qa.QAPlugin;
 import ru.kredwi.qa.config.ConfigKeys;
-import ru.kredwi.qa.game.player.PlayerState;
+import ru.kredwi.qa.removers.BlockRemover;
 import ru.kredwi.qa.removers.DisplayRemover;
 import ru.kredwi.qa.utils.LocationUtils;
 
@@ -33,19 +33,17 @@ public class DisplayText implements IDisplayText {
 			INSTANCE_OF_QUATERNIONF
 			);
 	
-	private PlayerState playerState;
 	private PluginWrapper plugin;
 	
 	private boolean spawnDisplayText;
 	
-	public DisplayText(PluginWrapper plugin, PlayerState playerState,  boolean spawnDisplayText) {
+	public DisplayText(PluginWrapper plugin,  boolean spawnDisplayText) {
 		this.plugin = plugin;
-		this.playerState = playerState;
 		this.spawnDisplayText = spawnDisplayText;
 	}
 	
 	@Override
-	public void createTextOnBlock(Block block, char symbol, Location targetLocation) {
+	public void createTextOnBlock(BlockRemover blockRemover, char symbol, Location targetLocation) {
 
 		if (!spawnDisplayText) {
 			if (plugin.getConfigManager().getAsBoolean(ConfigKeys.DEBUG)) {
@@ -53,20 +51,21 @@ public class DisplayText implements IDisplayText {
 			}
 			return;
 		}
-		
+
 		Location newTargetLocation = targetLocation.clone();
 		
 		newTargetLocation.setYaw(-targetLocation.getYaw());
 		
+		Block block = blockRemover.getBlock();
 		World world = block.getWorld();
 		Location blockLocation = block.getLocation().clone();
 		
 		final float x = 0.435F;
-		
-		createTextDisplay(world, blockLocation.clone().add(x, 0, 1.0 + 0.001), symbol, 0F/2, 0F);
-		createTextDisplay(world, blockLocation.clone().add(x + 0.2, 0, -0.001), symbol, 180F/1, 0F);
-		createTextDisplay(world, blockLocation.clone().add(1.0+0.001, 0, x + 0.2), symbol, 90F*3, 0F);
-		createTextDisplay(world, blockLocation.clone().add(-0.001, 0, x), symbol, 270F*3, 0F);
+
+		createTextDisplay(blockRemover, world, blockLocation.clone().add(x, 0, 1.0 + 0.001), symbol, 0F/2, 0F);
+		createTextDisplay(blockRemover, world, blockLocation.clone().add(x + 0.2, 0, -0.001), symbol, 180F/1, 0F);
+		createTextDisplay(blockRemover, world, blockLocation.clone().add(1.0+0.001, 0, x + 0.2), symbol, 90F*3, 0F);
+		createTextDisplay(blockRemover, world, blockLocation.clone().add(-0.001, 0, x), symbol, 270F*3, 0F);
 		
 		float faceYaw = LocationUtils.centerLocation(newTargetLocation, true).getYaw();
 		
@@ -87,11 +86,11 @@ public class DisplayText implements IDisplayText {
 			case 90 -> headDisplayText.add(0,0,0.4);
 		}
 		
-		createTextDisplay(world, headDisplayText, symbol, faceYaw, -90F);
+		createTextDisplay(blockRemover, world, headDisplayText, symbol, faceYaw, -90F);
 	}
 	
 	@SuppressWarnings("deprecation")
-	private void createTextDisplay(World world, Location location, char symbol, float rotationYaw, float rotationPith) {
+	private void createTextDisplay(BlockRemover blockRemover, World world, Location location, char symbol, float rotationYaw, float rotationPith) {
 		Bukkit.getScheduler().runTask(plugin, () -> {
 			TextDisplay textDisplay = world.spawn(location, TextDisplay.class);
 			
@@ -106,7 +105,7 @@ public class DisplayText implements IDisplayText {
 			
 			textDisplay.setRotation(rotationYaw, rotationPith);
 			textDisplay.setShadowed(true);
-			playerState.addPlayerBuildedBlocks(new DisplayRemover(textDisplay));
-		});
+			blockRemover.addAttribute(new DisplayRemover(textDisplay));
+});
 	}
 }

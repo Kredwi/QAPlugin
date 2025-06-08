@@ -1,8 +1,9 @@
 package ru.kredwi.qa.entity.displaytext;
 
 import org.bukkit.Location;
-import org.bukkit.block.Block;
+
+import ru.kredwi.qa.removers.BlockRemover;
 
 public interface IDisplayText {
-	public void createTextOnBlock(Block block, char symbol, Location targetLocation);
+	public void createTextOnBlock(BlockRemover blockRemover, char symbol, Location targetLocation);
 }

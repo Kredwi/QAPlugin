@@ -28,6 +28,7 @@ import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IMainGame;
 import ru.kredwi.qa.game.player.PlayerState;
 import ru.kredwi.qa.removers.BlockRemover;
+import ru.kredwi.qa.utils.Pair;
 
 /**
  * Fill block timer task
@@ -61,7 +62,7 @@ public class FillBlocksTask extends BukkitRunnable {
 		this(plugin, targetLocation, direction,
 				game.getPlayerService().getPlayerState(player), player,
 				wordLength, spawnTextDisplay,
-				new DisplayText(plugin, game.getPlayerService().getPlayerState(player),spawnTextDisplay),
+				new DisplayText(plugin,spawnTextDisplay),
 				new ConstructionStageEndCallback(plugin, gameManager, game, player),
 				new BlockPlacementCallback(plugin, player),
 				breakIsBlockedCallback);
@@ -116,10 +117,10 @@ public class FillBlocksTask extends BukkitRunnable {
 		blocksToUpdate.add(targetLocation.clone().add(perpendicular));
 		blocksToUpdate.add(targetLocation.clone().subtract(perpendicular));
 		
-		 setBlockBatch(blocksToUpdate, playerState, (locations) -> {
+		 setBlockBatch(blocksToUpdate, playerState, (pairs) -> {
 			 if (spawnTextDisplay) {
-				locations.forEach(loc ->
-					displayText.createTextOnBlock(loc.getBlock(),
+				 pairs.forEach((pair) ->
+					displayText.createTextOnBlock(pair.second(),
 							getDisplaySymbol(symbols), targetLocation));
 			}
 			
@@ -139,7 +140,7 @@ public class FillBlocksTask extends BukkitRunnable {
 	 * @author Kredwi
 	 */
 	private void setBlockBatch(List<Location> locations, PlayerState playerState,
-			Consumer<List<Location>> callback) {
+			Consumer<List<Pair<Location, BlockRemover>>> callback) {
 		
 		BukkitRunnable task = FillBlocksTask.this;
 		List<Location> newLocations = new ArrayList<>();
@@ -177,11 +178,18 @@ public class FillBlocksTask extends BukkitRunnable {
 		}
 		
 		Bukkit.getScheduler().runTask(plugin, () -> {
+			List<Pair<Location, BlockRemover>> removers = new ArrayList<>();
 			for (Location loc : newLocations) {
-				playerState.addPlayerBuildedBlocks(new BlockRemover(loc.getBlock()));
+				
+				Pair<Location, BlockRemover> remover = new Pair<>(loc, new BlockRemover(loc.getBlock()));
+				
+				removers.add(remover);
+				
+				playerState.addPlayerBuildedBlocks(remover.second());
+				
 				loc.getBlock().setBlockData(blockData, false);
-			}
-			callback.accept(newLocations);
+			}		
+			callback.accept(removers);
 		});
 	}
 }
