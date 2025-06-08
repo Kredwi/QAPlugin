@@ -78,6 +78,9 @@ permissions:
   qaplugin.commands.deleteplayer:
     description: Allows players to remove players from games.
     default: op
+  qaplugin.commands.deleteblock:
+    description: Allows players to remove layers from player path.
+    default: op
   qaplugin.commands.reload:
     description: Allows players to reload plugin.
     default: op

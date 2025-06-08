@@ -30,7 +30,7 @@ public class DeleteBlock extends CommandAbstract{
 	private IMainGame mainGame;
 	
 	public DeleteBlock(IMainGame mainGame) {
-		super("deleteblock", 1, false, "qaplugin.commands.deleteblock");
+		super("deleteblock", 1, true, "qaplugin.commands.deleteblock");
 		this.mainGame = mainGame;
 	}
 
