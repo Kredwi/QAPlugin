@@ -166,7 +166,7 @@ public class FillBlocksTask extends BukkitRunnable {
 					continue;
 				} else {
 					if (debug) {
-						QAPlugin.getQALogger().info("Stop game...");							
+						QAPlugin.getQALogger().info("Cancel this task timer...");							
 					}
 					task.cancel();
 					return;

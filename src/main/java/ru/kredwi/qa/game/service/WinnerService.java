@@ -91,4 +91,9 @@ public class WinnerService implements IWinnerService {
 			}
 		}
 	}
+
+	@Override
+	public boolean isServiceReady() {
+		return true;
+	}
 }

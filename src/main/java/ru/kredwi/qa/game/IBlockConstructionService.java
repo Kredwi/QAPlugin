@@ -10,7 +10,7 @@ import org.bukkit.scheduler.BukkitTask;
 import ru.kredwi.qa.game.player.PlayerState;
 import ru.kredwi.qa.removers.IRemover;
 
-public interface IBlockConstructionService {
+public interface IBlockConstructionService extends ServiceReader {
 	
 	/**
 	 * This is the number of blocks added to the total number of required blocks during initialization. <br>

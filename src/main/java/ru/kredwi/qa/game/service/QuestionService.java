@@ -27,6 +27,7 @@ public class QuestionService implements IGameQuestionManager{
 	
 	private QAConfig cm;
 	private IGamePlayer playerService;
+	private boolean serviceReady = false;
 	
 	public QuestionService(QAConfig cm, IGamePlayer playerService) {
 		this.cm = cm;
@@ -51,6 +52,7 @@ public class QuestionService implements IGameQuestionManager{
 			if (cm.getAsBoolean(DEBUG)) {
 				QAPlugin.getQALogger().info("Question count loaded: " + questionLoaded);
 			}
+			this.serviceReady = true;
 		} else {
 			QAPlugin.getQALogger().severe("ERROR OF LOADING QUESTIONS !!!");
 			
@@ -125,6 +127,11 @@ public class QuestionService implements IGameQuestionManager{
 	private void sendMessagesForPlayers(String message) {
 		playerService.getPlayers()
 			.forEach(e -> e.sendMessage(message));		
+	}
+
+	@Override
+	public boolean isServiceReady() {
+		return serviceReady;
 	}
 	
 }

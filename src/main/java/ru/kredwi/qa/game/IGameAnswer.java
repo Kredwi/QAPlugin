@@ -1,6 +1,6 @@
 package ru.kredwi.qa.game;
 
-public interface IGameAnswer {
+public interface IGameAnswer extends ServiceReader {
 	void addAnwserCount();
 	void resetAnwserCount();
 	boolean isAllAnswered();

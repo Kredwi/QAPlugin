@@ -66,6 +66,11 @@ public class StartGame extends CommandAbstract {
 		
 		game.getQuestionManager().loadQuestions();
 		
+		if (!game.isAllServicesReady()) {
+			sender.sendMessage("Services is not started! Please wait..");
+			return;
+		}
+		
 		game.setStart(true);
 		// INIT BLOCKS
 		game.getGameAnswer().processPlayerAnswers(true);

@@ -82,4 +82,9 @@ public class GameAnswerService implements IGameAnswer{
 		return acceptCount >= game.getPlayerService().getPlayers().size();
 	}
 
+	@Override
+	public boolean isServiceReady() {
+		return true;
+	}
+
 }

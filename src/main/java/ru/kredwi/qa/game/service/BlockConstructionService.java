@@ -48,6 +48,7 @@ public class BlockConstructionService implements IBlockConstructionService{
 	private int buildCompleted =1;
 	
 	private BlockData[] sequenceBlockData;
+	private boolean serviceReady = false;
 	private boolean stopBuild;
 	
 	private IGame game;
@@ -118,6 +119,7 @@ public class BlockConstructionService implements IBlockConstructionService{
 				QAPlugin.getQALogger().info(blockName + " not found in Bukkit API. Used default BLACK_CONCRETE");
 			}
 		}
+		this.serviceReady = true;
 		return blockDataList;
 	}
 	
@@ -192,5 +194,10 @@ public class BlockConstructionService implements IBlockConstructionService{
 	@Override
 	public void setStopBuild(boolean isStop) {
 		this.stopBuild = isStop;
+	}
+
+	@Override
+	public boolean isServiceReady() {
+		return serviceReady;
 	}
 }

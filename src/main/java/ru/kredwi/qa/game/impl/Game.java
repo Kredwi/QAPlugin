@@ -63,4 +63,13 @@ public class Game implements IGame {
 	public void setStart(boolean isStart) {
 		this.isStart = isStart;
 	}
+
+	@Override
+	public boolean isAllServicesReady() {
+		return getBlockConstruction().isServiceReady()
+				&& getGameAnswer().isServiceReady()
+				&& getPlayerService().isServiceReady()
+				&& getQuestionManager().isServiceReady()
+				&& getWinnerService().isServiceReady();
+	}
 }

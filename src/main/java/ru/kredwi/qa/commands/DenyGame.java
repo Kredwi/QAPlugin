@@ -1,6 +1,7 @@
 package ru.kredwi.qa.commands;
 
 import static ru.kredwi.qa.config.ConfigKeys.DEBUG;
+import static ru.kredwi.qa.config.ConfigKeys.REQUEST_SUCCESS_DENIED;
 import static ru.kredwi.qa.config.ConfigKeys.THIS_GAME_IS_NOT_REQUESTED_YOU;
 
 import java.util.Collections;
@@ -38,14 +39,14 @@ public class DenyGame extends CommandAbstract {
 			commandController.getMainGame().getGameRequestManager()
 				.denyGame(((Player) sender).getUniqueId(), args[0]);
 			
-		} catch (InvalidRequestData e) {
+			sender.sendMessage(REQUEST_SUCCESS_DENIED);
 			
+		} catch (InvalidRequestData e) {
 			sender.sendMessage(cm.getAsString(THIS_GAME_IS_NOT_REQUESTED_YOU));
 			
 			if (cm.getAsBoolean(DEBUG)) {
 				QAPlugin.getQALogger().info(e::getMessage);
 			}
-			
 		}
 	}
 

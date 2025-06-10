@@ -67,4 +67,9 @@ public class GamePlayerService implements IGamePlayer {
 	public Set<Map.Entry<Player, PlayerState>> getPlayerAndStatesArray() {
 		return new HashSet<>(states.entrySet());
 	}
+
+	@Override
+	public boolean isServiceReady() {
+		return true;
+	}
 }

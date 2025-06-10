@@ -6,6 +6,7 @@ public interface IGame {
 	
 	GameInfo getGameInfo();
 	void setStart(boolean isStart);
+	public boolean isAllServicesReady();
 	boolean isStart();
 	
 	public IGameQuestionManager getQuestionManager();

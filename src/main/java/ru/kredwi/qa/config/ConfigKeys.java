@@ -74,5 +74,12 @@ public interface ConfigKeys {
 	String FIREWORK_FOR_WINNER_TYPE = "end-game-winner-firework.type";
 	String FIREWORK_FOR_WINNER_COLORS = "end-game-winner-firework.colors";
 	String FIREWORK_FOR_WINNER_FADES = "end-game-winner-firework.fades";
+	String REQUEST_SUCCESS_DENIED = "request-success-denied";
+	String YOU_ENTERED_LONG_PATH_LENGTH= "you-entered-long-path-length";
+	String YOU_ENTERED_SHORT_PATH_LENGTH="you-entered-short-path-length";
+	
+	String MIN_LENGTH_PATH = "min-length-path";
+	String MAX_LENGTH_PATH = "max-length-path";
+	
 
 }

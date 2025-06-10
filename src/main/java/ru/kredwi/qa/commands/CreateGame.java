@@ -1,10 +1,11 @@
 package ru.kredwi.qa.commands;
 
-import static ru.kredwi.qa.config.ConfigKeys.GAME_IS_CREATED;
+import static ru.kredwi.qa.config.ConfigKeys.*;
 import static ru.kredwi.qa.config.ConfigKeys.IN_ARGUMENT_NEEDED_NUMBER;
 import static ru.kredwi.qa.config.ConfigKeys.IS_GAME_ALREADY_CREATED;
 import static ru.kredwi.qa.config.ConfigKeys.YOU_ALREADY_CREATE_YOUR_GAME;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -37,6 +38,16 @@ public class CreateGame extends CommandAbstract {
 			maxBlocks = Math.abs(Integer.parseInt(args[1]));
 		} catch(NumberFormatException e) {
 			sender.sendMessage(cm.getAsString(IN_ARGUMENT_NEEDED_NUMBER));
+			return;
+		}
+		
+		if (maxBlocks < cm.getAsInt(MIN_LENGTH_PATH)) {
+			sender.sendMessage(MessageFormat.format(cm.getAsString(YOU_ENTERED_SHORT_PATH_LENGTH), maxBlocks, cm.getAsInt(MIN_LENGTH_PATH)));
+			return;			
+		}
+	
+		if (maxBlocks > cm.getAsInt(MAX_LENGTH_PATH)) {
+			sender.sendMessage(MessageFormat.format(cm.getAsString(YOU_ENTERED_LONG_PATH_LENGTH), maxBlocks, cm.getAsInt(MAX_LENGTH_PATH)));
 			return;
 		}
 		

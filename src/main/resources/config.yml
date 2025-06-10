@@ -1,4 +1,4 @@
-version: 2.6 # Config version
+version: 2.7 # Config version
 
 debug: false # Enable debug mode (for developers)
 delete-blocks-when-disable: false # Delete blocks created by the plugin when the server is disabled?
@@ -11,11 +11,18 @@ spawn-place-particle: true # Spawn place particles
 enable-requests: true # Send an invite to the game instead of adding it at the beginning
 max-requests-size: 10 # Max number of requests to game
 
+max-blocks-for-game: 100
+min-blocks-for-game: 5
+
 # Limits in commands
 min-symbol-in-answer: 2
 max-symbol-in-answer: 20
 min-symbol-in-question: 5
 max-symbol-in-question: 200
+
+# Limits in creategame command
+min-length-path: 4
+max-length-path: 200
 
 # Sector for winner firework
 # For flicker and trail see https://helpch.at/docs/1.19.4/org/bukkit/FireworkEffect.Builder.html
@@ -38,9 +45,9 @@ database:
     database: QAPlugin # database name for plugin
 
 # What to do if the block cannot be broken (paths cannot continue to be built because the block cannot be broken)
-# END_GAME the game will simply end, and winners will be calculated
+# END_GAME the game will simply end, and winners will be calculated (not recommended)
 # IGNORE the game will continue, but the bridge where blocks cannot be broken will break
-indestructible-block-encountered: END_GAME
+indestructible-block-encountered: IGNORE
 
 # Block names can be found here: https://helpch.at/docs/1.19.4/org/bukkit/Material.html
 enabled-blocks: [CYAN_CONCRETE, LIME_CONCRETE, YELLOW_CONCRETE, PURPLE_CONCRETE, BLUE_CONCRETE]
@@ -61,6 +68,9 @@ question-template: "§6Question§8: §f§r{0}" # {0} - question text
 questions-are-over: "§cQuestions are over." # Notification that questions are finished
 
 # Plugin messages
+you-entered-long-path-length: "§cYou have entered too long a path length. {0}/{1}" # {0} entered {1} need
+you-entered-short-path-length: "§cYou have entered a path length that is too short. {0}/{1}"
+request-success-denied: "§aThe request was successfully rejected."
 no-args: "§cNot enough arguments in the command"
 you-not-connected-to-game: "§cYou are not connected to a game"
 game-is-not-started: "§cThe game has not started yet"

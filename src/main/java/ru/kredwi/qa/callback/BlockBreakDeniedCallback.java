@@ -22,10 +22,10 @@ import ru.kredwi.qa.game.impl.GameInfo;
 import ru.kredwi.qa.game.player.PlayerState;
 
 /**
-* TODO conccurentmodificationexception error if action is "END_GAME"
-* TODO dont tested
-*/
-public class BlockBreakDeniedCallback implements Predicate<BreakIsBlockedData>{
+ * TODO if task is not closed blocks from other path continue building
+ * TODO rewrite this logics
+ * */
+public class BlockBreakDeniedCallback implements Predicate<BreakIsBlockedData> {
 
 	private boolean isGameEnd = false;
 	
