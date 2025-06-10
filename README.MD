@@ -63,7 +63,7 @@ Because everything happens in one tick of the server, which means that 3 blocks 
 
 ### Indestructible Block Encountered
 - `IGNORE` - Skips this block and does not process it.
-- `END_GAME` - Calculates the winner and ends the game. (have bugs)
+- `END_GAME` - Calculates the winner and ends the game. (have more bugs (dont use))
 
 ## Links
 - [Plugin issues](https://github.com/Kredwi/QAPlugin/issues)
