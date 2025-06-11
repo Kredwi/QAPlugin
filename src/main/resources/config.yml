@@ -1,4 +1,4 @@
-version: 2.7 # Config version
+version: 2.8 # Config version
 
 debug: false # Enable debug mode (for developers)
 delete-blocks-when-disable: false # Delete blocks created by the plugin when the server is disabled?
@@ -9,6 +9,7 @@ spawn-display-texts: true # Enables spawning of display texts around blocks (can
 allow-destroy-any-block: false # Allow breaking blocks by paths (DANGEROUS FOR THE WORLD!! BLOCKS CANNOT BE RESTORED)
 spawn-place-particle: true # Spawn place particles
 enable-requests: true # Send an invite to the game instead of adding it at the beginning
+immediately-end-game: true # If false, the game will not be removed from the game pool, and the blocks will remain. To delete a game, you can use /deletegame [gamename]
 max-requests-size: 10 # Max number of requests to game
 
 max-blocks-for-game: 100
@@ -68,6 +69,7 @@ question-template: "§6Question§8: §f§r{0}" # {0} - question text
 questions-are-over: "§cQuestions are over." # Notification that questions are finished
 
 # Plugin messages
+game-finished: "§cGame finished."
 you-entered-long-path-length: "§cYou have entered too long a path length. {0}/{1}" # {0} entered {1} need
 you-entered-short-path-length: "§cYou have entered a path length that is too short. {0}/{1}"
 request-success-denied: "§aThe request was successfully rejected."

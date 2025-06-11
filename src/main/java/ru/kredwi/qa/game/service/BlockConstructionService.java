@@ -58,7 +58,7 @@ public class BlockConstructionService implements IBlockConstructionService{
 		this.plugin = plugin;
 		this.gameManager = plugin.getGameManager();
 		this.cm = plugin.getConfigManager();
-		this.breakDeniedCallback = new BlockBreakDeniedCallback(plugin, gameManager, game.getGameInfo(), gamePlayer, winnerService);
+		this.breakDeniedCallback = new BlockBreakDeniedCallback(plugin, game);
 		
 		Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> 
 			this.sequenceBlockData = loadBlockData().toArray(new BlockData[0]));
@@ -68,8 +68,6 @@ public class BlockConstructionService implements IBlockConstructionService{
 	public void scheduleBuildForPlayer(Player player, PlayerState state, boolean isInit) {
 		
 		int buildBlock = neededBlockToMax(state.getAnswerCount(), state.getBuildedBlocks(), true);
-
-		state.addBuildedBlock(buildBlock);
 		
 		FillBlocksTask fbt = new FillBlocksTask(plugin, gameManager, state.getLocaton(),
 				getDirection(state.getLocaton()), game, player, buildBlock,

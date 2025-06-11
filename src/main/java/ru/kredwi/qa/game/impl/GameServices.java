@@ -26,7 +26,7 @@ public class GameServices {
 	public GameServices(PluginWrapper plugin, IMainGame gameManager, IGame game, SQLManager sqlManager) {
 		this.gameAnswer = new GameAnswerService(plugin.getConfigManager(), game, sqlManager);
 		this.winnerService = new WinnerService(plugin.getConfigManager(), game, sqlManager);
-		this.gamePlayer = new GamePlayerService(plugin.getConfigManager().getAsBoolean(ConfigKeys.DEBUG));
+		this.gamePlayer = new GamePlayerService(game, plugin.getConfigManager().getAsBoolean(ConfigKeys.DEBUG));
 		
 		this.blockConstructionService = new BlockConstructionService(game, plugin, getGamePlayer(), getWinnerService());
 		this.questionManager = new QuestionService(plugin.getConfigManager(), getGamePlayer());

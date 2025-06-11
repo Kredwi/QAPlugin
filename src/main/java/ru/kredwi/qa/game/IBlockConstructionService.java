@@ -16,11 +16,10 @@ public interface IBlockConstructionService extends ServiceReader {
 	 * This is the number of blocks added to the total number of required blocks during initialization. <br>
 	 * This is necessary for the correct calculation of the required number of blocks. <br>
 	 * The number 2 is used because perpendiculars are created. <br>
-	 * See {@link ru.kredwi.qa.commands.StartGame} for more details about game initialization.
-	 *
+	 * See {@link ru.kredwi.qa.commands.StartGame} for more details about game initialization. <br>
+	 * (counts of perpediculars blocks)
 	 * @author Kredwi
 	 */
-
 	int COUNT_OF_INIT_BLOCKS = 2;
 	
 	public int getBuildComplete();

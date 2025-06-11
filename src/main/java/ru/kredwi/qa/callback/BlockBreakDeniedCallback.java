@@ -4,43 +4,25 @@ import static ru.kredwi.qa.config.ConfigKeys.DEBUG;
 import static ru.kredwi.qa.config.ConfigKeys.INDESTRUCTIBLE_BLOCK_ENCOUNTERED;
 
 import java.util.ConcurrentModificationException;
-import java.util.Map;
-import java.util.Optional;
 import java.util.function.Predicate;
-
-import org.bukkit.entity.Player;
 
 import ru.kredwi.qa.PluginWrapper;
 import ru.kredwi.qa.QAPlugin;
 import ru.kredwi.qa.callback.data.BreakIsBlockedData;
 import ru.kredwi.qa.config.ConfigKeys;
 import ru.kredwi.qa.game.ActionsBlockBuilded;
-import ru.kredwi.qa.game.IGamePlayer;
-import ru.kredwi.qa.game.IMainGame;
-import ru.kredwi.qa.game.IWinnerService;
-import ru.kredwi.qa.game.impl.GameInfo;
-import ru.kredwi.qa.game.player.PlayerState;
+import ru.kredwi.qa.game.IGame;
 
-/**
- * TODO if task is not closed blocks from other path continue building
- * TODO rewrite this logics
- * */
 public class BlockBreakDeniedCallback implements Predicate<BreakIsBlockedData> {
 
 	private boolean isGameEnd = false;
 	
 	private PluginWrapper plugin;
-	private IMainGame mainGame;
 	
-	private IGamePlayer gamePlayer;
-	private IWinnerService winnerService;
-	private GameInfo gameInfo;
+	private IGame game;
 
-	public BlockBreakDeniedCallback(PluginWrapper plugin, IMainGame mainGame, GameInfo gameInfo, IGamePlayer gamePlayer, IWinnerService winnerService) {
-		this.gameInfo = gameInfo;
-		this.gamePlayer = gamePlayer;
-		this.winnerService = winnerService;
-		this.mainGame = mainGame;
+	public BlockBreakDeniedCallback(PluginWrapper plugin, IGame game) {
+		this.game = game;
 		this.plugin = plugin;
 	}
 	
@@ -79,19 +61,8 @@ public class BlockBreakDeniedCallback implements Predicate<BreakIsBlockedData> {
 		
 		this.isGameEnd = true;
 		
-		Optional<Integer> maxBuildedBlocks = gamePlayer.getPlayerAndStatesArray().stream()
-			.map(e -> e.getValue().getBuildedBlocks())
-			.max(Integer::compare);
-		
-		for (Map.Entry<Player, PlayerState> s : gamePlayer.getPlayerAndStatesArray()) {
-			if (maxBuildedBlocks.isPresent() && s.getValue().getBuildedBlocks() >= maxBuildedBlocks.get()) {
-				winnerService.addWinner(s.getKey());
-			}
-		}
-
-		winnerService.alertOfPlayersWin();
-		
-		mainGame.removeGameWithName(gameInfo.name());
+		// set mark of pre stop game
+		game.setPreStopGame(true);
 		
 		return false;
 	}

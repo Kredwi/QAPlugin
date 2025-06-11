@@ -1,6 +1,7 @@
 package ru.kredwi.qa.commands;
 
 import static ru.kredwi.qa.config.ConfigKeys.DEBUG;
+import static ru.kredwi.qa.config.ConfigKeys.GAME_FINISHED;
 import static ru.kredwi.qa.config.ConfigKeys.GAME_NOT_FOUND;
 import static ru.kredwi.qa.config.ConfigKeys.IN_INPUT_DATA_LITTLE_SYMBOLS;
 import static ru.kredwi.qa.config.ConfigKeys.IN_INPUT_DATA_OVER_SYMBOLS;
@@ -53,6 +54,11 @@ public class NewQuestion extends CommandAbstract {
 		
 		if (!(game.getGameInfo().isPlayerOwner(player))) {
 			sender.sendMessage(cm.getAsString(IS_COMMAND_ONLY_FOR_GAME_OWNER));
+			return;
+		}
+		
+		if (game.isFinish()) {
+			sender.sendMessage(cm.getAsString(GAME_FINISHED));
 			return;
 		}
 		

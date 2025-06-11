@@ -11,15 +11,18 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.bukkit.entity.Player;
 
 import ru.kredwi.qa.QAPlugin;
+import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IGamePlayer;
 import ru.kredwi.qa.game.player.PlayerState;
 
 public class GamePlayerService implements IGamePlayer {
 
+	private final IGame game;
 	private Map<Player, PlayerState> states = new ConcurrentHashMap<>();
 	private boolean debug;
 	
-	public GamePlayerService(boolean debug) {
+	public GamePlayerService(IGame game, boolean debug) {
+		this.game = game;
 		this.debug = debug;
 	}
 	
@@ -71,5 +74,15 @@ public class GamePlayerService implements IGamePlayer {
 	@Override
 	public boolean isServiceReady() {
 		return true;
+	}
+
+	@Override
+	public void spawnPlayers() {
+		states.keySet()
+			.forEach(e -> {
+				if (Objects.isNull(e) || !e.isOnline() || e.isDead())
+					return;
+				e.teleport(game.getGameInfo().spawnLocation());
+			});
 	}
 }

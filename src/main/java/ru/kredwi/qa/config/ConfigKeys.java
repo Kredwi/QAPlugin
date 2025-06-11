@@ -5,6 +5,7 @@ public interface ConfigKeys {
 	String DEBUG = "debug";
 	String ENABLED_BLOCKS = "enabled-blocks";
 	String QUESTIONS = "questions";
+	String IMMEDIATELY_END_GAME = "immediately-end-game";
 	String DELETE_BLOCKS_WHEN_DISABLE = "delete-blocks-when-disable";
 	String SPAWN_DISPLAY_TEXTS = "spawn-display-texts";
 	String MAX_REQUESTS_SIZE = "max-requests-size";
@@ -80,6 +81,5 @@ public interface ConfigKeys {
 	
 	String MIN_LENGTH_PATH = "min-length-path";
 	String MAX_LENGTH_PATH = "max-length-path";
-	
-
+	String GAME_FINISHED = "game-finished";
 }

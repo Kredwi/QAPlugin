@@ -1,6 +1,7 @@
 package ru.kredwi.qa.callback;
 
 import static ru.kredwi.qa.config.ConfigKeys.ALREADY_ANSWER;
+import static ru.kredwi.qa.config.ConfigKeys.GAME_FINISHED;
 import static ru.kredwi.qa.config.ConfigKeys.GAME_IS_NOT_STARTED;
 import static ru.kredwi.qa.config.ConfigKeys.PLAYER_ANSWER;
 import static ru.kredwi.qa.config.ConfigKeys.YOU_ANSWER;
@@ -46,6 +47,11 @@ public class PlayerAnswerCallback implements Consumer<PlayerAnswerData> {
 		
 		if (!game.isStart()) {
 			data.player().sendMessage(cm.getAsString(GAME_IS_NOT_STARTED));
+			return;
+		}
+		
+		if (game.isFinish()) {
+			data.player().sendMessage(cm.getAsString(GAME_FINISHED));
 			return;
 		}
 		

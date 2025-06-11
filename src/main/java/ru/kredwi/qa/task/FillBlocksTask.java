@@ -32,6 +32,8 @@ import ru.kredwi.qa.utils.Pair;
 
 /**
  * Fill block timer task
+ * 
+ * TODO init layer is doubles if `isInit == true`
  * */
 public class FillBlocksTask extends BukkitRunnable {
 	
@@ -64,7 +66,7 @@ public class FillBlocksTask extends BukkitRunnable {
 				wordLength, spawnTextDisplay,
 				new DisplayText(plugin,spawnTextDisplay),
 				new ConstructionStageEndCallback(plugin, gameManager, game, player),
-				new BlockPlacementCallback(plugin, player),
+				new BlockPlacementCallback(plugin, player, game.getPlayerService().getPlayerState(player)),
 				breakIsBlockedCallback);
 	}
 
@@ -166,8 +168,11 @@ public class FillBlocksTask extends BukkitRunnable {
 					continue;
 				} else {
 					if (debug) {
-						QAPlugin.getQALogger().info("Cancel this task timer...");							
+						QAPlugin.getQALogger().info("Cancel this task timer and execute final callback...");							
 					}
+					Bukkit.getScheduler().runTask(plugin, () -> {
+						buildFinalCallback.accept(null);
+					});
 					task.cancel();
 					return;
 				}

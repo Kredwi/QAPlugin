@@ -26,7 +26,6 @@ public class CreateGame extends CommandAbstract {
 	private QAConfig cm;
 	
 	public CreateGame(QAConfig cm) {
-		// plugin in super cast to IMainGame
 		super("creategame", 2, true, "qaplugin.commands.creategame");
 		this.cm = cm;
 	}

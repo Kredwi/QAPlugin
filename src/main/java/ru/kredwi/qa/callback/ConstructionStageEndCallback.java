@@ -6,7 +6,10 @@ import static ru.kredwi.qa.config.ConfigKeys.FIREWORK_FOR_WINNER_FADES;
 import static ru.kredwi.qa.config.ConfigKeys.FIREWORK_FOR_WINNER_FLICKER;
 import static ru.kredwi.qa.config.ConfigKeys.FIREWORK_FOR_WINNER_TRAIL;
 import static ru.kredwi.qa.config.ConfigKeys.FIREWORK_FOR_WINNER_TYPE;
+import static ru.kredwi.qa.config.ConfigKeys.IMMEDIATELY_END_GAME;
 
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import org.bukkit.Bukkit;
@@ -77,19 +80,46 @@ public class ConstructionStageEndCallback implements Consumer<Void> {
 			// if have winner
 			if (!game.getWinnerService().getWinners().isEmpty()) {
 				
-				// spawn for winners firework effects
-				if (plugin.getConfigManager().getAsBoolean(FIREWORK_FOR_WINNER_ENABLE)) {
-					game.getWinnerService().getWinners().forEach(p -> spawnFireworkEntity(p.getLocation()));		
-				}
+				this.executeWinnerHandler();
 				
-				// and alert all players in the game of winners
-				game.getWinnerService().alertOfPlayersWin();
-				
-				// and remove game from global games
-				mainGame.removeGameWithName(game.getGameInfo().name());
-				
-			// if game is dont have winners questions players of new question
-			} else game.getQuestionManager().questionAllPlayers();
+			} else {
+				if (game.isPreStopGame()) {
+					Optional<Integer> maxBuildedBlocks = game.getPlayerService().getPlayerAndStatesArray().stream()
+							.map(e -> e.getValue().getBuildedBlocks())
+							.max(Integer::compare);
+						
+					for (Map.Entry<Player, PlayerState> s : game.getPlayerService().getPlayerAndStatesArray()) {
+						if (maxBuildedBlocks.isPresent() && s.getValue().getBuildedBlocks() >= maxBuildedBlocks.get()) {
+							game.getWinnerService().addWinner(s.getKey());
+						}
+					}
+					
+					this.executeWinnerHandler();
+					return;
+				} else game.getQuestionManager().questionAllPlayers();
+			}
+		}
+	}
+	
+	private void executeWinnerHandler() {
+		if (game.getWinnerService().getWinners().isEmpty()) {
+			throw new NegativeArraySizeException("Winners is EMPTY !");
+		}
+		
+		// spawn for winners firework effects
+		if (plugin.getConfigManager().getAsBoolean(FIREWORK_FOR_WINNER_ENABLE)) {
+			game.getWinnerService().getWinners().forEach(p -> spawnFireworkEntity(p.getLocation()));		
+		}
+		
+		// and alert all players in the game of winners
+		game.getWinnerService().alertOfPlayersWin();
+		
+		game.getPlayerService().spawnPlayers();
+		
+		game.setFinished(true);
+		
+		if (plugin.getConfig().getBoolean(IMMEDIATELY_END_GAME)) {
+			mainGame.removeGameWithName(game.getGameInfo().name());	
 		}
 	}
 	

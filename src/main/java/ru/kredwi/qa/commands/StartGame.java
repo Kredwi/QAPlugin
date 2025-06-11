@@ -1,6 +1,6 @@
 package ru.kredwi.qa.commands;
 
-import static ru.kredwi.qa.config.ConfigKeys.GAME_NOT_FOUND;
+import static ru.kredwi.qa.config.ConfigKeys.*;
 import static ru.kredwi.qa.config.ConfigKeys.IN_THE_GAME_NOT_FOUND_PATHS;
 import static ru.kredwi.qa.config.ConfigKeys.IS_COMMAND_ONLY_FOR_GAME_OWNER;
 
@@ -49,6 +49,11 @@ public class StartGame extends CommandAbstract {
 		
 		if (Objects.isNull(game)) {
 			sender.sendMessage(cm.getAsString(GAME_NOT_FOUND));
+			return;
+		}
+		
+		if (game.isFinish()) {
+			sender.sendMessage(cm.getAsString(GAME_FINISHED));
 			return;
 		}
 		

@@ -20,6 +20,7 @@ import org.bukkit.entity.Player;
 import ru.kredwi.qa.PluginWrapper;
 import ru.kredwi.qa.QAPlugin;
 import ru.kredwi.qa.config.QAConfig;
+import ru.kredwi.qa.game.player.PlayerState;
 import ru.kredwi.qa.utils.LocationUtils;
 
 public class BlockPlacementCallback implements Consumer<Location> {
@@ -27,15 +28,18 @@ public class BlockPlacementCallback implements Consumer<Location> {
 	private QAConfig configManager;
 	private PluginWrapper plugin;
 	private Player player;
+	private PlayerState playerState;
 	
-	public BlockPlacementCallback(PluginWrapper plugin, Player player) {
+	public BlockPlacementCallback(PluginWrapper plugin, Player player, PlayerState playerState) {
 		this.configManager = plugin.getConfigManager();
 		this.plugin = plugin;
 		this.player = player;
+		this.playerState = playerState;
 	}
 	
 	@Override
 	public void accept(Location location) {
+		playerState.addBuildedBlock(1);
 		
 		World world = location.getWorld();
 		

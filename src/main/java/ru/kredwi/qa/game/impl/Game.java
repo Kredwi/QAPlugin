@@ -16,11 +16,13 @@ public class Game implements IGame {
 	
 	private final GameServices services;
 	private final GameInfo gameInfo;
+	private boolean preStopGame;
 	private boolean isStart;
+	private boolean isFinish;
 	
 	public Game(String name, Player owner, int blocksToWin, PluginWrapper plugin, SQLManager sqlManager, IMainGame gameManager) {
 		this.gameInfo = new GameInfo(name.trim().toLowerCase(),
-				owner.getUniqueId(), blocksToWin);
+				owner.getUniqueId(), blocksToWin, owner.getLocation().clone());
 		this.services = new GameServices(plugin, gameManager, this, sqlManager);
 	}
 	
@@ -71,5 +73,25 @@ public class Game implements IGame {
 				&& getPlayerService().isServiceReady()
 				&& getQuestionManager().isServiceReady()
 				&& getWinnerService().isServiceReady();
+	}
+
+	@Override
+	public boolean isPreStopGame() {
+		return preStopGame;
+	}
+
+	@Override
+	public void setPreStopGame(boolean preStopGame) {
+		this.preStopGame = preStopGame;
+	}
+
+	@Override
+	public boolean isFinish() {
+		return isFinish;
+	}
+
+	@Override
+	public void setFinished(boolean isFinish) {
+		this.isFinish = isFinish;
 	}
 }
