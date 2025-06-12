@@ -1,7 +1,7 @@
 name: QAPlugin
 api-version: 1.19
 description: Adds a question and answer mechanic to your server!
-version: 0.6.0
+version: 0.6.1
 author: Kredwi
 main: ru.kredwi.qa.QAPlugin
 website: https://github.com/Kredwi/QAPlugin
@@ -9,81 +9,66 @@ commands:
   question:
     description: Ask your question.
     usage: /question <question...>
-    permission: qaplugin.commands.question
+    permission: qaplugin.game.creator
   answer:
     description: Answer the current question.
     usage: /answer <answer>
-    permission: qaplugin.commands.answer
+    permission: qaplugin.game.base
   path:
     description: Set the path for a player in the game.
     usage: /path <game name> <player name>
-    permission: qaplugin.commands.path
+    permission: qaplugin.game.creator
   acceptgame:
     description: Accept the invitation and join the game.
     usage: /acceptgame <game name>
-    permission: qaplugin.commands.acceptgame
+    permission: qaplugin.game.base
   denygame:
     description: Deny game request.
     usage: /denygame <game name>
-    permission: qaplugin.commands.denygame
+    permission: qaplugin.game.base
   creategame:
     description: Create a new game.
     usage: /creategame <game name> <blocks to end>
-    permission: qaplugin.commands.creategame
+    permission: qaplugin.game.creator
   startgame:
     description: Start the game.
     usage: /startgame <game name>
-    permission: qaplugin.commands.startgame
+    permission: qaplugin.game.creator
   deletegame:
     description: Delete an existing game.
     usage: /deletegame <game name>
-    permission: qaplugin.commands.deletegame
+    permission: qaplugin.game.creator
   deleteplayer:
     description: Remove a player from the game.
     usage: /deleteplayer <game name> <player name>
-    permission: qaplugin.commands.deleteplayer
+    permission: qaplugin.game.creator
   deleteblock:
     description: Delete layers from the path for Player
     usage: /deleteblock <game name>
-    permission: qaplugin.commands.deleteblock
+    permission: qaplugin.game.creator
   qareload:
     description: Reload plugin configuratin.
     usage: /qareload
-    permission: qaplugin.commands.reload
+    permission: qaplugin.plugin.base
 permissions:
-  qaplugin.commands.answer:
-    description: Allows players to answer questions.
+  qaplugin.game.base:
+    description: Basic commands for players
     default: true
-  qaplugin.commands.question:
-    description: Allows players to ask questions.
+  qaplugin.game.creator:
+    description: Basic commands for game management
     default: op
-  qaplugin.commands.creategame:
-    description: Allows players to create games.
+    children:
+        qaplugin.game.base: true
+  qaplugin.plugin.base:
+    description: Basic commands for plugin management
     default: op
-  qaplugin.commands.path:
-    description: Allows players to set paths.
-    default: op
-  qaplugin.commands.acceptgame:
-    description: Allows players to accept game invitations.
-    default: true
-  qaplugin.commands.denygame:
-    description: Allows players to deny game invitations.
-    default: true
-  qaplugin.commands.startgame:
-    description: Allows players to start games.
-    default: op
-  qaplugin.commands.deletegame:
-    description: Allows players to delete games.
-    default: op
-  qaplugin.commands.deleteplayer:
-    description: Allows players to remove players from games.
-    default: op
-  qaplugin.commands.deleteblock:
-    description: Allows players to remove layers from player path.
-    default: op
-  qaplugin.commands.reload:
-    description: Allows players to reload plugin.
-    default: op
+    children:
+        qaplugin.game.base: true
+        qaplugin.game.creator: true
   qaplugin.*:
-    description: Grants all admin permissions for QAPlugin.
+    description: Full access to all plugin commands
     default: op
+    children:
+        qaplugin.game.base: true
+        qaplugin.game.creator: true
+        qaplugin.plugin.base: true

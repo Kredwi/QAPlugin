@@ -1,4 +1,4 @@
-package ru.kredwi.qa.commands;
+package ru.kredwi.qa.commands.base;
 
 import static ru.kredwi.qa.config.ConfigKeys.DEBUG;
 import static ru.kredwi.qa.config.ConfigKeys.REQUEST_SUCCESS_DENIED;
@@ -14,8 +14,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import ru.kredwi.qa.QAPlugin;
-import ru.kredwi.qa.commands.base.CommandAbstract;
-import ru.kredwi.qa.commands.base.ICommandController;
+import ru.kredwi.qa.commands.CommandAbstract;
+import ru.kredwi.qa.commands.ICommandController;
 import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.exceptions.InvalidRequestData;
 import ru.kredwi.qa.game.IMainGame;
@@ -27,7 +27,7 @@ public class DenyGame extends CommandAbstract {
 	private IMainGame mainGame;
 	
 	public DenyGame(IMainGame mainGame, QAConfig cm) {
-		super("denygame", 1, true, "qaplugin.commands.denygame");
+		super("denygame", 1, true, "qaplugin.game.base");
 		this.mainGame = mainGame;
 		this.cm = cm;
 	}

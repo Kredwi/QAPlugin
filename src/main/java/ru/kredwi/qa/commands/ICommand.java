@@ -1,4 +1,4 @@
-package ru.kredwi.qa.commands.base;
+package ru.kredwi.qa.commands;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;

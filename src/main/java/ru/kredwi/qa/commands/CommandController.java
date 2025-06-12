@@ -1,4 +1,4 @@
-package ru.kredwi.qa.commands.base;
+package ru.kredwi.qa.commands;
 
 import static ru.kredwi.qa.config.ConfigKeys.COMMAND_ONLY_FOR_PLAYERS;
 import static ru.kredwi.qa.config.ConfigKeys.DB_ENABLE;
@@ -22,17 +22,17 @@ import org.bukkit.entity.Player;
 
 import ru.kredwi.qa.PluginWrapper;
 import ru.kredwi.qa.QAPlugin;
-import ru.kredwi.qa.commands.Answer;
-import ru.kredwi.qa.commands.AcceptGame;
-import ru.kredwi.qa.commands.CreateGame;
-import ru.kredwi.qa.commands.DeleteBlock;
-import ru.kredwi.qa.commands.DeleteGame;
-import ru.kredwi.qa.commands.DeletePlayer;
-import ru.kredwi.qa.commands.DenyGame;
-import ru.kredwi.qa.commands.NewQuestion;
-import ru.kredwi.qa.commands.Path;
-import ru.kredwi.qa.commands.QAReload;
-import ru.kredwi.qa.commands.StartGame;
+import ru.kredwi.qa.commands.base.AcceptGame;
+import ru.kredwi.qa.commands.base.Answer;
+import ru.kredwi.qa.commands.base.DenyGame;
+import ru.kredwi.qa.commands.creator.CreateGame;
+import ru.kredwi.qa.commands.creator.DeleteBlock;
+import ru.kredwi.qa.commands.creator.DeleteGame;
+import ru.kredwi.qa.commands.creator.DeletePlayer;
+import ru.kredwi.qa.commands.creator.NewQuestion;
+import ru.kredwi.qa.commands.creator.Path;
+import ru.kredwi.qa.commands.creator.StartGame;
+import ru.kredwi.qa.commands.plugin.QAReload;
 import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.exceptions.QAException;
 import ru.kredwi.qa.exceptions.RequestsOutOfBounds;

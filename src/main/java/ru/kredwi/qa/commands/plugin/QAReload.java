@@ -1,4 +1,4 @@
-package ru.kredwi.qa.commands;
+package ru.kredwi.qa.commands.plugin;
 
 import java.util.Collections;
 import java.util.List;
@@ -6,15 +6,15 @@ import java.util.List;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
-import ru.kredwi.qa.commands.base.CommandAbstract;
-import ru.kredwi.qa.commands.base.ICommandController;
+import ru.kredwi.qa.commands.CommandAbstract;
+import ru.kredwi.qa.commands.ICommandController;
 import ru.kredwi.qa.config.ConfigKeys;
 import ru.kredwi.qa.exceptions.QAException;
 
 public class QAReload extends CommandAbstract{
 
 	public QAReload() {
-		super("qareload", false, "qaplugin.commands.reload");
+		super("qareload", false, "qaplugin.plugin.base");
 	}
 
 	@Override

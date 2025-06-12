@@ -1,4 +1,4 @@
-package ru.kredwi.qa.commands;
+package ru.kredwi.qa.commands.creator;
 
 import static ru.kredwi.qa.config.ConfigKeys.*;
 import static ru.kredwi.qa.config.ConfigKeys.IN_ARGUMENT_NEEDED_NUMBER;
@@ -15,8 +15,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import ru.kredwi.qa.commands.base.CommandAbstract;
-import ru.kredwi.qa.commands.base.ICommandController;
+import ru.kredwi.qa.commands.CommandAbstract;
+import ru.kredwi.qa.commands.ICommandController;
 import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.impl.Game;
@@ -26,7 +26,7 @@ public class CreateGame extends CommandAbstract {
 	private QAConfig cm;
 	
 	public CreateGame(QAConfig cm) {
-		super("creategame", 2, true, "qaplugin.commands.creategame");
+		super("creategame", 2, true, "qaplugin.game.creator");
 		this.cm = cm;
 	}
 	

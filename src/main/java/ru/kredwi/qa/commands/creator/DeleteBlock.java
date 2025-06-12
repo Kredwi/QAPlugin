@@ -1,13 +1,12 @@
-package ru.kredwi.qa.commands;
+package ru.kredwi.qa.commands.creator;
 
-import static ru.kredwi.qa.config.ConfigKeys.*;
+import static ru.kredwi.qa.config.ConfigKeys.IN_ARGUMENT_NEEDED_NUMBER;
 import static ru.kredwi.qa.config.ConfigKeys.IS_PLAYER_IS_NOT_FOUND;
+import static ru.kredwi.qa.config.ConfigKeys.PLAYER_DOES_NOT_HAVE_LAYERS;
 import static ru.kredwi.qa.config.ConfigKeys.YOU_DONT_GAME_OWNER;
 import static ru.kredwi.qa.config.ConfigKeys.YOU_NOT_CONNECTED_TO_GAME;
-import static ru.kredwi.qa.game.IBlockConstructionService.COUNT_OF_INIT_BLOCKS;
 
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
@@ -16,21 +15,21 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import ru.kredwi.qa.commands.base.CommandAbstract;
-import ru.kredwi.qa.commands.base.ICommandController;
+import ru.kredwi.qa.commands.CommandAbstract;
+import ru.kredwi.qa.commands.ICommandController;
 import ru.kredwi.qa.config.QAConfig;
+import ru.kredwi.qa.exceptions.PlayerDontHaveLayersException;
 import ru.kredwi.qa.exceptions.QAException;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IMainGame;
 import ru.kredwi.qa.game.player.PlayerState;
-import ru.kredwi.qa.removers.IRemover;
 
 public class DeleteBlock extends CommandAbstract{
 
 	private IMainGame mainGame;
 	
 	public DeleteBlock(IMainGame mainGame) {
-		super("deleteblock", 1, true, "qaplugin.commands.deleteblock");
+		super("deleteblock", 1, true, "qaplugin.game.creator");
 		this.mainGame = mainGame;
 	}
 
@@ -66,8 +65,6 @@ public class DeleteBlock extends CommandAbstract{
 			return;
 		}
 		
-		List<IRemover> buildedBlocks = playerState.getPlayerBuildedBlocks();
-		
 		int deleteBlock = 3;
 		
 		if (args.length >= 2) {
@@ -79,12 +76,13 @@ public class DeleteBlock extends CommandAbstract{
 			}
 		}
 		
-		Iterator<IRemover> iterator = buildedBlocks.iterator();
-		for (int i =0; i < deleteBlock * (COUNT_OF_INIT_BLOCKS + 1) && iterator.hasNext(); i++) {
-			IRemover remover = iterator.next();
-			remover.remove();
-			iterator.remove();
+		try {
+			game.getBlockConstruction().deletePathLayer(playerState, deleteBlock);	
+		} catch (PlayerDontHaveLayersException e) {
+			sender.sendMessage(cm.getAsString(PLAYER_DOES_NOT_HAVE_LAYERS));
+			return;
 		}
+
 	}
 
 	@Override

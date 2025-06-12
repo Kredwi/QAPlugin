@@ -1,4 +1,4 @@
-package ru.kredwi.qa.commands;
+package ru.kredwi.qa.commands.creator;
 
 import static ru.kredwi.qa.config.ConfigKeys.GAME_NOT_FOUND;
 import static ru.kredwi.qa.config.ConfigKeys.IS_COMMAND_ONLY_FOR_GAME_OWNER;
@@ -15,8 +15,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import ru.kredwi.qa.commands.base.CommandAbstract;
-import ru.kredwi.qa.commands.base.ICommandController;
+import ru.kredwi.qa.commands.CommandAbstract;
+import ru.kredwi.qa.commands.ICommandController;
 import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IMainGame;
@@ -29,7 +29,7 @@ public class DeletePlayer extends CommandAbstract {
 	private IMainGame mainGame;
 	
 	public DeletePlayer(IMainGame mainGame, QAConfig cm) {
-		super("deleteplayer", 2, true, "qaplugin.commands.deleteplayer");
+		super("deleteplayer", 2, true, "qaplugin.game.creator");
 		this.mainGame = mainGame;
 		this.cm = cm;
 	}

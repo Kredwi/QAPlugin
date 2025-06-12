@@ -1,4 +1,4 @@
-package ru.kredwi.qa.commands;
+package ru.kredwi.qa.commands.base;
 
 import static ru.kredwi.qa.config.ConfigKeys.THIS_GAME_IS_NOT_REQUESTED_YOU;
 import static ru.kredwi.qa.config.ConfigKeys.YOU_CONNECTED_TO;
@@ -15,8 +15,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import ru.kredwi.qa.commands.base.CommandAbstract;
-import ru.kredwi.qa.commands.base.ICommandController;
+import ru.kredwi.qa.commands.CommandAbstract;
+import ru.kredwi.qa.commands.ICommandController;
 import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.game.IMainGame;
 import ru.kredwi.qa.game.request.RequestInfo;
@@ -27,7 +27,7 @@ public class AcceptGame extends CommandAbstract {
 	private IMainGame mainGame;
 	
 	public AcceptGame(QAConfig cm, IMainGame mainGame) {
-		super("acceptgame", 1, true, "qaplugin.commands.acceptgame");
+		super("acceptgame", 1, true, "qaplugin.game.base");
 		this.mainGame = mainGame;
 		this.cm = cm;
 	}

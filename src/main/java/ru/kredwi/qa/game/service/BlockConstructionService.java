@@ -8,6 +8,7 @@ import static ru.kredwi.qa.config.ConfigKeys.SPAWN_DISPLAY_TEXTS;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -27,6 +28,7 @@ import ru.kredwi.qa.QAPlugin;
 import ru.kredwi.qa.callback.BlockBreakDeniedCallback;
 import ru.kredwi.qa.callback.data.BreakIsBlockedData;
 import ru.kredwi.qa.config.QAConfig;
+import ru.kredwi.qa.exceptions.PlayerDontHaveLayersException;
 import ru.kredwi.qa.game.IBlockConstructionService;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IGamePlayer;
@@ -197,5 +199,23 @@ public class BlockConstructionService implements IBlockConstructionService{
 	@Override
 	public boolean isServiceReady() {
 		return serviceReady;
+	}
+
+	@Override
+	public void deletePathLayer(PlayerState playerState, int deleteBlock) throws PlayerDontHaveLayersException {
+		int delete = deleteBlock * (COUNT_OF_INIT_BLOCKS + 1);
+		
+		List<IRemover> blockRemovers = playerState.getPlayerBuildedBlocks();
+		
+		if (blockRemovers.isEmpty() || blockRemovers.size() < delete) {
+			throw new PlayerDontHaveLayersException("Player dont have needs layers");
+		}
+		
+		Iterator<IRemover> iterator = blockRemovers.iterator();
+		for (int i =0; i < delete && iterator.hasNext(); i++) {
+			IRemover remover = iterator.next();
+			remover.remove();
+			iterator.remove();
+		}
 	}
 }

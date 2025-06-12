@@ -1,4 +1,4 @@
-package ru.kredwi.qa.commands.base;
+package ru.kredwi.qa.commands;
 
 import ru.kredwi.qa.PluginWrapper;
 import ru.kredwi.qa.config.QAConfig;

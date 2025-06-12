@@ -1,4 +1,4 @@
-package ru.kredwi.qa.commands;
+package ru.kredwi.qa.commands.creator;
 
 import static ru.kredwi.qa.config.ConfigKeys.*;
 import static ru.kredwi.qa.config.ConfigKeys.ENABLE_REQUESTS;
@@ -22,8 +22,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import ru.kredwi.qa.QAPlugin;
-import ru.kredwi.qa.commands.base.CommandAbstract;
-import ru.kredwi.qa.commands.base.ICommandController;
+import ru.kredwi.qa.commands.CommandAbstract;
+import ru.kredwi.qa.commands.ICommandController;
 import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.exceptions.RequestsOutOfBounds;
 import ru.kredwi.qa.game.IGame;
@@ -38,7 +38,7 @@ public class Path extends CommandAbstract {
 	private IMainGame mainGame;
 	
 	public Path(IMainGame mainGame, QAConfig cm) {
-		super("path", 1, true, true, "qaplugin.commands.path");
+		super("path", 1, true, true, "qaplugin.game.creator");
 		
 		this.gameRequestManager = mainGame.getGameRequestManager();
 		this.mainGame = mainGame;

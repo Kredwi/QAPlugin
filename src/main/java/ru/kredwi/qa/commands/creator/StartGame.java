@@ -1,4 +1,4 @@
-package ru.kredwi.qa.commands;
+package ru.kredwi.qa.commands.creator;
 
 import static ru.kredwi.qa.config.ConfigKeys.*;
 import static ru.kredwi.qa.config.ConfigKeys.IN_THE_GAME_NOT_FOUND_PATHS;
@@ -13,8 +13,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import ru.kredwi.qa.commands.base.CommandAbstract;
-import ru.kredwi.qa.commands.base.ICommandController;
+import ru.kredwi.qa.commands.CommandAbstract;
+import ru.kredwi.qa.commands.ICommandController;
 import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IMainGame;
@@ -37,7 +37,7 @@ public class StartGame extends CommandAbstract {
 	private IMainGame mainGame;
 	
 	public StartGame(IMainGame mainGame, QAConfig cm) {
-		super("startgame", 1, true, "qaplugin.commands.startgame");
+		super("startgame", 1, true, "qaplugin.game.creator");
 		this.mainGame = mainGame;
 		this.cm = cm;
 	}

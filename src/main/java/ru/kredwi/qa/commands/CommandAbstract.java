@@ -1,12 +1,10 @@
-package ru.kredwi.qa.commands.base;
+package ru.kredwi.qa.commands;
 
 import java.util.Objects;
 
 import org.bukkit.permissions.Permissible;
 
 public abstract class CommandAbstract implements ICommand {
-
-	private static final String PERMISSION_FOR_ALL = "qaplugin.*";
 	
 	private final String name;
 	private final int needArgs;
@@ -56,7 +54,7 @@ public abstract class CommandAbstract implements ICommand {
 
 	@Override
 	public boolean isHaveNeedsPermissions(Permissible permissible) {
-		if (permissions.length == 0 || permissible.isOp() || permissible.hasPermission(PERMISSION_FOR_ALL))
+		if (permissions.length == 0 || permissible.isOp())
 			return true;
 		
 		for (String permission : permissions) {

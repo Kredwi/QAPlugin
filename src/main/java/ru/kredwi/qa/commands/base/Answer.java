@@ -1,4 +1,4 @@
-package ru.kredwi.qa.commands;
+package ru.kredwi.qa.commands.base;
 
 import static ru.kredwi.qa.config.ConfigKeys.IN_INPUT_DATA_LITTLE_SYMBOLS;
 import static ru.kredwi.qa.config.ConfigKeys.IN_INPUT_DATA_OVER_SYMBOLS;
@@ -17,8 +17,8 @@ import org.bukkit.entity.Player;
 
 import ru.kredwi.qa.callback.PlayerAnswerCallback;
 import ru.kredwi.qa.callback.data.PlayerAnswerData;
-import ru.kredwi.qa.commands.base.CommandAbstract;
-import ru.kredwi.qa.commands.base.ICommandController;
+import ru.kredwi.qa.commands.CommandAbstract;
+import ru.kredwi.qa.commands.ICommandController;
 import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.game.IMainGame;
 
@@ -32,7 +32,7 @@ public class Answer extends CommandAbstract{
 	}
 	
 	public Answer(QAConfig configManager, IMainGame mainGame, Consumer<PlayerAnswerData> callback) {
-		super("answer", true, "qaplugin.commands.answer");
+		super("answer", true, "qaplugin.game.base");
 		this.cm = configManager;
 		this.callback = callback;
 	}

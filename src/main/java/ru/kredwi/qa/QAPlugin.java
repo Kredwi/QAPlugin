@@ -7,8 +7,8 @@ import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import ru.kredwi.qa.commands.base.CommandController;
 import ru.kredwi.qa.config.QAConfig;
+import ru.kredwi.qa.commands.CommandController;
 import ru.kredwi.qa.config.ConfigKeys;
 import ru.kredwi.qa.config.impl.ConfigManager;
 import ru.kredwi.qa.event.FireworkDamageListener;
@@ -29,7 +29,7 @@ public class QAPlugin extends JavaPlugin implements PluginWrapper {
 	 * config version for validate configs
 	 * @author Kredwi
 	 * */
-	private static final double NEED_CONFIG_VERSION = 2.8;
+	private static final double NEED_CONFIG_VERSION = 2.9;
 	
 	private static Logger logger = null;
 	

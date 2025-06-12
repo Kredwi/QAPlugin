@@ -1,4 +1,4 @@
-package ru.kredwi.qa.commands;
+package ru.kredwi.qa.commands.creator;
 
 import static ru.kredwi.qa.config.ConfigKeys.DEBUG;
 import static ru.kredwi.qa.config.ConfigKeys.GAME_FINISHED;
@@ -18,8 +18,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import ru.kredwi.qa.QAPlugin;
-import ru.kredwi.qa.commands.base.CommandAbstract;
-import ru.kredwi.qa.commands.base.ICommandController;
+import ru.kredwi.qa.commands.CommandAbstract;
+import ru.kredwi.qa.commands.ICommandController;
 import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IGameQuestionManager;
@@ -31,7 +31,7 @@ public class NewQuestion extends CommandAbstract {
 	private QAConfig cm;
 	
 	public NewQuestion(QAConfig cm) {
-		super("question", 1, true, true, "qaplugin.commands.question");
+		super("question", 1, true, true, "qaplugin.game.creator");
 		this.cm = cm;
 	}
 
