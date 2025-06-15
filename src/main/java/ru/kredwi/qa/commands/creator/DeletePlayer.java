@@ -37,46 +37,47 @@ public class DeletePlayer extends CommandAbstract {
 	@Override
 	public void run(ICommandController commandController, CommandSender sender,
 			Command command, String[] args) {
-		
-		String gameName = args[0];
-		String playerName = args[1];
-
-		IGame game = commandController.getMainGame().getGame(gameName);
-
-		if (Objects.isNull(game)) {
-			sender.sendMessage(cm.getAsString(GAME_NOT_FOUND));
-			return;
-		}
-		
-		if (!game.getGameInfo().isPlayerOwner((Player) sender)) {
-			sender.sendMessage(cm.getAsString(IS_COMMAND_ONLY_FOR_GAME_OWNER));
-			return;
-		}
-		
-		// idk
-		Player player = Bukkit.getPlayer(playerName);
-		
-		if (Objects.isNull(player)) {
-			player = game.getPlayerService().getPlayer(playerName);
-			
-			if (Objects.isNull(player)) {
-				sender.sendMessage(cm.getAsString(IS_PLAYER_IS_NOT_FOUND));
-				return;
-			}
-			
-		}
-		
-		if (game.getGameInfo().isPlayerOwner(player)) {
-			sender.sendMessage(cm.getAsString(IS_GAME_OWNER));
-			return;
-		}
-		
-		PlayerState playerState = game.getPlayerService().getPlayerState(player);
-		
-		playerState.getPlayerBuildedBlocks()
-			.forEach(IRemover::remove);
-		
-		game.getPlayerService().getPlayers().remove(player);
+		sender.sendMessage("Command disabled. Wait next updates.");
+		return;
+//		String gameName = args[0];
+//		String playerName = args[1];
+//
+//		IGame game = commandController.getMainGame().getGame(gameName);
+//
+//		if (Objects.isNull(game)) {
+//			sender.sendMessage(cm.getAsString(GAME_NOT_FOUND));
+//			return;
+//		}
+//		
+//		if (!game.getGameInfo().isPlayerOwner((Player) sender)) {
+//			sender.sendMessage(cm.getAsString(IS_COMMAND_ONLY_FOR_GAME_OWNER));
+//			return;
+//		}
+//		
+//		// idk
+//		Player player = Bukkit.getPlayer(playerName);
+//		
+//		if (Objects.isNull(player)) {
+//			player = game.getPlayerService().getPlayer(playerName);
+//			
+//			if (Objects.isNull(player)) {
+//				sender.sendMessage(cm.getAsString(IS_PLAYER_IS_NOT_FOUND));
+//				return;
+//			}
+//			
+//		}
+//		
+//		if (game.getGameInfo().isPlayerOwner(player)) {
+//			sender.sendMessage(cm.getAsString(IS_GAME_OWNER));
+//			return;
+//		}
+//		
+//		PlayerState playerState = game.getPlayerService().getPlayerState(player);
+//		
+//		playerState.getPlayerBuildedBlocks()
+//			.forEach(IRemover::remove);
+//		
+//		game.getPlayerService().getPlayers().remove(player);
 	}
 	
 	@Override

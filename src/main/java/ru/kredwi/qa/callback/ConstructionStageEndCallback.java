@@ -7,8 +7,15 @@ import static ru.kredwi.qa.config.ConfigKeys.FIREWORK_FOR_WINNER_FLICKER;
 import static ru.kredwi.qa.config.ConfigKeys.FIREWORK_FOR_WINNER_TRAIL;
 import static ru.kredwi.qa.config.ConfigKeys.FIREWORK_FOR_WINNER_TYPE;
 import static ru.kredwi.qa.config.ConfigKeys.IMMEDIATELY_END_GAME;
+import static ru.kredwi.qa.config.ConfigKeys.PLAYER_DROP_POINTS_WITH_ALREADY_ANSWER;
 
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -20,11 +27,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.FireworkMeta;
 
 import ru.kredwi.qa.PluginWrapper;
+import ru.kredwi.qa.game.AnswerUsedData;
+import ru.kredwi.qa.game.IBlockConstructionService;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IMainGame;
 import ru.kredwi.qa.game.player.PlayerState;
+import ru.kredwi.qa.removers.IRemover;
+import ru.kredwi.qa.utils.Pair;
 
-public class ConstructionStageEndCallback implements Consumer<Void> {
+public class ConstructionStageEndCallback implements Consumer<Pair<Location, Location>> {
 
 	public static final int FIREWORK_MODEL_ID = 909827261;
 	
@@ -56,9 +67,20 @@ public class ConstructionStageEndCallback implements Consumer<Void> {
 	}
 	
 	@Override
-	public void accept(Void o) {
+	public void accept(Pair<Location, Location> location) {
 		// get path owner
 		PlayerState state = game.getPlayerService().getPlayerState(player);
+		state.setLocaton(location.second());		
+		if (state.getSymbols() != null && state.getSymbols().length > 0) {
+			String answer = String.copyValueOf(state.getSymbols());
+			
+			if (game.getGameAnswer().isAlreadyUsedAnswer(answer)) {
+				state.setAnswerUsed(new AnswerUsedData(state.getSymbols().length));
+				state.setLocaton(location.first());
+			} else {
+				game.getGameAnswer().addAlreadyUsedAnswer(answer);
+			}	
+		}
 		// reset all dynamic states
 		state.resetState();
 		
@@ -66,13 +88,23 @@ public class ConstructionStageEndCallback implements Consumer<Void> {
 		game.getBlockConstruction().addBuildComplete();
 		
 		// checks is winner?
-		if (game.getWinnerService().isPlayerWin(state)) {
+	//	if (game.getWinnerService().isPlayerWin(state)) {
 			// add winner to list winners
-			game.getWinnerService().addWinner(player);
-		}
+			//game.getWinnerService().addWinner(player);
+		//}
 		
 		// if last player complete build
 		if (game.getBlockConstruction().getBuildComplete() > game.getPlayerService().getPlayers().size()) {
+			
+			for (Map.Entry<Player,PlayerState> playerState : game.getPlayerService().getPlayerAndStatesArray()) {
+				AnswerUsedData answerUsed = playerState.getValue().getAnswerUsed();
+				if (Objects.nonNull(answerUsed)) {
+					asd(answerUsed.layers(), playerState);
+//					alertAllPlayersOfLosePlayer();
+					state.setAnswerUsed(null);
+					deletePlayerFromGame(playerState.getKey(), playerState.getValue(), location.second());
+				}
+			}
 			
 			// reset build completes
 			game.getBlockConstruction().resetBuildComplete();
@@ -136,5 +168,40 @@ public class ConstructionStageEndCallback implements Consumer<Void> {
 		firework.setFireworkMeta(fwm);
 
 		Bukkit.getScheduler().runTaskLater(plugin, firework::detonate, 3L);
+	}
+	
+	private void asd(int deleteBlock, Map.Entry<Player,PlayerState> entry) {
+		int delete = (deleteBlock + 4) * (IBlockConstructionService.COUNT_OF_INIT_BLOCKS + 1);
+		
+		List<IRemover> blockRemovers = entry.getValue().getPlayerBuildedBlocks();
+		entry.getValue().removeBuildedBlock(delete);
+		Collections.reverse(blockRemovers);
+		
+		Iterator<IRemover> iterator = blockRemovers.iterator();
+		
+		for (int i =0; i < delete && iterator.hasNext(); i++) {
+			IRemover remover = iterator.next();
+			remover.remove();
+			iterator.remove();
+		}
+		
+		Collections.reverse(blockRemovers);
+	}
+	
+	@Deprecated
+	private void alertAllPlayersOfLosePlayer() {
+		List<Player> players = new ArrayList<>(game.getPlayerService().getPlayers());
+		players.forEach(e -> e.sendMessage(MessageFormat.format(plugin.getConfigManager().getAsString(PLAYER_DROP_POINTS_WITH_ALREADY_ANSWER), e.getName())));
+	}
+	
+	private void deletePlayerFromGame(Player player, PlayerState playerState, Location saveLocation) {
+		//playerState.getPlayerBuildedBlocks()
+		//	.forEach(IRemover::remove);
+	
+		game.getBlockConstruction()
+			.addGlobalRemovers(player.getUniqueId(), playerState.getPlayerBuildedBlocks());
+		
+//		player.teleport(playerState.getLocaton());
+//		game.getPlayerService().getPlayers().remove(player);
 	}
 }

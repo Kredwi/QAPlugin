@@ -2,6 +2,7 @@ package ru.kredwi.qa.game;
 
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
@@ -31,9 +32,9 @@ public interface IBlockConstructionService extends ServiceReader {
 	
 	public void scheduleBuildForPlayer(Player player, PlayerState state, boolean isInit);
 	public Set<IRemover> getSummaryBuildedBlocks();
-	
 	List<BukkitTask> getBuildedTasks();
-	
+	void addGlobalRemovers(UUID uuid, List<IRemover> removers);
+	List<IRemover> getGlobalRemovers(UUID uuid);
 	
 	BlockData getRandomBlockData();
 	

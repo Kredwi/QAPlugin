@@ -6,15 +6,17 @@ import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.block.data.BlockData;
 
+import ru.kredwi.qa.game.AnswerUsedData;
 import ru.kredwi.qa.removers.IRemover;
 
 public class PlayerState {
 	
 	private List<IRemover> playerBuildedBlocks = new ArrayList<>();
+	private AnswerUsedData answerUsed = null;
 	
 	private char[] symbols;
 	private boolean answered = false;
-	private int buildedBlocks = 1;
+	private int buildedBlocks = 1; // builded paths
 	private BlockData blockData;
 	private int answerCount = 1;
 	
@@ -48,6 +50,9 @@ public class PlayerState {
 	public Location getLocaton() {
 		return location;
 	}
+	public void setLocaton(Location location) {
+		this.location =location;
+	}
 	
 	public int getBuildedBlocks() {
 		return buildedBlocks;
@@ -58,6 +63,9 @@ public class PlayerState {
 	}
 	public void addBuildedBlock(int builded) {
 		buildedBlocks += builded;
+	}
+	public void removeBuildedBlock(int deleteBuilded) {
+		buildedBlocks -= deleteBuilded;
 	}
 
 	public char[] getSymbols() {
@@ -80,5 +88,13 @@ public class PlayerState {
 		setAnswerCount(0);
 		setAnswer(false);
 		setSymbols(new char[] { ' ' });
+	}
+
+	public AnswerUsedData getAnswerUsed() {
+		return answerUsed;
+	}
+
+	public void setAnswerUsed(AnswerUsedData answerUsed) {
+		this.answerUsed = answerUsed;
 	}
 }

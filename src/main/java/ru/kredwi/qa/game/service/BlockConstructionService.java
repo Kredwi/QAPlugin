@@ -7,12 +7,15 @@ import static ru.kredwi.qa.config.ConfigKeys.ENABLED_BLOCKS;
 import static ru.kredwi.qa.config.ConfigKeys.SPAWN_DISPLAY_TEXTS;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.Predicate;
 
 import org.bukkit.Bukkit;
@@ -41,6 +44,7 @@ import ru.kredwi.qa.task.FillBlocksTask;
 public class BlockConstructionService implements IBlockConstructionService{
 
 	private List<BukkitTask> buildTasks = new LinkedList<>();
+	private Map<UUID, List<IRemover>> globalRemovers = new HashMap<>();
 	
 	private PluginWrapper plugin;
 	private IMainGame gameManager;
@@ -69,7 +73,7 @@ public class BlockConstructionService implements IBlockConstructionService{
 	@Override
 	public void scheduleBuildForPlayer(Player player, PlayerState state, boolean isInit) {
 		
-		int buildBlock = neededBlockToMax(state.getAnswerCount(), state.getBuildedBlocks(), true);
+		int buildBlock = state.getAnswerCount();//neededBlockToMax(state.getAnswerCount(), state.getBuildedBlocks(), true);
 		
 		FillBlocksTask fbt = new FillBlocksTask(plugin, gameManager, state.getLocaton(),
 				getDirection(state.getLocaton()), game, player, buildBlock,
@@ -92,15 +96,15 @@ public class BlockConstructionService implements IBlockConstructionService{
 		}
 	}
 	
-	private int neededBlockToMax(int length, int buildedBlocks, boolean add) {
-		
-		int remainingBlocks = (game.getGameInfo().blocksToWin() - (buildedBlocks - (add
-				? COUNT_OF_INIT_BLOCKS : 0)));
-		
-		if (remainingBlocks <= 0) return 0;
-		
-		return Math.min(length, remainingBlocks);
-	}
+//	private int neededBlockToMax(int length, int buildedBlocks, boolean add) {
+//		
+//		int remainingBlocks = (game.getGameInfo().blocksToWin() - (buildedBlocks - (add
+//				? COUNT_OF_INIT_BLOCKS : 0)));
+//		
+//		if (remainingBlocks <= 0) return 0;
+//		
+//		return Math.min(length, remainingBlocks);
+//	}
 	
 	private List<BlockData> loadBlockData() {
 		List<String> enabledBlocks = cm.getAsStringList(ENABLED_BLOCKS);
@@ -147,6 +151,10 @@ public class BlockConstructionService implements IBlockConstructionService{
 		
 		for (PlayerState state : game.getPlayerService().getStates()) {
 			blocks.addAll(state.getPlayerBuildedBlocks());
+		}
+		
+		for (List<IRemover> removers : globalRemovers.values()) {
+			blocks.addAll(removers);
 		}
 		
 		return blocks;
@@ -211,11 +219,23 @@ public class BlockConstructionService implements IBlockConstructionService{
 			throw new PlayerDontHaveLayersException("Player dont have needs layers");
 		}
 		
+		playerState.removeBuildedBlock(delete);
+		
 		Iterator<IRemover> iterator = blockRemovers.iterator();
 		for (int i =0; i < delete && iterator.hasNext(); i++) {
 			IRemover remover = iterator.next();
 			remover.remove();
 			iterator.remove();
 		}
+	}
+	
+	@Override
+	public void addGlobalRemovers(UUID uuid, List<IRemover> removers) {
+		globalRemovers.put(uuid, removers);
+	}
+
+	@Override
+	public List<IRemover> getGlobalRemovers(UUID uuid) {
+		return globalRemovers.get(uuid);
 	}
 }

@@ -79,6 +79,9 @@ public interface ConfigKeys {
 	String YOU_ENTERED_LONG_PATH_LENGTH= "you-entered-long-path-length";
 	String YOU_ENTERED_SHORT_PATH_LENGTH="you-entered-short-path-length";
 	String PLAYER_DOES_NOT_HAVE_LAYERS = "player-does-not-have-layers";
+	String PLAYER_DEAD_AND_LOSE = "player-dead-and-lose";
+	String YOU_DEAD_AND_LOSE = "you-dead-and-lose";
+	String PLAYER_DROP_POINTS_WITH_ALREADY_ANSWER = "player-drop-points-with-already-answer";
 	
 	String MIN_LENGTH_PATH = "min-length-path";
 	String MAX_LENGTH_PATH = "max-length-path";

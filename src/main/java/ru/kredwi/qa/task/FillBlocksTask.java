@@ -39,6 +39,7 @@ public class FillBlocksTask extends BukkitRunnable {
 	
 	private final Plugin plugin;
 	private final Location targetLocation;
+	private final Location saveLocation;
 	private final Vector perpendicular;
 	private final Vector direction;
 	private final IDisplayText displayText;
@@ -52,10 +53,10 @@ public class FillBlocksTask extends BukkitRunnable {
 	private PlayerState playerState;
 	
 	private Predicate<BreakIsBlockedData> breakIsBlockedCallback;
-	private Consumer<Void> buildFinalCallback;
+	private Consumer<Pair<Location, Location>> buildFinalCallback;
 	private Consumer<Location> placeBlockCallback;
 	
-	private int i = 0;
+	private int i = 0; // index of current iteration
 	
 	public FillBlocksTask(PluginWrapper plugin, IMainGame gameManager, Location targetLocation,
 			Vector direction, IGame game, Player player, 
@@ -77,6 +78,7 @@ public class FillBlocksTask extends BukkitRunnable {
 			BlockPlacementCallback placeBlockCallback, Predicate<BreakIsBlockedData> breakIsBlockedCallback) {
 		
 	    this.targetLocation = targetLocation;
+	    this.saveLocation = targetLocation.clone();
 	    this.direction = direction;
 	    this.wordLength = wordLength;
 	    this.spawnTextDisplay = spawnTextDisplay;
@@ -97,36 +99,39 @@ public class FillBlocksTask extends BukkitRunnable {
 	    }
 	}
 	
-	private char getDisplaySymbol(char[] symbols) {
-		return i >= symbols.length ? ' ' : symbols[i];
+	private char getDisplaySymbol(char[] symbols, int index) {
+		return index >= symbols.length ? ' ' : symbols[index];
 	}
 	
 	@Override
 	public void run() {
 		if (i >= Integer.MAX_VALUE | i >= wordLength) {
 			Bukkit.getScheduler().runTask(plugin, () -> {
-				buildFinalCallback.accept(null);
+				buildFinalCallback.accept(new Pair<Location, Location>(targetLocation, saveLocation));
 			});
 			cancel();
 			return;
 		}
 
-		targetLocation.add(direction);
+		saveLocation.add(direction);
 		
 		List<Location> blocksToUpdate = new ArrayList<>(3);
 		
-		blocksToUpdate.add(targetLocation.clone());
-		blocksToUpdate.add(targetLocation.clone().add(perpendicular));
-		blocksToUpdate.add(targetLocation.clone().subtract(perpendicular));
+		blocksToUpdate.add(saveLocation.clone());
+		blocksToUpdate.add(saveLocation.clone().add(perpendicular));
+		blocksToUpdate.add(saveLocation.clone().subtract(perpendicular));
 		
 		 setBlockBatch(blocksToUpdate, playerState, (pairs) -> {
 			 if (spawnTextDisplay) {
-				 pairs.forEach((pair) ->
-					displayText.createTextOnBlock(pair.second(),
-							getDisplaySymbol(symbols), targetLocation));
-			}
+				 final int index = i; // copy i
+				 pairs.forEach((pair) -> Bukkit.getScheduler()
+						 .runTaskLater(plugin, () -> {
+							 displayText.createTextOnBlock(pair.second(),
+										getDisplaySymbol(symbols, index), saveLocation.clone()); 
+						 }, 1));
+			 }
 			
-			placeBlockCallback.accept(targetLocation.clone());
+			placeBlockCallback.accept(saveLocation.clone());
 			i++;
 		});
 	}
@@ -149,9 +154,8 @@ public class FillBlocksTask extends BukkitRunnable {
 		BlockData blockData = playerState.getBlockData();
 			
 		for (Location location : locations) {
-			
 			Block block = location.getBlock();
-				
+			
 			if (!allowDestroyBlock && !block.getType().equals(Material.AIR)) {
 				
 				if (debug) {

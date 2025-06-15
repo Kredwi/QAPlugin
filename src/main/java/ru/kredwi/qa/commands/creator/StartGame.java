@@ -28,7 +28,7 @@ import ru.kredwi.qa.game.IMainGame;
  *  <li>Initializing the question list.</li>
  *  <li>Sending the first question to all players.</li>
  * </ol>
- *
+ * TODO if owner path is noit setted game crated
  * @author Kredwi
  */
 public class StartGame extends CommandAbstract {
@@ -44,7 +44,6 @@ public class StartGame extends CommandAbstract {
 	
 	@Override
 	public void run(ICommandController commandController, CommandSender sender, Command command, String[] args) {
-		
 		IGame game = commandController.getMainGame().getGame(args[0]);
 		
 		if (Objects.isNull(game)) {

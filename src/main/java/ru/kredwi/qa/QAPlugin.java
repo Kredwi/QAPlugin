@@ -13,6 +13,7 @@ import ru.kredwi.qa.config.ConfigKeys;
 import ru.kredwi.qa.config.impl.ConfigManager;
 import ru.kredwi.qa.event.FireworkDamageListener;
 import ru.kredwi.qa.event.OwnerLeftTheGame;
+import ru.kredwi.qa.event.PlayerDeadEvent;
 import ru.kredwi.qa.game.IMainGame;
 import ru.kredwi.qa.game.impl.GameManager;
 import ru.kredwi.qa.sql.SQLManager;
@@ -29,7 +30,7 @@ public class QAPlugin extends JavaPlugin implements PluginWrapper {
 	 * config version for validate configs
 	 * @author Kredwi
 	 * */
-	private static final double NEED_CONFIG_VERSION = 2.9;
+	private static final double NEED_CONFIG_VERSION = 3.0;
 	
 	private static Logger logger = null;
 	
@@ -77,6 +78,7 @@ public class QAPlugin extends JavaPlugin implements PluginWrapper {
 		commandController.start();
 		
 		Bukkit.getPluginManager().registerEvents(new OwnerLeftTheGame(configManager, gameManager), this);
+		Bukkit.getPluginManager().registerEvents(new PlayerDeadEvent(configManager, gameManager), this);
 		Bukkit.getPluginManager().registerEvents(new FireworkDamageListener(), this);
 	}
 	

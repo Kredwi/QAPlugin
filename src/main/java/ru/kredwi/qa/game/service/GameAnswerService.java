@@ -4,12 +4,15 @@ import static ru.kredwi.qa.config.ConfigKeys.DB_ENABLE;
 import static ru.kredwi.qa.config.ConfigKeys.DEBUG;
 import static ru.kredwi.qa.config.ConfigKeys.IN_THE_GAME_NOT_FOUND_PATHS;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import ru.kredwi.qa.QAPlugin;
 import ru.kredwi.qa.config.QAConfig;
@@ -21,6 +24,7 @@ import ru.kredwi.qa.sql.DatabaseActions;
 public class GameAnswerService implements IGameAnswer{
 
 	private DatabaseActions dbActions;
+	private Set<String> alreadyUsedAnswers = new HashSet<>();
 	private QAConfig cm;
 	private IGame game;
 	
@@ -63,6 +67,7 @@ public class GameAnswerService implements IGameAnswer{
 			}
 			
 			resetAnwserCount();
+			
 			game.getBlockConstruction().scheduleBuildForPlayer(playerState.getKey(),playerState.getValue(), isInit);
 		}
 	}
@@ -85,6 +90,21 @@ public class GameAnswerService implements IGameAnswer{
 	@Override
 	public boolean isServiceReady() {
 		return true;
+	}
+
+	@Override
+	public Set<String> getAlreadyUsedAnswers() {
+		return alreadyUsedAnswers;
+	}
+
+	@Override
+	public boolean isAlreadyUsedAnswer(@NonNull String answer) {
+		return alreadyUsedAnswers.contains(answer);
+	}
+
+	@Override
+	public void addAlreadyUsedAnswer(@NonNull String answer) {
+		alreadyUsedAnswers.add(answer);
 	}
 
 }
