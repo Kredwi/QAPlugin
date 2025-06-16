@@ -1,5 +1,5 @@
 package ru.kredwi.qa.game;
 
-public interface ServiceReader {
+public interface ReadyService {
 	boolean isServiceReady();
 }

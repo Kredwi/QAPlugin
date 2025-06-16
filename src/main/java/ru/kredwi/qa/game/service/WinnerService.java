@@ -18,13 +18,11 @@ import org.bukkit.entity.Player;
 
 import ru.kredwi.qa.QAPlugin;
 import ru.kredwi.qa.config.QAConfig;
-import ru.kredwi.qa.game.IBlockConstructionService;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IWinnerService;
-import ru.kredwi.qa.game.player.PlayerState;
 import ru.kredwi.qa.sql.DatabaseActions;
 
-public class WinnerService implements IWinnerService {
+public abstract class WinnerService implements IWinnerService {
 
 	private List<Player> winners = Collections.synchronizedList(new ArrayList<>());
 	private DatabaseActions databaseActions;
@@ -35,14 +33,6 @@ public class WinnerService implements IWinnerService {
 		this.cm = cm;
 		this.game = game;
 		this.databaseActions = databaseActions;
-	}
-	
-	@Override
-	public boolean isPlayerWin(PlayerState state) {
-		return
-				(state.getBuildedBlocks()
-						- IBlockConstructionService.COUNT_OF_INIT_BLOCKS)
-				>= game.getGameInfo().blocksToWin();
 	}
 
 	/**

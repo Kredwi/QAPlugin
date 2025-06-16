@@ -1,6 +1,7 @@
 package ru.kredwi.qa.commands.creator;
 
-import static ru.kredwi.qa.config.ConfigKeys.*;
+import static ru.kredwi.qa.config.ConfigKeys.GAME_FINISHED;
+import static ru.kredwi.qa.config.ConfigKeys.GAME_NOT_FOUND;
 import static ru.kredwi.qa.config.ConfigKeys.IN_THE_GAME_NOT_FOUND_PATHS;
 import static ru.kredwi.qa.config.ConfigKeys.IS_COMMAND_ONLY_FOR_GAME_OWNER;
 
@@ -16,6 +17,7 @@ import org.bukkit.entity.Player;
 import ru.kredwi.qa.commands.CommandAbstract;
 import ru.kredwi.qa.commands.ICommandController;
 import ru.kredwi.qa.config.QAConfig;
+import ru.kredwi.qa.game.GameMode;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IMainGame;
 
@@ -28,7 +30,6 @@ import ru.kredwi.qa.game.IMainGame;
  *  <li>Initializing the question list.</li>
  *  <li>Sending the first question to all players.</li>
  * </ol>
- * TODO if owner path is noit setted game crated
  * @author Kredwi
  */
 public class StartGame extends CommandAbstract {
@@ -62,10 +63,17 @@ public class StartGame extends CommandAbstract {
 		}
 		
 		Set<Player> players = game.getPlayerService().getPlayers();
-		
-		if (players.isEmpty()) {
+
+		if (!players.contains((Player) sender)) {
 			sender.sendMessage(cm.getAsString(IN_THE_GAME_NOT_FOUND_PATHS));
 			return;
+		}
+		
+		if (game.getGameInfo().mode().equals(GameMode.PLEONASMS)) {
+			if (players.isEmpty() || players.size() <= 1) {
+				sender.sendMessage(cm.getAsString(IN_THE_GAME_NOT_FOUND_PATHS));
+				return;
+			}	
 		}
 		
 		game.getQuestionManager().loadQuestions();

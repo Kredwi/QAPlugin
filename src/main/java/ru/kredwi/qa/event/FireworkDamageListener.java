@@ -6,7 +6,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.meta.FireworkMeta;
 
-import ru.kredwi.qa.callback.ConstructionStageEndCallback;
+import ru.kredwi.qa.game.impl.pleonasms.callback.ConstructionStageEndCallback;
 
 public class FireworkDamageListener implements Listener {
 

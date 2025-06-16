@@ -12,7 +12,7 @@ import ru.kredwi.qa.exceptions.PlayerDontHaveLayersException;
 import ru.kredwi.qa.game.player.PlayerState;
 import ru.kredwi.qa.removers.IRemover;
 
-public interface IBlockConstructionService extends ServiceReader {
+public interface IBlockConstructionService extends ReadyService {
 	
 	/**
 	 * This is the number of blocks added to the total number of required blocks during initialization. <br>

@@ -49,7 +49,7 @@ public class BlockConstructionService implements IBlockConstructionService{
 	private PluginWrapper plugin;
 	private IMainGame gameManager;
 	private QAConfig cm;
-	private Predicate<BreakIsBlockedData> breakDeniedCallback;
+	protected Predicate<BreakIsBlockedData> breakDeniedCallback;
 	
 	private int buildCompleted =1;
 	
@@ -72,12 +72,22 @@ public class BlockConstructionService implements IBlockConstructionService{
 	
 	@Override
 	public void scheduleBuildForPlayer(Player player, PlayerState state, boolean isInit) {
+		int buildBlock = state.getAnswerCount();
 		
-		int buildBlock = state.getAnswerCount();//neededBlockToMax(state.getAnswerCount(), state.getBuildedBlocks(), true);
+		FillBlocksTask.Builder fbtBuilder = new FillBlocksTask.Builder(plugin, state.getLocaton(), getDirection(state.getLocaton()), state, player, game, buildBlock)
+				.breakIsBlockedCallback(breakDeniedCallback);
 		
-		FillBlocksTask fbt = new FillBlocksTask(plugin, gameManager, state.getLocaton(),
-				getDirection(state.getLocaton()), game, player, buildBlock,
-				!isInit ? cm.getAsBoolean(SPAWN_DISPLAY_TEXTS) : isInit, breakDeniedCallback);
+		nextScheduleBuildForPlayer(fbtBuilder, player, state, isInit);
+	}
+	
+	protected void nextScheduleBuildForPlayer(FillBlocksTask.Builder fbtBuilder, Player player, PlayerState state, boolean isInit) {
+		if (!isInit) {
+			fbtBuilder.spawnDisplays(cm.getAsBoolean(SPAWN_DISPLAY_TEXTS));
+		} else {
+			fbtBuilder.spawnDisplays(isInit);
+		}
+		
+		FillBlocksTask fbt = fbtBuilder.build();
 		
 		getBuildedTasks().add(fbt
 			.runTaskTimerAsynchronously(plugin,
@@ -85,7 +95,7 @@ public class BlockConstructionService implements IBlockConstructionService{
 					cm.getAsInt(BUILD_PERIOD)));
 	}
 	
-	private Vector getDirection(Location targetLocation) {
+	protected Vector getDirection(Location targetLocation) {
 		Vector direction = targetLocation.getDirection().normalize();
 		direction.setY(0);
 		
@@ -95,16 +105,6 @@ public class BlockConstructionService implements IBlockConstructionService{
 			return new Vector(0, 0, Math.signum(direction.getZ()));
 		}
 	}
-	
-//	private int neededBlockToMax(int length, int buildedBlocks, boolean add) {
-//		
-//		int remainingBlocks = (game.getGameInfo().blocksToWin() - (buildedBlocks - (add
-//				? COUNT_OF_INIT_BLOCKS : 0)));
-//		
-//		if (remainingBlocks <= 0) return 0;
-//		
-//		return Math.min(length, remainingBlocks);
-//	}
 	
 	private List<BlockData> loadBlockData() {
 		List<String> enabledBlocks = cm.getAsStringList(ENABLED_BLOCKS);

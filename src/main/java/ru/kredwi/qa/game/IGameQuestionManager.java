@@ -12,7 +12,7 @@ import ru.kredwi.qa.game.service.data.Question;
  *
  * @author Kredwi
  */
-public interface IGameQuestionManager extends ServiceReader {
+public interface IGameQuestionManager extends ReadyService {
 
 	void loadQuestions();
 	

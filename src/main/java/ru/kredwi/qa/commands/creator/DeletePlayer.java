@@ -1,16 +1,10 @@
 package ru.kredwi.qa.commands.creator;
 
-import static ru.kredwi.qa.config.ConfigKeys.GAME_NOT_FOUND;
-import static ru.kredwi.qa.config.ConfigKeys.IS_COMMAND_ONLY_FOR_GAME_OWNER;
-import static ru.kredwi.qa.config.ConfigKeys.IS_GAME_OWNER;
-import static ru.kredwi.qa.config.ConfigKeys.IS_PLAYER_IS_NOT_FOUND;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -20,8 +14,6 @@ import ru.kredwi.qa.commands.ICommandController;
 import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IMainGame;
-import ru.kredwi.qa.game.player.PlayerState;
-import ru.kredwi.qa.removers.IRemover;
 
 public class DeletePlayer extends CommandAbstract {
 	

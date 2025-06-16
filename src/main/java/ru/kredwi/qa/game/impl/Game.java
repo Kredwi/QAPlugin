@@ -2,28 +2,30 @@ package ru.kredwi.qa.game.impl;
 
 import org.bukkit.entity.Player;
 
-import ru.kredwi.qa.PluginWrapper;
+import ru.kredwi.qa.game.GameMode;
 import ru.kredwi.qa.game.IBlockConstructionService;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IGameAnswer;
 import ru.kredwi.qa.game.IGamePlayer;
 import ru.kredwi.qa.game.IGameQuestionManager;
-import ru.kredwi.qa.game.IMainGame;
 import ru.kredwi.qa.game.IWinnerService;
-import ru.kredwi.qa.sql.SQLManager;
 
-public class Game implements IGame {
-	
-	private final GameServices services;
+public abstract class Game implements IGame {
+
 	private final GameInfo gameInfo;
+
+	private GameServices services;
+	
 	private boolean preStopGame;
 	private boolean isStart;
 	private boolean isFinish;
 	
-	public Game(String name, Player owner, int blocksToWin, PluginWrapper plugin, SQLManager sqlManager, IMainGame gameManager) {
-		this.gameInfo = new GameInfo(name.trim().toLowerCase(),
-				owner.getUniqueId(), blocksToWin, owner.getLocation().clone());
-		this.services = new GameServices(plugin, gameManager, this, sqlManager);
+	public Game(String name, Player owner, GameMode gameMode) {
+		this.gameInfo = new GameInfo(name.trim().toLowerCase(), owner.getUniqueId(), owner.getLocation().clone(), gameMode);
+	}
+	
+	public void setServices(GameServices services) {
+		this.services = services;
 	}
 	
 	@Override
@@ -65,16 +67,7 @@ public class Game implements IGame {
 	public void setStart(boolean isStart) {
 		this.isStart = isStart;
 	}
-
-	@Override
-	public boolean isAllServicesReady() {
-		return getBlockConstruction().isServiceReady()
-				&& getGameAnswer().isServiceReady()
-				&& getPlayerService().isServiceReady()
-				&& getQuestionManager().isServiceReady()
-				&& getWinnerService().isServiceReady();
-	}
-
+	
 	@Override
 	public boolean isPreStopGame() {
 		return preStopGame;
@@ -94,4 +87,5 @@ public class Game implements IGame {
 	public void setFinished(boolean isFinish) {
 		this.isFinish = isFinish;
 	}
+	
 }

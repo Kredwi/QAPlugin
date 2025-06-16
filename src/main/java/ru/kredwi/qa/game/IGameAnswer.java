@@ -2,7 +2,7 @@ package ru.kredwi.qa.game;
 
 import java.util.Set;
 
-public interface IGameAnswer extends ServiceReader {
+public interface IGameAnswer extends ReadyService {
 	void addAnwserCount();
 	void resetAnwserCount();
 	boolean isAllAnswered();

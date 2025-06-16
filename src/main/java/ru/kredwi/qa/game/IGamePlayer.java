@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 
 import ru.kredwi.qa.game.player.PlayerState;
 
-public interface IGamePlayer extends ServiceReader {
+public interface IGamePlayer extends ReadyService {
 	void spawnPlayers();
 	Set<Player> getPlayers();
 	Collection<PlayerState> getStates();

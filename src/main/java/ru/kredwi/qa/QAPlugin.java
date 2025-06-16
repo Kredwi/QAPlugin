@@ -86,7 +86,7 @@ public class QAPlugin extends JavaPlugin implements PluginWrapper {
 	
 	/**
 	 * If in config file <b>DELETE_BLOCKS_WHEN_DISABLE</b> == <i>true</i> then<br>
-	 * Delete blocks all blocks from {@link ru.kredwi.qa.game.impl.Game.buildedBlock}
+	 * Delete blocks all blocks from {@link ru.kredwi.qa.game.impl.pleonasms.ClassicGame.buildedBlock}
 	 * 
 	 * @author Kredwi
 	 * */

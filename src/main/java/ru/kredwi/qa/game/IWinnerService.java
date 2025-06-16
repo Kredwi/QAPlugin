@@ -14,7 +14,7 @@ import ru.kredwi.qa.game.player.PlayerState;
  *
  * @author Kredwi
  */
-public interface IWinnerService extends ServiceReader {
+public interface IWinnerService extends ReadyService {
 	
 	void alertOfPlayersWin();
 	
