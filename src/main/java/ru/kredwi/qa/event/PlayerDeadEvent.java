@@ -14,6 +14,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
 import ru.kredwi.qa.config.QAConfig;
+import ru.kredwi.qa.game.GameMode;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IMainGame;
 import ru.kredwi.qa.game.player.PlayerState;
@@ -61,6 +62,15 @@ public class PlayerDeadEvent implements Listener {
 			
 			mainGame.removeGameWithName(game.getGameInfo().name());
 			return;
+		}
+		
+		/**
+		 * shit API
+		 * TODO brain pls rewrite this (REWRITE API IS NOT "REWRITE THIS METHOD")*/
+		if (game.getGameInfo().mode().equals(GameMode.PLEONASMS)
+				&& game.getPlayerService().getPlayers().size() == 1) {
+			game.getBlockConstruction().deleteBuildedBlocks();
+			game.getWinnerService().executeWinnerHandler();
 		}
 		
 		game.getPlayerService().getPlayers().forEach(p -> p.sendMessage(messageForPlayers));

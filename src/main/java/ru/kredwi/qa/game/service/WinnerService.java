@@ -2,6 +2,13 @@ package ru.kredwi.qa.game.service;
 
 import static ru.kredwi.qa.config.ConfigKeys.DB_ENABLE;
 import static ru.kredwi.qa.config.ConfigKeys.DEBUG;
+import static ru.kredwi.qa.config.ConfigKeys.FIREWORK_FOR_WINNER_COLORS;
+import static ru.kredwi.qa.config.ConfigKeys.FIREWORK_FOR_WINNER_ENABLE;
+import static ru.kredwi.qa.config.ConfigKeys.FIREWORK_FOR_WINNER_FADES;
+import static ru.kredwi.qa.config.ConfigKeys.FIREWORK_FOR_WINNER_FLICKER;
+import static ru.kredwi.qa.config.ConfigKeys.FIREWORK_FOR_WINNER_TRAIL;
+import static ru.kredwi.qa.config.ConfigKeys.FIREWORK_FOR_WINNER_TYPE;
+import static ru.kredwi.qa.config.ConfigKeys.IMMEDIATELY_END_GAME;
 import static ru.kredwi.qa.config.ConfigKeys.PLAYERS_WIN_GAME;
 import static ru.kredwi.qa.config.ConfigKeys.PLAYER_WIN_GAME;
 import static ru.kredwi.qa.config.ConfigKeys.WIN_SOUND;
@@ -14,25 +21,85 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
+import org.bukkit.Bukkit;
+import org.bukkit.FireworkEffect;
+import org.bukkit.Location;
+import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.plugin.Plugin;
 
+import ru.kredwi.qa.PluginWrapper;
 import ru.kredwi.qa.QAPlugin;
 import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.game.IGame;
+import ru.kredwi.qa.game.IMainGame;
 import ru.kredwi.qa.game.IWinnerService;
 import ru.kredwi.qa.sql.DatabaseActions;
 
 public abstract class WinnerService implements IWinnerService {
 
+	public static final int FIREWORK_MODEL_ID = 909827261;
+	
 	private List<Player> winners = Collections.synchronizedList(new ArrayList<>());
 	private DatabaseActions databaseActions;
 	private QAConfig cm;
 	private IGame game;
+	private FireworkEffect fireworkEffect;
+	private IMainGame mainGame;
+	private Plugin plugin;
 	
-	public WinnerService(QAConfig cm, IGame game, DatabaseActions databaseActions) {
-		this.cm = cm;
+	public WinnerService(PluginWrapper plugin, IGame game, DatabaseActions databaseActions) {
+		this.cm = plugin.getConfigManager();
 		this.game = game;
+		this.mainGame = plugin.getGameManager();
+		this.plugin = plugin;
 		this.databaseActions = databaseActions;
+		this.fireworkEffect = FireworkEffect.builder()
+				.with(cm.getAsFireworkType(FIREWORK_FOR_WINNER_TYPE))
+				.withColor(cm.getAsBukkitColorList(FIREWORK_FOR_WINNER_COLORS))
+				.withFade(cm.getAsBukkitColorList(FIREWORK_FOR_WINNER_FADES))
+				.flicker(cm.getAsBoolean(FIREWORK_FOR_WINNER_FLICKER))
+				.trail(cm.getAsBoolean(FIREWORK_FOR_WINNER_TRAIL))
+				.build();
+	}
+	
+	@Override
+	public void executeWinnerHandler() {
+		if (game.getWinnerService().getWinners().isEmpty()) {
+			throw new NegativeArraySizeException("Winners is EMPTY !");
+		}
+		
+		// spawn for winners firework effects
+		if (cm.getAsBoolean(FIREWORK_FOR_WINNER_ENABLE)) {
+			game.getWinnerService().getWinners().forEach(p -> spawnFireworkEntity(p.getLocation()));		
+		}
+		
+		// and alert all players in the game of winners
+		game.getWinnerService().alertOfPlayersWin();
+		
+		game.getPlayerService().spawnPlayers();
+		
+		game.setFinished(true);
+		
+		if (cm.getAsBoolean(IMMEDIATELY_END_GAME)) {
+			mainGame.removeGameWithName(game.getGameInfo().name());	
+		}
+	}
+	
+	protected void spawnFireworkEntity(Location location) {
+		Location loc = location.clone().add(0,3,0);
+		
+		Firework firework = loc.getWorld().spawn(loc, Firework.class);
+		FireworkMeta fwm = firework.getFireworkMeta();
+		
+		fwm.setPower(0);
+		fwm.setCustomModelData(FIREWORK_MODEL_ID);
+		fwm.addEffect(fireworkEffect);
+		
+		firework.setFireworkMeta(fwm);
+
+		Bukkit.getScheduler().runTaskLater(plugin, firework::detonate, 3L);
 	}
 
 	/**

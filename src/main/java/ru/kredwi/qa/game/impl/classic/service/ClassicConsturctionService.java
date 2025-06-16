@@ -3,7 +3,6 @@ package ru.kredwi.qa.game.impl.classic.service;
 import org.bukkit.entity.Player;
 
 import ru.kredwi.qa.PluginWrapper;
-import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.game.IGamePlayer;
 import ru.kredwi.qa.game.IWinnerService;
 import ru.kredwi.qa.game.classic.IClassicGame;
@@ -16,14 +15,12 @@ public class ClassicConsturctionService extends BlockConstructionService{
 
 	private IClassicGame game;
 	private PluginWrapper plugin;
-	private QAConfig cm;
 	
 	public ClassicConsturctionService(IClassicGame game, PluginWrapper plugin, IGamePlayer gamePlayer,
 			IWinnerService winnerService) {
 		super(game, plugin, gamePlayer, winnerService);
 		this.game = game;
 		this.plugin = plugin;
-		this.cm = plugin.getConfigManager();
 	}
 
 	@Override

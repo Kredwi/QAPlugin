@@ -15,16 +15,7 @@ public class PleoyasmsGame extends Game {
 	public PleoyasmsGame(String name, Player owner, PluginWrapper plugin, SQLManager sqlManager, IMainGame gameManager) {
 		super(name, owner, GameMode.PLEONASMS);
 		setServices(new GameServices.Builder(plugin, PleoyasmsGame.this, sqlManager)
-				.setWinnerService(new PleonasmsWinnerService(plugin.getConfigManager(), PleoyasmsGame.this, sqlManager))
+				.setWinnerService(new PleonasmsWinnerService(plugin, PleoyasmsGame.this, sqlManager))
 				.build());
-	}
-
-	@Override
-	public boolean isAllServicesReady() {
-		return getBlockConstruction().isServiceReady()
-				&& getGameAnswer().isServiceReady()
-				&& getPlayerService().isServiceReady()
-				&& getQuestionManager().isServiceReady()
-				&& getWinnerService().isServiceReady();
 	}
 }

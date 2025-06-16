@@ -50,7 +50,7 @@ public class ConstructionStageEndCallback extends AbstractStageEndCallback
 			for (Map.Entry<Player,PlayerState> playerState : game.getPlayerService().getPlayerAndStatesArray()) {
 				AnswerUsedData answerUsed = playerState.getValue().getAnswerUsed();
 				if (Objects.nonNull(answerUsed)) {
-					asd(answerUsed.layers(), playerState);
+					deletePlayerLayer(answerUsed.layers(), playerState);
 					state.setAnswerUsed(null);
 					deletePlayerFromGame(playerState.getKey(), playerState.getValue(), location.second());
 				}
@@ -76,7 +76,10 @@ public class ConstructionStageEndCallback extends AbstractStageEndCallback
 		}
 	}
 	
-	private void asd(int deleteBlock, Map.Entry<Player,PlayerState> entry) {
+	/**
+	 * from command `DeleteBlocks`
+	 * */
+	private void deletePlayerLayer(int deleteBlock, Map.Entry<Player,PlayerState> entry) {
 		int delete = (deleteBlock + 4) * (IBlockConstructionService.COUNT_OF_INIT_BLOCKS + 1);
 		
 		List<IRemover> blockRemovers = entry.getValue().getPlayerBuildedBlocks();

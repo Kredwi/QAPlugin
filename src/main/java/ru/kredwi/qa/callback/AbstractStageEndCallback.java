@@ -24,68 +24,19 @@ import ru.kredwi.qa.game.IMainGame;
 import ru.kredwi.qa.game.player.PlayerState;
 
 public class AbstractStageEndCallback {
-
-	public static final int FIREWORK_MODEL_ID = 909827261;
 	
 	protected PluginWrapper plugin;
 	private IGame game;
 	private IMainGame mainGame;
-	private FireworkEffect fireworkEffect;
+
 	
 	public AbstractStageEndCallback(PluginWrapper plugin, IMainGame mainGame, IGame game) {
 		this.plugin = plugin;
 		this.game = game;
 		this.mainGame = mainGame;
-		this.fireworkEffect = FireworkEffect.builder()
-				.with(plugin.getConfigManager()
-						.getAsFireworkType(FIREWORK_FOR_WINNER_TYPE))
-				.withColor(plugin.getConfigManager()
-						.getAsBukkitColorList(FIREWORK_FOR_WINNER_COLORS))
-				.withFade(plugin.getConfigManager()
-						.getAsBukkitColorList(FIREWORK_FOR_WINNER_FADES))
-				.flicker(plugin.getConfigManager()
-						.getAsBoolean(FIREWORK_FOR_WINNER_FLICKER))
-				.trail(plugin.getConfigManager()
-						.getAsBoolean(FIREWORK_FOR_WINNER_TRAIL))
-				.build();
 	}
 	
-	protected void executeWinnerHandler() {
-		if (game.getWinnerService().getWinners().isEmpty()) {
-			throw new NegativeArraySizeException("Winners is EMPTY !");
-		}
-		
-		// spawn for winners firework effects
-		if (plugin.getConfigManager().getAsBoolean(FIREWORK_FOR_WINNER_ENABLE)) {
-			game.getWinnerService().getWinners().forEach(p -> spawnFireworkEntity(p.getLocation()));		
-		}
-		
-		// and alert all players in the game of winners
-		game.getWinnerService().alertOfPlayersWin();
-		
-		game.getPlayerService().spawnPlayers();
-		
-		game.setFinished(true);
-		
-		if (plugin.getConfig().getBoolean(IMMEDIATELY_END_GAME)) {
-			mainGame.removeGameWithName(game.getGameInfo().name());	
-		}
-	}
-	
-	protected void spawnFireworkEntity(Location location) {
-		Location loc = location.clone().add(0,3,0);
-		
-		Firework firework = loc.getWorld().spawn(loc, Firework.class);
-		FireworkMeta fwm = firework.getFireworkMeta();
-		
-		fwm.setPower(0);
-		fwm.setCustomModelData(FIREWORK_MODEL_ID);
-		fwm.addEffect(fireworkEffect);
-		
-		firework.setFireworkMeta(fwm);
 
-		Bukkit.getScheduler().runTaskLater(plugin, firework::detonate, 3L);
-	}
 	
 	protected void winnerOrQuestionsPlayer(Player player, PlayerState state) {
 		// checks is winner?
@@ -96,7 +47,7 @@ public class AbstractStageEndCallback {
 		
 		if (!game.getWinnerService().getWinners().isEmpty()) {
 			
-			this.executeWinnerHandler();
+			game.getWinnerService().executeWinnerHandler();
 			
 		} else {
 			if (game.isPreStopGame()) {
@@ -110,7 +61,7 @@ public class AbstractStageEndCallback {
 					}
 				}
 				
-				this.executeWinnerHandler();
+				game.getWinnerService().executeWinnerHandler();
 				return;
 			} else game.getQuestionManager().questionAllPlayers();
 		}

@@ -50,7 +50,7 @@ public class CreateGame extends CommandAbstract {
 			}
 			
 			if (args[1].equalsIgnoreCase(GameMode.CLASSIC.name())) {
-				if (args.length == 3) {
+				if (args.length < 3) {
 					sender.sendMessage(cm.getAsString(NO_ARGS));
 					return;
 				}

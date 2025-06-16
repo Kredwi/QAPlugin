@@ -82,6 +82,7 @@ public interface ConfigKeys {
 	String PLAYER_DEAD_AND_LOSE = "player-dead-and-lose";
 	String YOU_DEAD_AND_LOSE = "you-dead-and-lose";
 	String PLAYER_DROP_POINTS_WITH_ALREADY_ANSWER = "player-drop-points-with-already-answer";
+	String COMMAND_DONT_SUPPORT_GAMEMODE = "command-dont-support-gamemode";
 	
 	String MIN_LENGTH_PATH = "min-length-path";
 	String MAX_LENGTH_PATH = "max-length-path";

@@ -29,6 +29,15 @@ public abstract class Game implements IGame {
 	}
 	
 	@Override
+	public boolean isAllServicesReady() {
+		return getBlockConstruction().isServiceReady()
+				&& getGameAnswer().isServiceReady()
+				&& getPlayerService().isServiceReady()
+				&& getQuestionManager().isServiceReady()
+				&& getWinnerService().isServiceReady();
+	}
+	
+	@Override
 	public IGameQuestionManager getQuestionManager() {
 		return services.getQuestionManager();
 	};

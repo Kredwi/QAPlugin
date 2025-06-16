@@ -1,4 +1,4 @@
-version: 3.0 # Config version
+version: 3.1 # Config version
 
 debug: false # Enable debug mode (for developers)
 delete-blocks-when-disable: false # Delete blocks created by the plugin when the server is disabled?
@@ -107,9 +107,10 @@ many-game-requests: "§cYou have too many game requests. Please ask someone else
 plugin-success-reloaded: "§aPlugin successfuly reloaded"
 inputed-invalid-data: "§cYou have entered incorrect information, check the documentation."
 player-does-not-have-layers: "§cThe player does not have enough layers required."
-player-dead-and-lose: "§fИгрок §6{0} §fумирает, и §cпроигрывает!"
-you-dead-and-lose: "§cВы умерли и проиграли!"
-player-drop-points-with-already-answer: "§fИгрок §6{0} §cпотерял свои очки, §fпотому что ответил повторяющим ответом!"
+player-dead-and-lose: "§fPlayer §6{0} §f dies, and §close!"
+you-dead-and-lose: "§cYou died and lost!"
+player-drop-points-with-already-answer: "§fthe player §6{0} §clost his points, §fbecause he answered with a repeating answer!"
+command-dont-support-gamemode: "§cThis type of game is not supported by this command"
 
 # {0} - minimum symbols required
 # {1} - number of input symbols

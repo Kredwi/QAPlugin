@@ -6,7 +6,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.meta.FireworkMeta;
 
-import ru.kredwi.qa.game.impl.pleonasms.callback.ConstructionStageEndCallback;
+import ru.kredwi.qa.game.service.WinnerService;
 
 public class FireworkDamageListener implements Listener {
 
@@ -16,7 +16,7 @@ public class FireworkDamageListener implements Listener {
 			FireworkMeta fwm = firework.getFireworkMeta();
 			
 			// cancel damage from plugin firework
-			if (fwm.hasCustomModelData() && fwm.getCustomModelData() == ConstructionStageEndCallback.FIREWORK_MODEL_ID) {
+			if (fwm.hasCustomModelData() && fwm.getCustomModelData() == WinnerService.FIREWORK_MODEL_ID) {
 				event.setCancelled(true);
 			}
 		}

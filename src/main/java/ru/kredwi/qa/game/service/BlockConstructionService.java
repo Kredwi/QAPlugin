@@ -35,7 +35,6 @@ import ru.kredwi.qa.exceptions.PlayerDontHaveLayersException;
 import ru.kredwi.qa.game.IBlockConstructionService;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IGamePlayer;
-import ru.kredwi.qa.game.IMainGame;
 import ru.kredwi.qa.game.IWinnerService;
 import ru.kredwi.qa.game.player.PlayerState;
 import ru.kredwi.qa.removers.IRemover;
@@ -47,7 +46,6 @@ public class BlockConstructionService implements IBlockConstructionService{
 	private Map<UUID, List<IRemover>> globalRemovers = new HashMap<>();
 	
 	private PluginWrapper plugin;
-	private IMainGame gameManager;
 	private QAConfig cm;
 	protected Predicate<BreakIsBlockedData> breakDeniedCallback;
 	
@@ -62,7 +60,6 @@ public class BlockConstructionService implements IBlockConstructionService{
 	public BlockConstructionService(IGame game, PluginWrapper plugin, IGamePlayer gamePlayer, IWinnerService winnerService) {
 		this.game = game;
 		this.plugin = plugin;
-		this.gameManager = plugin.getGameManager();
 		this.cm = plugin.getConfigManager();
 		this.breakDeniedCallback = new BlockBreakDeniedCallback(plugin, game);
 		

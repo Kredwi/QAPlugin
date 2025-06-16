@@ -16,6 +16,8 @@ import ru.kredwi.qa.game.player.PlayerState;
  */
 public interface IWinnerService extends ReadyService {
 	
+	public void executeWinnerHandler();
+	
 	void alertOfPlayersWin();
 	
     /**

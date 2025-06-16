@@ -14,6 +14,7 @@ import ru.kredwi.qa.utils.Pair;
 
 public class ConstructionStageEndCallback extends AbstractStageEndCallback
 	implements Consumer<Pair<Location, Location>> {
+	
 	private IGame game;
 	private Player player;
 	

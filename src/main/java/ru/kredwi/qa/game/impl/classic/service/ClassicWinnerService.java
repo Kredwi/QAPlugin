@@ -1,6 +1,6 @@
 package ru.kredwi.qa.game.impl.classic.service;
 
-import ru.kredwi.qa.config.QAConfig;
+import ru.kredwi.qa.PluginWrapper;
 import ru.kredwi.qa.game.IBlockConstructionService;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.player.PlayerState;
@@ -11,8 +11,8 @@ public class ClassicWinnerService extends WinnerService{
 
 	private int blocksToWin;
 	
-	public ClassicWinnerService(int blocksToWin, QAConfig cm, IGame game, DatabaseActions databaseActions) {
-		super(cm, game, databaseActions);
+	public ClassicWinnerService(int blocksToWin, PluginWrapper plugin, IGame game, DatabaseActions databaseActions){
+		super(plugin, game, databaseActions);
 		this.blocksToWin = blocksToWin;
 	}
 

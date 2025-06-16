@@ -18,18 +18,9 @@ public class ClassicGame extends Game implements IClassicGame {
 	public ClassicGame(String name, int blocksToWin, Player owner, PluginWrapper plugin, SQLManager sqlManager, IMainGame gameManager) {
 		super(name, owner, GameMode.CLASSIC);
 		setServices(new GameServices.Builder(plugin, this, sqlManager)
-				.setWinnerService(new ClassicWinnerService(blocksToWin, plugin.getConfigManager(), this, sqlManager))
+				.setWinnerService(new ClassicWinnerService(blocksToWin, plugin, this, sqlManager))
 				.build());
 		this.blocksToWin = blocksToWin;
-	}
-
-	@Override
-	public boolean isAllServicesReady() {
-		return getBlockConstruction().isServiceReady()
-				&& getGameAnswer().isServiceReady()
-				&& getPlayerService().isServiceReady()
-				&& getQuestionManager().isServiceReady()
-				&& getWinnerService().isServiceReady();
 	}
 
 	@Override
