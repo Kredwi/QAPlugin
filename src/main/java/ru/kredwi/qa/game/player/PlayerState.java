@@ -57,10 +57,6 @@ public class PlayerState {
 	public int getBuildedBlocks() {
 		return buildedBlocks;
 	}
-	
-	public void IncrementBuildedBlock() {
-		buildedBlocks++;
-	}
 	public void addBuildedBlock(int builded) {
 		buildedBlocks += builded;
 	}

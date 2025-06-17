@@ -20,8 +20,6 @@ public class AbstractStageEndCallback {
 		this.game = game;
 	}
 	
-
-	
 	protected void winnerOrQuestionsPlayer(Player player, PlayerState state) {
 		// checks is winner?
 		if (game.getWinnerService().isPlayerWin(state)) {

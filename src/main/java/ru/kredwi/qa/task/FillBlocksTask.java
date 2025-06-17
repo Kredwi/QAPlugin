@@ -223,7 +223,7 @@ public class FillBlocksTask extends BukkitRunnable {
         }
 
         public Builder fillBlockCallback(Consumer<Pair<Location, Location>> callback) {
-            this.fillBlockCallback = Objects.requireNonNull(fillBlockCallback);
+            this.fillBlockCallback = Objects.requireNonNull(callback);
             return this;
         }
 
