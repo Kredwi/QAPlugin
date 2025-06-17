@@ -37,6 +37,7 @@ import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.exceptions.QAException;
 import ru.kredwi.qa.exceptions.RequestsOutOfBounds;
 import ru.kredwi.qa.game.IMainGame;
+import ru.kredwi.qa.game.factory.IGameFactory;
 import ru.kredwi.qa.sql.SQLManager;
 
 public class CommandController implements CommandExecutor, ICommandController {
@@ -45,13 +46,15 @@ public class CommandController implements CommandExecutor, ICommandController {
 	private SQLManager sqlManager;
 	private QAPlugin plugin;
 	private IMainGame gameManager;
+	private IGameFactory gameFactory;
 	private QAConfig cm;
 	
 	public CommandController(QAPlugin plugin) {
 		this.plugin=plugin;
-		this.sqlManager = plugin.getSqlManager();
-		this.gameManager = plugin.getGameManager();
-		this.cm = plugin.getConfigManager();
+		this.sqlManager = Objects.requireNonNull(plugin.getSqlManager(), "SQLManager cannot'be null");
+		this.gameManager = Objects.requireNonNull(plugin.getGameManager() , "GameManager cannot'be null");
+		this.cm =Objects.requireNonNull( plugin.getConfigManager(), "ConfigManager cannot'be null");
+		this.gameFactory = Objects.requireNonNull(plugin.getGameFactory(), "GameFactory cannot'be null");
 	}
 	
 	public void start() {
@@ -109,7 +112,7 @@ public class CommandController implements CommandExecutor, ICommandController {
 		try {
 			ICommand[] commandInstaces = new ICommand[] {
 					new NewQuestion(cm), new Answer(cm, gameManager), new Path(gameManager, cm),
-					new CreateGame(cm), new StartGame(gameManager, cm), new DeleteGame(gameManager, cm),
+					new CreateGame(cm, gameFactory), new StartGame(gameManager, cm), new DeleteGame(gameManager, cm),
 					new DeletePlayer(gameManager, cm), new AcceptGame(cm, gameManager), new DenyGame(gameManager, cm),
 					new QAReload(), new DeleteBlock(gameManager)
 			};

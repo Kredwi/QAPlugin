@@ -7,14 +7,19 @@ import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.commands.CommandController;
 import ru.kredwi.qa.config.ConfigKeys;
+import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.config.impl.ConfigManager;
 import ru.kredwi.qa.event.FireworkDamageListener;
 import ru.kredwi.qa.event.OwnerLeftTheGame;
 import ru.kredwi.qa.event.PlayerDeadEvent;
+import ru.kredwi.qa.game.GameMode;
 import ru.kredwi.qa.game.IMainGame;
+import ru.kredwi.qa.game.factory.ClassicGameFactory;
+import ru.kredwi.qa.game.factory.GameFactory;
+import ru.kredwi.qa.game.factory.IGameFactory;
+import ru.kredwi.qa.game.factory.PleoyasmsGameFactory;
 import ru.kredwi.qa.game.impl.GameManager;
 import ru.kredwi.qa.sql.SQLManager;
 
@@ -39,6 +44,7 @@ public class QAPlugin extends JavaPlugin implements PluginWrapper {
 	private QAConfig configManager;
 	
 	private IMainGame gameManager;
+	private IGameFactory gameFactory;
 	
 	private SQLManager sqlManager;
 	
@@ -47,6 +53,7 @@ public class QAPlugin extends JavaPlugin implements PluginWrapper {
 		this.configManager = new ConfigManager(getConfig());
 		this.gameManager = new GameManager(configManager);
 		this.sqlManager = new SQLManager(configManager);
+		this.gameFactory = new GameFactory();
 		this.commandController = new CommandController(this);
 	}
 	
@@ -77,13 +84,17 @@ public class QAPlugin extends JavaPlugin implements PluginWrapper {
 		
 		commandController.start();
 		
+		loadGameFactories();
+
 		Bukkit.getPluginManager().registerEvents(new OwnerLeftTheGame(configManager, gameManager), this);
 		Bukkit.getPluginManager().registerEvents(new PlayerDeadEvent(configManager, gameManager), this);
 		Bukkit.getPluginManager().registerEvents(new FireworkDamageListener(), this);
 	}
 	
-
-	
+	private void loadGameFactories() {
+		gameFactory.register(GameMode.CLASSIC, new ClassicGameFactory(this));
+		gameFactory.register(GameMode.CLASSIC, new PleoyasmsGameFactory(this));
+	}
 	/**
 	 * If in config file <b>DELETE_BLOCKS_WHEN_DISABLE</b> == <i>true</i> then<br>
 	 * Delete blocks all blocks from {@link ru.kredwi.qa.game.impl.pleonasms.ClassicGame.buildedBlock}
@@ -130,6 +141,11 @@ public class QAPlugin extends JavaPlugin implements PluginWrapper {
 	@Override
 	public QAConfig getConfigManager() {
 		return configManager;
+	}
+	
+	@Override
+	public IGameFactory getGameFactory() {
+		return gameFactory;
 	}
 	
 	public static Logger getQALogger() {

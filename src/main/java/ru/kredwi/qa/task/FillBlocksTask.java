@@ -238,7 +238,7 @@ public class FillBlocksTask extends BukkitRunnable {
         }
         
         public FillBlocksTask build() {
-        	this.fillBlockCallback = Objects.requireNonNullElse(fillBlockCallback, new ConstructionStageEndCallback(plugin, plugin.getGameManager(), game, player));
+        	this.fillBlockCallback = Objects.requireNonNullElse(fillBlockCallback, new ConstructionStageEndCallback(plugin, game, player));
         	this.placeBlockCallback = Objects.requireNonNullElse(placeBlockCallback, new BlockPlacementCallback(plugin, player, playerState));
         	this.breakIsBlockedCallback = Objects.requireNonNullElse(breakIsBlockedCallback, new BlockBreakDeniedCallback(plugin, game));
         	this.displayText = Objects.requireNonNullElse(displayText, new DisplayText(plugin, spawnTextDisplay));

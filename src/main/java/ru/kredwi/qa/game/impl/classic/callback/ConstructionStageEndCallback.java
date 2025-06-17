@@ -8,7 +8,6 @@ import org.bukkit.entity.Player;
 import ru.kredwi.qa.PluginWrapper;
 import ru.kredwi.qa.callback.AbstractStageEndCallback;
 import ru.kredwi.qa.game.IGame;
-import ru.kredwi.qa.game.IMainGame;
 import ru.kredwi.qa.game.player.PlayerState;
 import ru.kredwi.qa.utils.Pair;
 
@@ -18,8 +17,8 @@ public class ConstructionStageEndCallback extends AbstractStageEndCallback
 	private IGame game;
 	private Player player;
 	
-	public ConstructionStageEndCallback(PluginWrapper plugin, IMainGame mainGame, IGame game, Player player) {
-		super(plugin, mainGame, game);
+	public ConstructionStageEndCallback(PluginWrapper plugin, IGame game, Player player) {
+		super(plugin, game);
 		this.game = game;
 		this.player = player;
 	}
