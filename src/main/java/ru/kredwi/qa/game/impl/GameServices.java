@@ -7,10 +7,12 @@ import ru.kredwi.qa.config.ConfigKeys;
 import ru.kredwi.qa.game.IBlockConstructionService;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IGameAnswer;
+import ru.kredwi.qa.game.IGameEvent;
 import ru.kredwi.qa.game.IGamePlayer;
 import ru.kredwi.qa.game.IGameQuestionManager;
 import ru.kredwi.qa.game.IWinnerService;
 import ru.kredwi.qa.game.service.BlockConstructionService;
+import ru.kredwi.qa.game.service.EventService;
 import ru.kredwi.qa.game.service.GameAnswerService;
 import ru.kredwi.qa.game.service.GamePlayerService;
 import ru.kredwi.qa.game.service.QuestionService;
@@ -22,6 +24,7 @@ public class GameServices {
 	private final IBlockConstructionService blockConstructionService;
 	private final IWinnerService winnerService;
 	private final IGamePlayer gamePlayer;
+	private final IGameEvent gameEvents;
 	
     private GameServices(Builder builder) {
     	Objects.requireNonNull(builder);
@@ -30,6 +33,7 @@ public class GameServices {
     	this.blockConstructionService = Objects.requireNonNull(builder.blockConstructionService);
     	this.winnerService = Objects.requireNonNull(builder.winnerService);
     	this.gamePlayer = Objects.requireNonNull(builder.gamePlayer);
+    	this.gameEvents=Objects.requireNonNull(builder.gameEvents);
     }
 
 	public IGameQuestionManager getQuestionManager() {
@@ -52,12 +56,20 @@ public class GameServices {
 		return gamePlayer;
 	}
 	
-    public static class Builder {
+    /**
+	 * @return the gameEvents
+	 */
+	public IGameEvent getGameEvents() {
+		return gameEvents;
+	}
+
+	public static class Builder {
         private IGameQuestionManager questionManager;
         private IGameAnswer gameAnswer;
         private IBlockConstructionService blockConstructionService;
         private IWinnerService winnerService;
         private IGamePlayer gamePlayer;
+        private IGameEvent gameEvents;
         
         private final PluginWrapper plugin;
         private final IGame game;
@@ -70,12 +82,21 @@ public class GameServices {
         }
 
         /**
+         * @param eventService the eventService to set
+         */
+        public Builder setEventService(IGameEvent eventService) {
+        	this.gameEvents = eventService;
+        	return this;
+        	}
+        
+        /**
          * @param questionManager the questionManager to set
          */
         public Builder setQuestionManager(IGameQuestionManager questionManager) {
             this.questionManager = Objects.requireNonNull(questionManager);
             return this;
         }
+
 
         /**
          * @param gameAnswer the gameAnswer to set
@@ -101,6 +122,7 @@ public class GameServices {
         }
 
         public GameServices build() {
+        	this.gameEvents = Objects.requireNonNullElse(gameEvents, new EventService());
         	this.gamePlayer = Objects.requireNonNullElse(gamePlayer, new GamePlayerService(game, plugin.getConfigManager().getAsBoolean(ConfigKeys.DEBUG)));
         	this.questionManager = Objects.requireNonNullElse(questionManager, new QuestionService(plugin.getConfigManager(), gamePlayer));
             this.gameAnswer = Objects.requireNonNullElse(gameAnswer, new GameAnswerService(plugin.getConfigManager(), game, sqlManager));

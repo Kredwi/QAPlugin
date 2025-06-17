@@ -5,7 +5,6 @@ import static ru.kredwi.qa.config.ConfigKeys.PLAYER_DEAD_AND_LOSE;
 import static ru.kredwi.qa.config.ConfigKeys.YOU_DEAD_AND_LOSE;
 
 import java.text.MessageFormat;
-import java.util.Objects;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -14,7 +13,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
 import ru.kredwi.qa.config.QAConfig;
-import ru.kredwi.qa.game.GameMode;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IMainGame;
 import ru.kredwi.qa.game.player.PlayerState;
@@ -36,7 +34,7 @@ public class PlayerDeadEvent implements Listener {
 	public void onPlayerDeath(PlayerDeathEvent event) {
 		IGame game = mainGame.getGameFromPlayer(event.getEntity());
 		
-		if (Objects.isNull(game)) 
+		if (game == null) 
 			return;
 		
 		PlayerState playerState = game.getPlayerService().getPlayerState(event.getEntity());
@@ -63,15 +61,8 @@ public class PlayerDeadEvent implements Listener {
 			mainGame.removeGameWithName(game.getGameInfo().name());
 			return;
 		}
-		
-		/**
-		 * shit API
-		 * TODO brain pls rewrite this (REWRITE API IS NOT "REWRITE THIS METHOD")*/
-		if (game.getGameInfo().mode().equals(GameMode.PLEONASMS)
-				&& game.getPlayerService().getPlayers().size() == 1) {
-			game.getBlockConstruction().deleteBuildedBlocks();
-			game.getWinnerService().executeWinnerHandler();
-		}
+	
+		game.getGameEvents().onDeadPlayer();
 		
 		game.getPlayerService().getPlayers().forEach(p -> p.sendMessage(messageForPlayers));
 	}

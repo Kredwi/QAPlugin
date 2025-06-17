@@ -13,6 +13,7 @@ public interface IGame {
 	boolean isStart();
 	public boolean isFinish();
 	
+	public IGameEvent getGameEvents();
 	public IGameQuestionManager getQuestionManager();
 	public IGameAnswer getGameAnswer();
 	public IBlockConstructionService getBlockConstruction();

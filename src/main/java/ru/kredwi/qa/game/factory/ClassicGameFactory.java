@@ -70,11 +70,10 @@ public class ClassicGameFactory implements ICreatorFactory {
 		
 		if (args.length > 0) {
 			// correct checking in `validateParams`
-			int blocksToWin = Integer.parseInt(args[0]);
-			
+			int blocksToWin = Math.abs(Integer.parseInt(args[0]));
 			return new ClassicGame(name, blocksToWin, owner, plugin, sqlManager, gameManager);
 		} else {
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("invalid inputed number");
 		}
 	}
 	

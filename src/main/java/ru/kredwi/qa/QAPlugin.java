@@ -93,7 +93,7 @@ public class QAPlugin extends JavaPlugin implements PluginWrapper {
 	
 	private void loadGameFactories() {
 		gameFactory.register(GameMode.CLASSIC, new ClassicGameFactory(this));
-		gameFactory.register(GameMode.CLASSIC, new PleoyasmsGameFactory(this));
+		gameFactory.register(GameMode.PLEONASMS, new PleoyasmsGameFactory(this));
 	}
 	/**
 	 * If in config file <b>DELETE_BLOCKS_WHEN_DISABLE</b> == <i>true</i> then<br>

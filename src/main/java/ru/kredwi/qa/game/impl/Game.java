@@ -6,6 +6,7 @@ import ru.kredwi.qa.game.GameMode;
 import ru.kredwi.qa.game.IBlockConstructionService;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IGameAnswer;
+import ru.kredwi.qa.game.IGameEvent;
 import ru.kredwi.qa.game.IGamePlayer;
 import ru.kredwi.qa.game.IGameQuestionManager;
 import ru.kredwi.qa.game.IWinnerService;
@@ -35,6 +36,11 @@ public abstract class Game implements IGame {
 				&& getPlayerService().isServiceReady()
 				&& getQuestionManager().isServiceReady()
 				&& getWinnerService().isServiceReady();
+	}
+	
+	@Override
+	public IGameEvent getGameEvents() {
+		return services.getGameEvents();
 	}
 	
 	@Override

@@ -54,7 +54,7 @@ public class CreateGame extends CommandAbstract {
 				String[] arguments;
 				
 				// recheck
-				if (super.needArgs() > args.length) {
+				if (super.needArgs() < args.length) {
 					arguments = Arrays.copyOfRange(args, super.needArgs(), args.length);
 				} else {
 					arguments = new String[0];

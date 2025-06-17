@@ -63,7 +63,7 @@ public class StartGame extends CommandAbstract {
 		}
 		
 		Set<Player> players = game.getPlayerService().getPlayers();
-
+		
 		if (!players.contains((Player) sender)) {
 			sender.sendMessage(cm.getAsString(IN_THE_GAME_NOT_FOUND_PATHS));
 			return;

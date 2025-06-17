@@ -7,6 +7,7 @@ import ru.kredwi.qa.game.GameMode;
 import ru.kredwi.qa.game.IMainGame;
 import ru.kredwi.qa.game.impl.Game;
 import ru.kredwi.qa.game.impl.GameServices;
+import ru.kredwi.qa.game.impl.pleonasms.service.PleonasmsEventService;
 import ru.kredwi.qa.game.impl.pleonasms.service.PleonasmsWinnerService;
 import ru.kredwi.qa.sql.SQLManager;
 
@@ -16,6 +17,7 @@ public class PleoyasmsGame extends Game {
 		super(name, owner, GameMode.PLEONASMS);
 		setServices(new GameServices.Builder(plugin, PleoyasmsGame.this, sqlManager)
 				.setWinnerService(new PleonasmsWinnerService(plugin, PleoyasmsGame.this, sqlManager))
+				.setEventService(new PleonasmsEventService(PleoyasmsGame.this))
 				.build());
 	}
 }
