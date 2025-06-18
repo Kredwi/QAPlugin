@@ -32,6 +32,7 @@ public class ClassicGame extends Game implements IClassicGame {
 				.setBlockConstructionService(new ClassicConsturctionService(ClassicGame.this, plugin, playerService, winnerService))
 				.setGamePlayer(playerService)
 				.build());
+		
 		this.blocksToWin = blocksToWin;
 	}
 

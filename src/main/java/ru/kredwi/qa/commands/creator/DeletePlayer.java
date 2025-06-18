@@ -22,8 +22,6 @@ import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.game.GameMode;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IMainGame;
-import ru.kredwi.qa.game.player.PlayerState;
-import ru.kredwi.qa.removers.IRemover;
 
 public class DeletePlayer extends CommandAbstract {
 	
@@ -44,7 +42,7 @@ public class DeletePlayer extends CommandAbstract {
 
 		IGame game = commandController.getMainGame().getGame(gameName);
 		
-		if (Objects.isNull(game)) {
+		if (game == null) {
 			sender.sendMessage(cm.getAsString(GAME_NOT_FOUND));
 			return;
 		}
@@ -62,10 +60,10 @@ public class DeletePlayer extends CommandAbstract {
 		// idk
 		Player player = Bukkit.getPlayer(playerName);
 		
-		if (Objects.isNull(player)) {
+		if (player == null) {
 			player = game.getPlayerService().getPlayer(playerName);
 			
-			if (Objects.isNull(player)) {
+			if (player == null) {
 				sender.sendMessage(cm.getAsString(IS_PLAYER_IS_NOT_FOUND));
 				return;
 			}
@@ -77,12 +75,7 @@ public class DeletePlayer extends CommandAbstract {
 			return;
 		}
 		
-		PlayerState playerState = game.getPlayerService().getPlayerState(player);
-		
-		playerState.getPlayerBuildedBlocks()
-			.forEach(IRemover::remove);
-		
-		game.getPlayerService().getPlayers().remove(player);
+		game.getPlayerService().deletePlayer(player);
 	}
 	
 	@Override

@@ -1,10 +1,22 @@
 package ru.kredwi.qa.utils;
 
 import org.bukkit.Location;
+import org.bukkit.util.Vector;
 
 import java.lang.Math;
 
 public class LocationUtils {
+	
+	public static Vector horizontalizeDirection(Location targetLocation) {
+		Vector direction = targetLocation.getDirection().normalize();
+		direction.setY(0);
+		
+		if (Math.abs(direction.getX()) > Math.abs(direction.getZ())) {
+			return new Vector(Math.signum(direction.getX()), 0, 0);
+		} else {
+			return new Vector(0, 0, Math.signum(direction.getZ()));
+		}
+	}
 	
 	public static Location centerLocation(Location location) {
 		return centerLocation(location, true);

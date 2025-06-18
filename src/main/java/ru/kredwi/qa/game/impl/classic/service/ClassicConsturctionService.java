@@ -27,7 +27,7 @@ public class ClassicConsturctionService extends BlockConstructionService{
 	public void scheduleBuildForPlayer(Player player, PlayerState state, boolean isInit) {
 		int buildBlock = neededBlockToMax(state.getAnswerCount(), state.getBuildedBlocks(), true);
 		
-		FillBlocksTask.Builder fbtBuilder = new FillBlocksTask.Builder(plugin, state.getLocaton(), getDirection(state.getLocaton()), state, player, game, buildBlock)
+		FillBlocksTask.Builder fbtBuilder = getFillBlockBuilder(player, state, buildBlock)
 				.fillBlockCallback(new ConstructionStageEndCallback(plugin, game, player))
 				.breakIsBlockedCallback(breakDeniedCallback);
 		
@@ -35,7 +35,6 @@ public class ClassicConsturctionService extends BlockConstructionService{
 	}
 	
 	private int neededBlockToMax(int length, int buildedBlocks, boolean add) {
-		
 		int remainingBlocks = (game.getBlockToWin() - (buildedBlocks - (add
 				? COUNT_OF_INIT_BLOCKS : 0)));
 		

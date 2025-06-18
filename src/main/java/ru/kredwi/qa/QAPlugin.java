@@ -95,6 +95,7 @@ public class QAPlugin extends JavaPlugin implements PluginWrapper {
 		gameFactory.register(GameMode.CLASSIC, new ClassicGameFactory(this));
 		gameFactory.register(GameMode.PLEONASMS, new PleoyasmsGameFactory(this));
 	}
+	
 	/**
 	 * If in config file <b>DELETE_BLOCKS_WHEN_DISABLE</b> == <i>true</i> then<br>
 	 * Delete blocks all blocks from {@link ru.kredwi.qa.game.impl.pleonasms.ClassicGame.buildedBlock}

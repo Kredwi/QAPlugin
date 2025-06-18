@@ -7,6 +7,7 @@ import static ru.kredwi.qa.config.ConfigKeys.ENABLED_BLOCKS;
 import static ru.kredwi.qa.config.ConfigKeys.SPAWN_DISPLAY_TEXTS;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -19,7 +20,6 @@ import java.util.UUID;
 import java.util.function.Predicate;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
@@ -39,6 +39,7 @@ import ru.kredwi.qa.game.IWinnerService;
 import ru.kredwi.qa.game.player.PlayerState;
 import ru.kredwi.qa.removers.IRemover;
 import ru.kredwi.qa.task.FillBlocksTask;
+import ru.kredwi.qa.utils.LocationUtils;
 
 public class BlockConstructionService implements IBlockConstructionService{
 
@@ -67,22 +68,10 @@ public class BlockConstructionService implements IBlockConstructionService{
 			this.sequenceBlockData = loadBlockData().toArray(new BlockData[0]));
 	}
 	
-	@Override
-	public void scheduleBuildForPlayer(Player player, PlayerState state, boolean isInit) {
-		int buildBlock = state.getAnswerCount();
-		
-		FillBlocksTask.Builder fbtBuilder = new FillBlocksTask.Builder(plugin, state.getLocaton(), getDirection(state.getLocaton()), state, player, game, buildBlock)
-				.breakIsBlockedCallback(breakDeniedCallback);
-		
-		nextScheduleBuildForPlayer(fbtBuilder, player, state, isInit);
-	}
-	
 	protected void nextScheduleBuildForPlayer(FillBlocksTask.Builder fbtBuilder, Player player, PlayerState state, boolean isInit) {
-		if (!isInit) {
-			fbtBuilder.spawnDisplays(cm.getAsBoolean(SPAWN_DISPLAY_TEXTS));
-		} else {
-			fbtBuilder.spawnDisplays(isInit);
-		}
+		fbtBuilder.spawnDisplays(!isInit 
+				? cm.getAsBoolean(SPAWN_DISPLAY_TEXTS)
+				: isInit);
 		
 		FillBlocksTask fbt = fbtBuilder.build();
 		
@@ -92,15 +81,11 @@ public class BlockConstructionService implements IBlockConstructionService{
 					cm.getAsInt(BUILD_PERIOD)));
 	}
 	
-	protected Vector getDirection(Location targetLocation) {
-		Vector direction = targetLocation.getDirection().normalize();
-		direction.setY(0);
+	protected FillBlocksTask.Builder getFillBlockBuilder(Player player, PlayerState state, int buildBlock) {
+		Vector direction = LocationUtils.horizontalizeDirection(state.getLocaton());
 		
-		if (Math.abs(direction.getX()) > Math.abs(direction.getZ())) {
-			return new Vector(Math.signum(direction.getX()), 0, 0);
-		} else {
-			return new Vector(0, 0, Math.signum(direction.getZ()));
-		}
+		return new FillBlocksTask.Builder(plugin, state.getLocaton(), direction,
+				state, player, game, buildBlock);
 	}
 	
 	private List<BlockData> loadBlockData() {
@@ -122,6 +107,16 @@ public class BlockConstructionService implements IBlockConstructionService{
 		}
 		this.serviceReady = true;
 		return blockDataList;
+	}
+	
+	@Override
+	public void scheduleBuildForPlayer(Player player, PlayerState state, boolean isInit) {
+		int buildBlock = state.getAnswerCount();
+		
+		FillBlocksTask.Builder fbtBuilder = getFillBlockBuilder(player, state, buildBlock)
+				.breakIsBlockedCallback(breakDeniedCallback);
+		
+		nextScheduleBuildForPlayer(fbtBuilder, player, state, isInit);
 	}
 	
 	
@@ -156,55 +151,6 @@ public class BlockConstructionService implements IBlockConstructionService{
 		
 		return blocks;
 	}
-	
-	@Override
-	public int getBuildComplete() {
-		return buildCompleted;
-	}
-	
-	@Override
-	public void addBuildComplete() {
-		buildCompleted++;
-	}
-	
-	@Override
-	public void resetBuildComplete() {
-		buildCompleted = 1;
-	}
-
-	@Override
-	public BlockData getRandomBlockData() {
-		if (Objects.isNull(sequenceBlockData)) {
-			if (cm.getAsBoolean(DEBUG)) {
-				QAPlugin.getQALogger().warning("sequenceBlockData IS NOT INITILIZE. Used default BLACK_CONCRETE.");
-			}
-			return Material.BLACK_CONCRETE.createBlockData();
-		}
-		return sequenceBlockData[QAPlugin.RANDOM.nextInt(sequenceBlockData.length)];
-	}
-
-
-	@Override
-	public List<BukkitTask> getBuildedTasks() {
-		return buildTasks;
-	}
-
-
-	@Override
-	public boolean buildIsStopped() {
-		return stopBuild;
-	}
-
-
-	@Override
-	public void setStopBuild(boolean isStop) {
-		this.stopBuild = isStop;
-	}
-
-	@Override
-	public boolean isServiceReady() {
-		return serviceReady;
-	}
 
 	@Override
 	public void deletePathLayer(PlayerState playerState, int deleteBlock) throws PlayerDontHaveLayersException {
@@ -227,12 +173,69 @@ public class BlockConstructionService implements IBlockConstructionService{
 	}
 	
 	@Override
+	public BlockData getRandomBlockData() {
+		if (sequenceBlockData == null) {
+			if (cm.getAsBoolean(DEBUG)) {
+				QAPlugin.getQALogger().warning("sequenceBlockData IS NOT INITILIZE. Used default BLACK_CONCRETE.");
+			}
+			return Material.BLACK_CONCRETE.createBlockData();
+		}
+		return sequenceBlockData[QAPlugin.RANDOM.nextInt(sequenceBlockData.length)];
+	}
+	
+	@Override
 	public void addGlobalRemovers(UUID uuid, List<IRemover> removers) {
+		Objects.requireNonNull(uuid);
+		Objects.requireNonNull(removers);
+		
 		globalRemovers.put(uuid, removers);
 	}
 
+	/**
+	 * Getting global remover
+	 * 
+	 * @param uuid of player
+	 * @return list of removers or empty list if remover dont found
+	 * @author Kredwi
+	 * */
 	@Override
 	public List<IRemover> getGlobalRemovers(UUID uuid) {
-		return globalRemovers.get(uuid);
+		return globalRemovers.getOrDefault(uuid, Collections.emptyList());
+	}
+	
+	@Override
+	public int getBuildComplete() {
+		return buildCompleted;
+	}
+	
+	@Override
+	public void addBuildComplete() {
+		buildCompleted++;
+	}
+	
+	@Override
+	public void resetBuildComplete() {
+		buildCompleted = 1;
+	}
+
+	@Override
+	public List<BukkitTask> getBuildedTasks() {
+		return buildTasks;
+	}
+
+	@Override
+	public boolean buildIsStopped() {
+		return stopBuild;
+	}
+
+
+	@Override
+	public void setStopBuild(boolean isStop) {
+		this.stopBuild = isStop;
+	}
+
+	@Override
+	public boolean isServiceReady() {
+		return serviceReady;
 	}
 }

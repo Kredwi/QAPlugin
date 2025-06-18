@@ -21,12 +21,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
-import org.bukkit.Bukkit;
 import org.bukkit.FireworkEffect;
-import org.bukkit.Location;
-import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.plugin.Plugin;
 
 import ru.kredwi.qa.PluginWrapper;
@@ -36,10 +32,9 @@ import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IMainGame;
 import ru.kredwi.qa.game.IWinnerService;
 import ru.kredwi.qa.sql.DatabaseActions;
+import ru.kredwi.qa.utils.FireworkUtils;
 
 public abstract class WinnerService implements IWinnerService {
-
-	public static final int FIREWORK_MODEL_ID = 909827261;
 	
 	private List<Player> winners = Collections.synchronizedList(new ArrayList<>());
 	private DatabaseActions databaseActions;
@@ -72,7 +67,7 @@ public abstract class WinnerService implements IWinnerService {
 		
 		// spawn for winners firework effects
 		if (cm.getAsBoolean(FIREWORK_FOR_WINNER_ENABLE)) {
-			game.getWinnerService().getWinners().forEach(p -> spawnFireworkEntity(p.getLocation()));		
+			game.getWinnerService().getWinners().forEach(p -> FireworkUtils.spawnFireworkEntity(plugin, p.getLocation(), fireworkEffect));		
 		}
 		
 		// and alert all players in the game of winners
@@ -86,21 +81,6 @@ public abstract class WinnerService implements IWinnerService {
 			mainGame.removeGameWithName(game.getGameInfo().name());	
 		}
 	}
-	
-	protected void spawnFireworkEntity(Location location) {
-		Location loc = location.clone().add(0,3,0);
-		
-		Firework firework = loc.getWorld().spawn(loc, Firework.class);
-		FireworkMeta fwm = firework.getFireworkMeta();
-		
-		fwm.setPower(0);
-		fwm.setCustomModelData(FIREWORK_MODEL_ID);
-		fwm.addEffect(fireworkEffect);
-		
-		firework.setFireworkMeta(fwm);
-
-		Bukkit.getScheduler().runTaskLater(plugin, firework::detonate, 3L);
-	}
 
 	/**
 	 * Added winners to winner pull and update database
@@ -108,9 +88,11 @@ public abstract class WinnerService implements IWinnerService {
 	 * */
 	@Override
 	public void addWinner(Player player) {
-		this.winners.add(player);
-		if (cm.getAsBoolean(DB_ENABLE)) {
-			CompletableFuture.runAsync(() -> databaseActions.addPlayerWinCount(player.getUniqueId()));
+		if (!winners.contains(player)) {
+			this.winners.add(player);	
+			if (cm.getAsBoolean(DB_ENABLE)) {
+				CompletableFuture.runAsync(() -> databaseActions.addPlayerWinCount(player.getUniqueId()));
+			}
 		}
 	}
 

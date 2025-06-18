@@ -17,9 +17,6 @@ import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IMainGame;
 import ru.kredwi.qa.game.player.PlayerState;
 
-/**
- * TODO if enabled mode pleonasms, and 1 player alive, this player dont win if dont write /answer now
- * */
 public class PlayerDeadEvent implements Listener {
 
 	private QAConfig cm;
@@ -39,9 +36,12 @@ public class PlayerDeadEvent implements Listener {
 		
 		PlayerState playerState = game.getPlayerService().getPlayerState(event.getEntity());
 		
+		if (playerState == null) 
+			return;
+
 		game.getBlockConstruction()
 			.addGlobalRemovers(event.getEntity().getUniqueId(), playerState.getPlayerBuildedBlocks());
-		
+	
 		game.getPlayerService().getPlayers().remove(event.getEntity());
 		
 		String messageForPlayers = MessageFormat.format(cm.getAsString(PLAYER_DEAD_AND_LOSE),

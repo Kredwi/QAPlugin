@@ -8,7 +8,6 @@ import static ru.kredwi.qa.config.ConfigKeys.YOU_NOT_CONNECTED_TO_GAME;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -40,7 +39,7 @@ public class DeleteBlock extends CommandAbstract{
 		
 		IGame game = commandController.getMainGame().getGameFromPlayer((Player) sender);
 		
-		if (Objects.isNull(game)) {
+		if (game == null) {
 			sender.sendMessage(cm.getAsString(YOU_NOT_CONNECTED_TO_GAME));
 			return;
 		}
@@ -53,14 +52,14 @@ public class DeleteBlock extends CommandAbstract{
 		// args[0] player name
 		Player player = Bukkit.getPlayer(args[0]);
 		
-		if (Objects.isNull(player)) {
+		if (player == null) {
 			sender.sendMessage(cm.getAsString(IS_PLAYER_IS_NOT_FOUND));
 			return;
 		}
 		
 		PlayerState playerState = game.getPlayerService().getPlayerState(player);
 		
-		if (Objects.isNull(playerState)) {
+		if (playerState == null) {
 			sender.sendMessage(cm.getAsString(IS_PLAYER_IS_NOT_FOUND));
 			return;
 		}
@@ -87,7 +86,7 @@ public class DeleteBlock extends CommandAbstract{
 
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
-		if (sender instanceof Player) return null;
+		if (!(sender instanceof Player)) return null;
 		
 		if (!isHaveNeedsPermissions(sender)) return null;
 		
@@ -99,7 +98,7 @@ public class DeleteBlock extends CommandAbstract{
 		if (args.length > 1) {
 			IGame game = mainGame.getGame(args[1].toLowerCase());
 			
-			if (Objects.isNull(game)) return Collections.emptyList();
+			if (game == null)return Collections.emptyList();
 			
 			return game.getPlayerService().getPlayers().stream()
 					.map(Player::getName)

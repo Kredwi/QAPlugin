@@ -21,12 +21,6 @@ public class AbstractStageEndCallback {
 	}
 	
 	protected void winnerOrQuestionsPlayer(Player player, PlayerState state) {
-		// checks is winner?
-		if (game.getWinnerService().isPlayerWin(state)) {
-			// add winner to list winners
-			game.getWinnerService().addWinner(player);
-		}
-		
 		if (!game.getWinnerService().getWinners().isEmpty()) {
 			
 			game.getWinnerService().executeWinnerHandler();
@@ -43,7 +37,11 @@ public class AbstractStageEndCallback {
 					}
 				}
 				
+				if (!game.getWinnerService().getWinners().isEmpty())
+					return;
+				
 				game.getWinnerService().executeWinnerHandler();
+				
 				return;
 			} else game.getQuestionManager().questionAllPlayers();
 		}

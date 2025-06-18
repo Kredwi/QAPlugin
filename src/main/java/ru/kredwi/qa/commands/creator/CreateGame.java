@@ -1,7 +1,7 @@
 package ru.kredwi.qa.commands.creator;
 
 import static ru.kredwi.qa.config.ConfigKeys.GAME_IS_CREATED;
-import static ru.kredwi.qa.config.ConfigKeys.*;
+import static ru.kredwi.qa.config.ConfigKeys.INPUTED_INVALID_DATA;
 import static ru.kredwi.qa.config.ConfigKeys.IS_GAME_ALREADY_CREATED;
 import static ru.kredwi.qa.config.ConfigKeys.YOU_ALREADY_CREATE_YOUR_GAME;
 
@@ -86,7 +86,7 @@ public class CreateGame extends CommandAbstract {
 		if (!isHaveNeedsPermissions(sender)) return Collections.emptyList();
 		
 		if (args.length == 2) {
-			return Arrays.stream(GameMode.values())
+			return gameFactory.getAllGameMode().stream()
 					.map(Enum::name)
 					.toList();
 		}

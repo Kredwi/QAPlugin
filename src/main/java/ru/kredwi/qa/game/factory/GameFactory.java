@@ -1,6 +1,8 @@
 package ru.kredwi.qa.game.factory;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import ru.kredwi.qa.game.GameMode;
@@ -19,6 +21,11 @@ public class GameFactory implements IGameFactory {
 			throw new NullPointerException("Game factory dont found");
 		}
 		return gameFactory;
+	}
+	
+	@Override
+	public List<GameMode> getAllGameMode() {
+		return new ArrayList<>(factory.keySet());
 	}
 
 }

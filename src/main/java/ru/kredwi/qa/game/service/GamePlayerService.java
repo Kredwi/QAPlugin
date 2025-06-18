@@ -14,7 +14,11 @@ import ru.kredwi.qa.QAPlugin;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IGamePlayer;
 import ru.kredwi.qa.game.player.PlayerState;
+import ru.kredwi.qa.removers.IRemover;
 
+/**
+ * For CLASSIC game
+ * */
 public class GamePlayerService implements IGamePlayer {
 
 	private final IGame game;
@@ -84,5 +88,15 @@ public class GamePlayerService implements IGamePlayer {
 					return;
 				e.teleport(game.getGameInfo().spawnLocation());
 			});
+	}
+
+	@Override
+	public void deletePlayer(Player player) {
+		PlayerState playerState = getPlayerState(player);
+		
+		playerState.getPlayerBuildedBlocks()
+			.forEach(IRemover::remove);
+		
+		getPlayers().remove(player);
 	}
 }

@@ -108,7 +108,7 @@ plugin-success-reloaded: "§aPlugin successfuly reloaded"
 inputed-invalid-data: "§cYou have entered incorrect information, check the documentation."
 player-does-not-have-layers: "§cThe player does not have enough layers required."
 player-dead-and-lose: "§fPlayer §6{0} §f dies, and §close!"
-you-dead-and-lose: "§cYou died and lost!"
+you-dead-and-lose: "§cYou died and lose!"
 player-drop-points-with-already-answer: "§fthe player §6{0} §clost his points, §fbecause he answered with a repeating answer!"
 command-dont-support-gamemode: "§cThis type of game is not supported by this command"
 

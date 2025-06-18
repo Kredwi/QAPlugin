@@ -35,6 +35,12 @@ public class ConstructionStageEndCallback extends AbstractStageEndCallback
 		// player build complete
 		game.getBlockConstruction().addBuildComplete();
 		
+		// checks is winner?
+		if (game.getWinnerService().isPlayerWin(state)) {
+			// add winner to list winners
+			game.getWinnerService().addWinner(player);
+		}
+		
 		// if last player complete build
 		if (game.getBlockConstruction().getBuildComplete() > game.getPlayerService().getPlayers().size()) {
 			// reset build completes

@@ -70,7 +70,7 @@ public class StartGame extends CommandAbstract {
 		}
 		
 		if (game.getGameInfo().mode().equals(GameMode.PLEONASMS)) {
-			if (players.isEmpty() || players.size() <= 1) {
+			if (players.isEmpty() || players.size() < 2) {
 				sender.sendMessage(cm.getAsString(IN_THE_GAME_NOT_FOUND_PATHS));
 				return;
 			}	

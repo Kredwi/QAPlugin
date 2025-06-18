@@ -1,10 +1,8 @@
 package ru.kredwi.qa.game.impl.pleonasms.callback;
 
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.Consumer;
 
 import org.bukkit.Location;
@@ -42,14 +40,19 @@ public class ConstructionStageEndCallback extends AbstractStageEndCallback
 		
 		// player build complete
 		game.getBlockConstruction().addBuildComplete();
+		// checks is winner?
+		if (game.getWinnerService().isPlayerWin(state)) {
+				// add winner to list winners
+				game.getWinnerService().addWinner(player);
+		}
 		
 		// if last player complete build
 		if (game.getBlockConstruction().getBuildComplete() > game.getPlayerService().getPlayers().size()) {
 			
 			for (Map.Entry<Player,PlayerState> playerState : game.getPlayerService().getPlayerAndStatesArray()) {
 				AnswerUsedData answerUsed = playerState.getValue().getAnswerUsed();
-				if (Objects.nonNull(answerUsed)) {
-					deletePlayerLayer(answerUsed.layers(), playerState);
+				if (answerUsed != null) {
+					deletePlayerLayer(answerUsed.layers(), playerState.getValue());
 					state.setAnswerUsed(null);
 					deletePlayerFromGame(playerState.getKey(), playerState.getValue(), location.second());
 				}
@@ -75,24 +78,22 @@ public class ConstructionStageEndCallback extends AbstractStageEndCallback
 		}
 	}
 	
-	/**
-	 * from command `DeleteBlocks`
-	 * */
-	private void deletePlayerLayer(int deleteBlock, Map.Entry<Player,PlayerState> entry) {
-		int delete = (deleteBlock + 4) * (IBlockConstructionService.COUNT_OF_INIT_BLOCKS + 1);
+	private void deletePlayerLayer(int deleteBlock, PlayerState state) {
+		List<IRemover> blockRemovers = state.getPlayerBuildedBlocks();
 		
-		List<IRemover> blockRemovers = entry.getValue().getPlayerBuildedBlocks();
-		entry.getValue().removeBuildedBlock(delete);
-		Collections.reverse(blockRemovers);
+		int delete = deleteBlock + 4;
+		int deleteInitBlocks = delete * (IBlockConstructionService.COUNT_OF_INIT_BLOCKS + 1);
 		
-		Iterator<IRemover> iterator = blockRemovers.iterator();
-		
-		for (int i =0; i < delete && iterator.hasNext(); i++) {
-			IRemover remover = iterator.next();
-			remover.remove();
-			iterator.remove();
+		if (blockRemovers.size() < deleteInitBlocks) {
+			delete = blockRemovers.size() / (IBlockConstructionService.COUNT_OF_INIT_BLOCKS + 1);
 		}
 		
+		// reverse block removers
+		Collections.reverse(blockRemovers);
+		
+		game.getBlockConstruction().deletePathLayer(state, delete);
+		
+		// now reverse block removers
 		Collections.reverse(blockRemovers);
 	}
 	
