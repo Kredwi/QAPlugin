@@ -72,6 +72,8 @@ public class QAPlugin extends JavaPlugin implements PluginWrapper {
 			return;
 		}
 		
+		
+		
 		if (configManager.getAsBoolean(ConfigKeys.DB_ENABLE)) {
 			try {
 				sqlManager.connect();

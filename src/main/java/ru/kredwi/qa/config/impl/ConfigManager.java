@@ -3,16 +3,17 @@ package ru.kredwi.qa.config.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect.Type;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 import ru.kredwi.qa.QAPlugin;
-import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.config.ConfigKeys;
+import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.utils.EnumConverter;
 
 public class ConfigManager implements QAConfig {
@@ -24,54 +25,54 @@ public class ConfigManager implements QAConfig {
 	}
 
 	@Override
-	public String getAsString(@NonNull String path) {
+	public String getAsString(@Nonnull String path) {
 		return config.getString(path);
 	}
 
 	@Override
-	public boolean getAsBoolean(@NonNull String path) {
+	public boolean getAsBoolean(@Nonnull String path) {
 		return config.getBoolean(path);
 	}
 
 	@Override
-	public int getAsInt(@NonNull String path) {
+	public int getAsInt(@Nonnull String path) {
 		return config.getInt(path);
 	}
 
 	@Override
-	public double getAsDouble(@NonNull String path) {
+	public double getAsDouble(@Nonnull String path) {
 		return config.getDouble(path);
 	}
 
 	@Override
-	public Sound getAsSound(@NonNull String path) {
+	public Sound getAsSound(@Nonnull String path) {
 		return new EnumConverter<Sound>(this)
 				.getAsGeneric(path, Sound.class, Sound.BLOCK_LEVER_CLICK);
 	}
 
 	@Override
-	public Particle getAsParticle(@NonNull String path) {
+	public Particle getAsParticle(@Nonnull String path) {
 		return new EnumConverter<Particle>(this)
 				.getAsGeneric(path, Particle.class, Particle.DRIP_LAVA);
 	}
 
 	@Override
-	public Type getAsFireworkType(@NonNull String path) {
+	public Type getAsFireworkType(@Nonnull String path) {
 		return new EnumConverter<Type>(this)
 				.getAsGeneric(path, Type.class, Type.STAR);
 	}
 
 	@Override
-	public Color getAsBukkitColor(@NonNull String path) {
+	public Color getAsBukkitColor(@Nonnull String path) {
 		return config.getColor(path);
 	}
 	
 	@Override
-	public List<String> getAsStringList(@NonNull String path) {
+	public List<String> getAsStringList(@Nonnull String path) {
 		return config.getStringList(path);
 	}
 
-	public List<Color> getAsBukkitColorList(String path) {
+	public List<Color> getAsBukkitColorList(@Nonnull String path) {
 		List<Color> colors = new ArrayList<>();
 		
 		for (Object item : config.getList(path)) {
@@ -111,7 +112,7 @@ public class ConfigManager implements QAConfig {
 	}
 
 	@Override
-	public void setConfig(@NonNull FileConfiguration config) {
+	public void setConfig(@Nonnull FileConfiguration config) {
 		this.config = config;
 	}
 	

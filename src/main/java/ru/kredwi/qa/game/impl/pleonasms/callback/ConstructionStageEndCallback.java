@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import javax.annotation.Nonnull;
+
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -65,7 +67,7 @@ public class ConstructionStageEndCallback extends AbstractStageEndCallback
 		}
 	}
 	
-	private void isAnswerAlreadyUsed(PlayerState state, Pair<Location, Location> location) {
+	private void isAnswerAlreadyUsed(@Nonnull PlayerState state, @Nonnull Pair<Location, Location> location) {
 		if (state.getSymbols() != null && state.getSymbols().length > 0) {
 			String answer = String.copyValueOf(state.getSymbols());
 			

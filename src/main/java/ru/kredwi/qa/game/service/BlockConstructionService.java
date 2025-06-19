@@ -204,6 +204,12 @@ public class BlockConstructionService implements IBlockConstructionService{
 	}
 	
 	@Override
+	public void removeGlobalRemovers(UUID uuid) {
+		Objects.requireNonNull(uuid);
+		globalRemovers.remove(uuid);
+	}
+	
+	@Override
 	public int getBuildComplete() {
 		return buildCompleted;
 	}

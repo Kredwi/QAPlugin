@@ -4,12 +4,14 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+
 import org.bukkit.entity.Player;
 
 import ru.kredwi.qa.game.player.PlayerState;
 
 public interface IGamePlayer extends ReadyService {
-	void deletePlayer(Player player);
+	void deletePlayer(@Nonnull Player player);
 	void spawnPlayers();
 	Set<Player> getPlayers();
 	Collection<PlayerState> getStates();

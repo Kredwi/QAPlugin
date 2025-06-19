@@ -1,7 +1,8 @@
 package ru.kredwi.qa.commands.creator;
 
-import static ru.kredwi.qa.config.ConfigKeys.*;
+import static ru.kredwi.qa.config.ConfigKeys.DEBUG;
 import static ru.kredwi.qa.config.ConfigKeys.ENABLE_REQUESTS;
+import static ru.kredwi.qa.config.ConfigKeys.GAME_IS_CREATED;
 import static ru.kredwi.qa.config.ConfigKeys.GAME_NOT_FOUND;
 import static ru.kredwi.qa.config.ConfigKeys.IS_COMMAND_ONLY_FOR_GAME_OWNER;
 import static ru.kredwi.qa.config.ConfigKeys.IS_PLAYER_IS_NOT_FOUND;
@@ -13,7 +14,6 @@ import static ru.kredwi.qa.config.ConfigKeys.YOU_HAVE_NEW_GAME_REQUESTS;
 import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
@@ -58,7 +58,7 @@ public class Path extends CommandAbstract {
 				
 				Player otherPlayer = Bukkit.getPlayer(args[1]);
 				
-				if (Objects.isNull(otherPlayer)) {
+				if (otherPlayer == null) {
 					sender.sendMessage(cm.getAsString(IS_PLAYER_IS_NOT_FOUND));
 					return;
 				}
@@ -84,7 +84,7 @@ public class Path extends CommandAbstract {
 				
 				Player otherPlayer = Bukkit.getPlayer(args[1]);
 				
-				if (Objects.isNull(otherPlayer)) {
+				if (otherPlayer == null) {
 					sender.sendMessage(cm.getAsString(IS_PLAYER_IS_NOT_FOUND));
 					return;
 				}
@@ -131,7 +131,7 @@ public class Path extends CommandAbstract {
 	private boolean sendMessagesIfNegativeConditions(Player player, String gameName) {
 		IGame game = mainGame.getGame(gameName);
 		
-		if (Objects.isNull(game)) {
+		if (game == null) {
 			player.sendMessage(cm.getAsString(GAME_NOT_FOUND));
 			return true;
 		}
@@ -145,6 +145,11 @@ public class Path extends CommandAbstract {
 			player.sendMessage(cm.getAsString(GAME_IS_CREATED));
 			return true;
 		}
+		//TODO
+		//if (!game.isAllServicesReady()) {
+		//	player.sendMessage("Services is not started! Please wait..");
+		//	return true;
+		//}
 		
 		return false;
 	}

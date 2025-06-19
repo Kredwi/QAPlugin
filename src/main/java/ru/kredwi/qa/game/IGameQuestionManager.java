@@ -1,6 +1,6 @@
 package ru.kredwi.qa.game;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+import javax.annotation.Nonnull;
 
 import ru.kredwi.qa.exceptions.QuestionsAreOverException;
 import ru.kredwi.qa.game.service.data.Question;
@@ -22,5 +22,5 @@ public interface IGameQuestionManager extends ReadyService {
 	
 	void questionAllPlayersOfQuestion(Question question);
 	
-	Question addNewQuestion(@NonNull String textOfQuestion);
+	Question addNewQuestion(@Nonnull String textOfQuestion);
 }

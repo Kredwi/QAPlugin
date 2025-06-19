@@ -2,6 +2,8 @@ package ru.kredwi.qa.game;
 
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+
 public interface IGameAnswer extends ReadyService {
 	void addAnwserCount();
 	void resetAnwserCount();
@@ -9,6 +11,6 @@ public interface IGameAnswer extends ReadyService {
 	void processPlayerAnswers(boolean isInit);
 	
 	public Set<String> getAlreadyUsedAnswers();
-	public void addAlreadyUsedAnswer(String answer);
-	public boolean isAlreadyUsedAnswer(String answer);
+	public void addAlreadyUsedAnswer(@Nonnull String answer);
+	public boolean isAlreadyUsedAnswer(@Nonnull String answer);
 }

@@ -3,6 +3,8 @@ package ru.kredwi.qa.game.player;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import org.bukkit.Location;
 import org.bukkit.block.data.BlockData;
 
@@ -14,7 +16,8 @@ public class PlayerState {
 	private List<IRemover> playerBuildedBlocks = new ArrayList<>();
 	private AnswerUsedData answerUsed = null;
 	
-	private char[] symbols;
+	@Nonnull
+	private char[] symbols = new char[0];
 	private boolean answered = false;
 	private int buildedBlocks = 1; // builded paths
 	private BlockData blockData;
@@ -64,11 +67,12 @@ public class PlayerState {
 		buildedBlocks -= deleteBuilded;
 	}
 
+	@Nonnull
 	public char[] getSymbols() {
 		return symbols;
 	}
 
-	public void setSymbols(char[] symbols) {
+	public void setSymbols(@Nonnull char[] symbols) {
 		this.symbols = symbols;
 	}
 

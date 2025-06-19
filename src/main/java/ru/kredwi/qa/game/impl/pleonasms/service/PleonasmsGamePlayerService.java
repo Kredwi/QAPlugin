@@ -1,5 +1,7 @@
 package ru.kredwi.qa.game.impl.pleonasms.service;
 
+import javax.annotation.Nonnull;
+
 import org.bukkit.entity.Player;
 
 import ru.kredwi.qa.game.IGame;
@@ -17,7 +19,7 @@ public class PleonasmsGamePlayerService extends GamePlayerService {
 	}
 	
 	@Override
-	public void deletePlayer(Player player) {
+	public void deletePlayer(@Nonnull Player player) {
 		PlayerState playerState = getPlayerState(player);
 		
 		if (playerState != null) {

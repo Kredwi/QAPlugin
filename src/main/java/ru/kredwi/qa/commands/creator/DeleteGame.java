@@ -30,7 +30,7 @@ public class DeleteGame extends CommandAbstract {
 		this.mainGame=mainGame;
 		this.cm = cm;
 	}
-
+	
 	@Override
 	public void run(ICommandController commandController, CommandSender sender, Command command, String[] args) {
 		

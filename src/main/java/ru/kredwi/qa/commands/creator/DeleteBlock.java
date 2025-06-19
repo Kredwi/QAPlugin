@@ -1,5 +1,6 @@
 package ru.kredwi.qa.commands.creator;
 
+import static ru.kredwi.qa.config.ConfigKeys.COMMAND_DONT_SUPPORT_GAMEMODE;
 import static ru.kredwi.qa.config.ConfigKeys.IN_ARGUMENT_NEEDED_NUMBER;
 import static ru.kredwi.qa.config.ConfigKeys.IS_PLAYER_IS_NOT_FOUND;
 import static ru.kredwi.qa.config.ConfigKeys.PLAYER_DOES_NOT_HAVE_LAYERS;
@@ -19,6 +20,7 @@ import ru.kredwi.qa.commands.ICommandController;
 import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.exceptions.PlayerDontHaveLayersException;
 import ru.kredwi.qa.exceptions.QAException;
+import ru.kredwi.qa.game.GameMode;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IMainGame;
 import ru.kredwi.qa.game.player.PlayerState;
@@ -49,6 +51,11 @@ public class DeleteBlock extends CommandAbstract{
 			return;
 		};
 		
+		if (!game.getGameInfo().mode().equals(GameMode.CLASSIC)) {
+			sender.sendMessage(COMMAND_DONT_SUPPORT_GAMEMODE);
+			return;
+		}
+		
 		// args[0] player name
 		Player player = Bukkit.getPlayer(args[0]);
 		
@@ -76,7 +83,7 @@ public class DeleteBlock extends CommandAbstract{
 		}
 		
 		try {
-			game.getBlockConstruction().deletePathLayer(playerState, deleteBlock);	
+			game.getBlockConstruction().deletePathLayer(playerState, deleteBlock);
 		} catch (PlayerDontHaveLayersException e) {
 			sender.sendMessage(cm.getAsString(PLAYER_DOES_NOT_HAVE_LAYERS));
 			return;

@@ -33,8 +33,10 @@ public interface IBlockConstructionService extends ReadyService {
 	public void scheduleBuildForPlayer(Player player, PlayerState state, boolean isInit);
 	public Set<IRemover> getSummaryBuildedBlocks();
 	List<BukkitTask> getBuildedTasks();
+	
 	void addGlobalRemovers(UUID uuid, List<IRemover> removers);
 	List<IRemover> getGlobalRemovers(UUID uuid);
+	void removeGlobalRemovers(UUID uuid);
 	
 	BlockData getRandomBlockData();
 	

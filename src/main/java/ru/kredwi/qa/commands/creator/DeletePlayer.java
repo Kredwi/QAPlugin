@@ -8,7 +8,6 @@ import static ru.kredwi.qa.config.ConfigKeys.IS_PLAYER_IS_NOT_FOUND;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
@@ -92,14 +91,16 @@ public class DeletePlayer extends CommandAbstract {
 		if (args.length == 2) {
 			IGame game = mainGame.getGame(args[0]);
 			
-			if (Objects.isNull(game)) {
+			if (game == null) {
 				return Collections.emptyList();
 			}
 			
-			return game.getPlayerService().getPlayers().stream()
+			List<String> names = game.getPlayerService().getPlayers().stream()
 					.map(Player::getName)
 					.filter(e -> e.startsWith(args[1]))
 					.collect(Collectors.toList());
+			
+			return names;
 		}
 		return Collections.emptyList();
 	}

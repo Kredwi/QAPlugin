@@ -8,6 +8,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.annotation.Nonnull;
+
 import org.bukkit.entity.Player;
 
 import ru.kredwi.qa.QAPlugin;
@@ -84,18 +86,30 @@ public class GamePlayerService implements IGamePlayer {
 	public void spawnPlayers() {
 		states.keySet()
 			.forEach(e -> {
-				if (Objects.isNull(e) || !e.isOnline() || e.isDead())
+				if (e  == null|| !e.isOnline() || e.isDead())
 					return;
 				e.teleport(game.getGameInfo().spawnLocation());
 			});
 	}
 
 	@Override
-	public void deletePlayer(Player player) {
+	public void deletePlayer(@Nonnull Player player) {
 		PlayerState playerState = getPlayerState(player);
 		
-		playerState.getPlayerBuildedBlocks()
-			.forEach(IRemover::remove);
+		if (playerState == null) {
+			List<IRemover> removers = game.getBlockConstruction().getGlobalRemovers(player.getUniqueId());
+			
+			if (removers.isEmpty())
+				return;
+			
+			removers.forEach(IRemover::remove);
+			
+			game.getBlockConstruction().removeGlobalRemovers(player.getUniqueId());
+		} else {
+			playerState.getPlayerBuildedBlocks()
+				.forEach(IRemover::remove);
+	
+		}
 		
 		getPlayers().remove(player);
 	}
