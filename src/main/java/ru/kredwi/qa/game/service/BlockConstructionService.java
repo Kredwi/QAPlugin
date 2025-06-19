@@ -7,6 +7,7 @@ import static ru.kredwi.qa.config.ConfigKeys.ENABLED_BLOCKS;
 import static ru.kredwi.qa.config.ConfigKeys.SPAWN_DISPLAY_TEXTS;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -18,6 +19,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
+
+import javax.annotation.Nonnull;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -73,8 +76,11 @@ public class BlockConstructionService implements IBlockConstructionService{
 				? cm.getAsBoolean(SPAWN_DISPLAY_TEXTS)
 				: isInit);
 		
+		QAPlugin.getQALogger().info("dsasadxx");
+		
 		FillBlocksTask fbt = fbtBuilder.build();
 		
+		QAPlugin.getQALogger().info("dsasxcsdacsa2213");
 		getBuildedTasks().add(fbt
 			.runTaskTimerAsynchronously(plugin,
 					cm.getAsInt(BUILD_DELAY),
@@ -83,7 +89,7 @@ public class BlockConstructionService implements IBlockConstructionService{
 	
 	protected FillBlocksTask.Builder getFillBlockBuilder(Player player, PlayerState state, int buildBlock) {
 		Vector direction = LocationUtils.horizontalizeDirection(state.getLocaton());
-		
+		QAPlugin.getQALogger().info(String.valueOf(buildBlock));
 		return new FillBlocksTask.Builder(plugin, state.getLocaton(), direction,
 				state, player, game, buildBlock);
 	}
@@ -115,7 +121,7 @@ public class BlockConstructionService implements IBlockConstructionService{
 		
 		FillBlocksTask.Builder fbtBuilder = getFillBlockBuilder(player, state, buildBlock)
 				.breakIsBlockedCallback(breakDeniedCallback);
-		
+		QAPlugin.getQALogger().info("dsa2sszz");
 		nextScheduleBuildForPlayer(fbtBuilder, player, state, isInit);
 	}
 	
@@ -153,18 +159,17 @@ public class BlockConstructionService implements IBlockConstructionService{
 	}
 
 	@Override
-	public void deletePathLayer(PlayerState playerState, int deleteBlock) throws PlayerDontHaveLayersException {
+	public void deletePathLayer(@Nonnull Collection<IRemover> path, PlayerState playerState, int deleteBlock) throws PlayerDontHaveLayersException {
 		int delete = deleteBlock * (COUNT_OF_INIT_BLOCKS + 1);
 		
-		List<IRemover> blockRemovers = playerState.getPlayerBuildedBlocks();
-		
-		if (blockRemovers.isEmpty() || blockRemovers.size() < delete) {
+		if (path.isEmpty() || path.size() < delete) {
 			throw new PlayerDontHaveLayersException("Player dont have needs layers");
 		}
+		if (playerState != null) {
+			playerState.removeBuildedBlock(delete);
+		}
 		
-		playerState.removeBuildedBlock(delete);
-		
-		Iterator<IRemover> iterator = blockRemovers.iterator();
+		Iterator<IRemover> iterator = path.iterator();
 		for (int i =0; i < delete && iterator.hasNext(); i++) {
 			IRemover remover = iterator.next();
 			remover.remove();

@@ -1,12 +1,12 @@
 package ru.kredwi.qa.commands.creator;
 
-import static ru.kredwi.qa.config.ConfigKeys.COMMAND_DONT_SUPPORT_GAMEMODE;
 import static ru.kredwi.qa.config.ConfigKeys.IN_ARGUMENT_NEEDED_NUMBER;
 import static ru.kredwi.qa.config.ConfigKeys.IS_PLAYER_IS_NOT_FOUND;
 import static ru.kredwi.qa.config.ConfigKeys.PLAYER_DOES_NOT_HAVE_LAYERS;
 import static ru.kredwi.qa.config.ConfigKeys.YOU_DONT_GAME_OWNER;
 import static ru.kredwi.qa.config.ConfigKeys.YOU_NOT_CONNECTED_TO_GAME;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -20,10 +20,10 @@ import ru.kredwi.qa.commands.ICommandController;
 import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.exceptions.PlayerDontHaveLayersException;
 import ru.kredwi.qa.exceptions.QAException;
-import ru.kredwi.qa.game.GameMode;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IMainGame;
 import ru.kredwi.qa.game.player.PlayerState;
+import ru.kredwi.qa.removers.IRemover;
 
 public class DeleteBlock extends CommandAbstract{
 
@@ -49,11 +49,6 @@ public class DeleteBlock extends CommandAbstract{
 		if (!game.getGameInfo().isPlayerOwner((Player) sender)) {
 			sender.sendMessage(cm.getAsString(YOU_DONT_GAME_OWNER));
 			return;
-		};
-		
-		if (!game.getGameInfo().mode().equals(GameMode.CLASSIC)) {
-			sender.sendMessage(COMMAND_DONT_SUPPORT_GAMEMODE);
-			return;
 		}
 		
 		// args[0] player name
@@ -66,7 +61,9 @@ public class DeleteBlock extends CommandAbstract{
 		
 		PlayerState playerState = game.getPlayerService().getPlayerState(player);
 		
-		if (playerState == null) {
+		Collection<IRemover> blocks = getPathBlock(cm, game, player, sender, playerState);
+		
+		if (blocks == null) {
 			sender.sendMessage(cm.getAsString(IS_PLAYER_IS_NOT_FOUND));
 			return;
 		}
@@ -83,7 +80,7 @@ public class DeleteBlock extends CommandAbstract{
 		}
 		
 		try {
-			game.getBlockConstruction().deletePathLayer(playerState, deleteBlock);
+			game.getBlockConstruction().deletePathLayer(blocks, playerState, deleteBlock);
 		} catch (PlayerDontHaveLayersException e) {
 			sender.sendMessage(cm.getAsString(PLAYER_DOES_NOT_HAVE_LAYERS));
 			return;
@@ -91,6 +88,21 @@ public class DeleteBlock extends CommandAbstract{
 
 	}
 
+	private Collection<IRemover> getPathBlock(QAConfig cm, IGame game, Player player, CommandSender sender, PlayerState playerState) {
+		if (playerState == null) {
+			List<IRemover> removers = game.getBlockConstruction()
+					.getGlobalRemovers(player.getUniqueId());
+			
+			if (removers.isEmpty()) {
+				return null;
+			}
+			
+			return removers;
+		} else {
+			return playerState.getPlayerBuildedBlocks();
+		}
+	}
+	
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
 		if (!(sender instanceof Player)) return null;
@@ -105,7 +117,8 @@ public class DeleteBlock extends CommandAbstract{
 		if (args.length > 1) {
 			IGame game = mainGame.getGame(args[1].toLowerCase());
 			
-			if (game == null)return Collections.emptyList();
+			if (game == null)
+				return Collections.emptyList();
 			
 			return game.getPlayerService().getPlayers().stream()
 					.map(Player::getName)

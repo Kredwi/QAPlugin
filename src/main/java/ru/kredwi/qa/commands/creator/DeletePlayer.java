@@ -1,6 +1,5 @@
 package ru.kredwi.qa.commands.creator;
 
-import static ru.kredwi.qa.config.ConfigKeys.COMMAND_DONT_SUPPORT_GAMEMODE;
 import static ru.kredwi.qa.config.ConfigKeys.GAME_NOT_FOUND;
 import static ru.kredwi.qa.config.ConfigKeys.IS_COMMAND_ONLY_FOR_GAME_OWNER;
 import static ru.kredwi.qa.config.ConfigKeys.IS_GAME_OWNER;
@@ -18,7 +17,6 @@ import org.bukkit.entity.Player;
 import ru.kredwi.qa.commands.CommandAbstract;
 import ru.kredwi.qa.commands.ICommandController;
 import ru.kredwi.qa.config.QAConfig;
-import ru.kredwi.qa.game.GameMode;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IMainGame;
 
@@ -43,11 +41,6 @@ public class DeletePlayer extends CommandAbstract {
 		
 		if (game == null) {
 			sender.sendMessage(cm.getAsString(GAME_NOT_FOUND));
-			return;
-		}
-		
-		if (!game.getGameInfo().mode().equals(GameMode.CLASSIC)) {
-			sender.sendMessage(COMMAND_DONT_SUPPORT_GAMEMODE);
 			return;
 		}
 		

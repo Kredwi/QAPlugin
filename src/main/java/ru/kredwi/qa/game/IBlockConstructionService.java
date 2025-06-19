@@ -1,8 +1,11 @@
 package ru.kredwi.qa.game;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+
+import javax.annotation.Nonnull;
 
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
@@ -28,7 +31,7 @@ public interface IBlockConstructionService extends ReadyService {
 	public void addBuildComplete();
 	public void resetBuildComplete();
 	public void deleteBuildedBlocks();
-	public void deletePathLayer(PlayerState playerState, int deleteBlock) throws PlayerDontHaveLayersException;
+	public void deletePathLayer(@Nonnull Collection<IRemover> path, PlayerState playerState, int deleteBlock) throws PlayerDontHaveLayersException;
 	
 	public void scheduleBuildForPlayer(Player player, PlayerState state, boolean isInit);
 	public Set<IRemover> getSummaryBuildedBlocks();

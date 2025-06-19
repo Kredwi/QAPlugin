@@ -65,9 +65,9 @@ public class GameAnswerService implements IGameAnswer{
 				owner.sendMessage(cm.getAsString(IN_THE_GAME_NOT_FOUND_PATHS));
 				return;
 			}
-			
+			QAPlugin.getQALogger().info("123ss");
 			resetAnwserCount();
-			
+			QAPlugin.getQALogger().info("321ss");
 			game.getBlockConstruction().scheduleBuildForPlayer(playerState.getKey(),playerState.getValue(), isInit);
 		}
 	}
@@ -79,6 +79,7 @@ public class GameAnswerService implements IGameAnswer{
 	
 	@Override
 	public void resetAnwserCount() {
+		QAPlugin.getQALogger().info("ds222a");
 		acceptCount = 0;
 	}
 	
