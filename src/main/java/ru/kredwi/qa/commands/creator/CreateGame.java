@@ -62,6 +62,8 @@ public class CreateGame extends CommandAbstract {
 				
 				IGame newGame = factory.createGame(args[0], player, arguments);
 				
+				newGame.getQuestionManager().loadQuestions();
+				
 				commandController.getMainGame().addGame(newGame);
 				
 			} catch (IllegalArgumentException e) {

@@ -76,11 +76,9 @@ public class BlockConstructionService implements IBlockConstructionService{
 				? cm.getAsBoolean(SPAWN_DISPLAY_TEXTS)
 				: isInit);
 		
-		QAPlugin.getQALogger().info("dsasadxx");
 		
 		FillBlocksTask fbt = fbtBuilder.build();
 		
-		QAPlugin.getQALogger().info("dsasxcsdacsa2213");
 		getBuildedTasks().add(fbt
 			.runTaskTimerAsynchronously(plugin,
 					cm.getAsInt(BUILD_DELAY),
@@ -121,7 +119,7 @@ public class BlockConstructionService implements IBlockConstructionService{
 		
 		FillBlocksTask.Builder fbtBuilder = getFillBlockBuilder(player, state, buildBlock)
 				.breakIsBlockedCallback(breakDeniedCallback);
-		QAPlugin.getQALogger().info("dsa2sszz");
+		QAPlugin.getQALogger().info("Fill block Builder getted");
 		nextScheduleBuildForPlayer(fbtBuilder, player, state, isInit);
 	}
 	

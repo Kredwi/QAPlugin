@@ -14,7 +14,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import ru.kredwi.qa.QAPlugin;
 import ru.kredwi.qa.commands.CommandAbstract;
 import ru.kredwi.qa.commands.ICommandController;
 import ru.kredwi.qa.config.QAConfig;
@@ -76,15 +75,12 @@ public class StartGame extends CommandAbstract {
 			}	
 		}
 		
-		game.getQuestionManager().loadQuestions();
-		
 		if (!game.isAllServicesReady()) {
 			sender.sendMessage("Services is not started! Please wait..");
 			return;
 		}
 		
 		game.setStart(true);
-		QAPlugin.getQALogger().info("dsa");
 		// INIT BLOCKS
 		game.getGameAnswer().processPlayerAnswers(true);
 		

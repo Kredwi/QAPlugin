@@ -145,11 +145,11 @@ public class Path extends CommandAbstract {
 			player.sendMessage(cm.getAsString(GAME_IS_CREATED));
 			return true;
 		}
-		//TODO
-		//if (!game.isAllServicesReady()) {
-		//	player.sendMessage("Services is not started! Please wait..");
-		//	return true;
-		//}
+
+		if (!game.isAllServicesReady()) {
+			player.sendMessage("Services is not started! Please wait..");
+			return true;
+		}
 		
 		return false;
 	}

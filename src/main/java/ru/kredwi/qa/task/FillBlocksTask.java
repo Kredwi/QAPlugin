@@ -34,6 +34,7 @@ import ru.kredwi.qa.utils.Pair;
  * Fill block timer task
  * 
  * TODO init layer is more if `isInit == true`
+ * TODO THREAD LEAK o_0
  * */
 public class FillBlocksTask extends BukkitRunnable {
 	
@@ -91,35 +92,39 @@ public class FillBlocksTask extends BukkitRunnable {
 	
 	@Override
 	public void run() {
-		if (i >= Integer.MAX_VALUE | i >= wordLength) {
-			Bukkit.getScheduler().runTask(plugin, () -> {
-				buildFinalCallback.accept(new Pair<Location, Location>(targetLocation, saveLocation));
-			});
-			cancel();
-			return;
-		}
-
-		saveLocation.add(direction);
-		
-		List<Location> blocksToUpdate = new ArrayList<>(3);
-		
-		blocksToUpdate.add(saveLocation.clone());
-		blocksToUpdate.add(saveLocation.clone().add(perpendicular));
-		blocksToUpdate.add(saveLocation.clone().subtract(perpendicular));
-		
-		 setBlockBatch(blocksToUpdate, playerState, (pairs) -> {
-			 if (spawnTextDisplay) {
-				 final int index = i; // copy i
-				 pairs.forEach((pair) -> Bukkit.getScheduler()
-						 .runTaskLater(plugin, () -> {
-							 displayText.createTextOnBlock(pair.second(),
-										getDisplaySymbol(symbols, index), saveLocation.clone()); 
-						 }, 1));
-			 }
+		try {
+			if (i >= Integer.MAX_VALUE || i >= wordLength) {
+				Bukkit.getScheduler().runTask(plugin, () -> {
+					buildFinalCallback.accept(new Pair<Location, Location>(targetLocation, saveLocation));
+				});
+				cancel();
+				return;
+			}
+			saveLocation.add(direction);
 			
-			placeBlockCallback.accept(saveLocation.clone());
-			i++;
-		});
+			List<Location> blocksToUpdate = new ArrayList<>(3);
+			
+			blocksToUpdate.add(saveLocation.clone());
+			blocksToUpdate.add(saveLocation.clone().add(perpendicular));
+			blocksToUpdate.add(saveLocation.clone().subtract(perpendicular));
+			
+			 setBlockBatch(blocksToUpdate, playerState, (pairs) -> {
+				 if (spawnTextDisplay) {
+					 final int index = i; // copy i
+					 pairs.forEach((pair) -> Bukkit.getScheduler()
+							 .runTaskLater(plugin, () -> {
+								 displayText.createTextOnBlock(pair.second(),
+											getDisplaySymbol(symbols, index), saveLocation.clone()); 
+							 }, 1));
+				 }
+				
+				placeBlockCallback.accept(saveLocation.clone());
+				i++;
+			});	
+		} catch (Exception e) {
+			e.printStackTrace();
+			cancel();
+		}
 	}
 	
 	/**
