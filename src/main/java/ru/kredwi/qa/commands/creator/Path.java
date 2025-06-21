@@ -9,6 +9,7 @@ import static ru.kredwi.qa.config.ConfigKeys.IS_PLAYER_IS_NOT_FOUND;
 import static ru.kredwi.qa.config.ConfigKeys.MANY_GAME_REQUESTS;
 import static ru.kredwi.qa.config.ConfigKeys.NO_ARGS;
 import static ru.kredwi.qa.config.ConfigKeys.REQUESTS_SENDED;
+import static ru.kredwi.qa.config.ConfigKeys.SERVICES_NOT_STARTED;
 import static ru.kredwi.qa.config.ConfigKeys.YOU_HAVE_NEW_GAME_REQUESTS;
 
 import java.text.MessageFormat;
@@ -147,7 +148,7 @@ public class Path extends CommandAbstract {
 		}
 
 		if (!game.isAllServicesReady()) {
-			player.sendMessage("Services is not started! Please wait..");
+			player.sendMessage(cm.getAsString(SERVICES_NOT_STARTED));
 			return true;
 		}
 		

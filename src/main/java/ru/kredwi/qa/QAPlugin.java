@@ -24,7 +24,7 @@ import ru.kredwi.qa.game.impl.GameManager;
 import ru.kredwi.qa.sql.SQLManager;
 
 /**
- * Main plugin and game class
+ * Main plugin class
  * @author Kredwi
  * */
 public class QAPlugin extends JavaPlugin implements PluginWrapper {
@@ -35,7 +35,7 @@ public class QAPlugin extends JavaPlugin implements PluginWrapper {
 	 * config version for validate configs
 	 * @author Kredwi
 	 * */
-	private static final double NEED_CONFIG_VERSION = 3.1;
+	private static final double NEED_CONFIG_VERSION = 3.2;
 	
 	private static Logger logger = null;
 	
@@ -51,7 +51,7 @@ public class QAPlugin extends JavaPlugin implements PluginWrapper {
 	@Override
 	public void onLoad() {
 		this.configManager = new ConfigManager(getConfig());
-		this.gameManager = new GameManager(configManager);
+		this.gameManager = new GameManager(this);
 		this.sqlManager = new SQLManager(configManager);
 		this.gameFactory = new GameFactory();
 		this.commandController = new CommandController(this);
@@ -109,14 +109,11 @@ public class QAPlugin extends JavaPlugin implements PluginWrapper {
 		boolean deleteBlocks = configManager.getAsBoolean(ConfigKeys.DELETE_BLOCKS_WHEN_DISABLE);
 		if (deleteBlocks) {
 			gameManager.getGames().removeIf(g -> {
-				g.getBlockConstruction().getSummaryBuildedBlocks()
-				.removeIf((b -> {
-					b.remove();
-					return true;
-				}));
+				g.getBlockConstruction().deleteBuildedBlocks();
 				return true;
-			});	
+			});
 		}
+		
 		if (configManager.getAsBoolean(ConfigKeys.DB_ENABLE)) {
 			try {
 				sqlManager.disconnect();

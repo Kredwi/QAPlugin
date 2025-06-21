@@ -4,16 +4,17 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.Executor;
 
 import javax.annotation.Nonnull;
 
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitTask;
 
 import ru.kredwi.qa.exceptions.PlayerDontHaveLayersException;
 import ru.kredwi.qa.game.player.PlayerState;
 import ru.kredwi.qa.removers.IRemover;
+import ru.kredwi.qa.task.FillBlocksTask;
 
 public interface IBlockConstructionService extends ReadyService {
 	
@@ -33,9 +34,11 @@ public interface IBlockConstructionService extends ReadyService {
 	public void deleteBuildedBlocks();
 	public void deletePathLayer(@Nonnull Collection<IRemover> path, PlayerState playerState, int deleteBlock) throws PlayerDontHaveLayersException;
 	
+	public Executor getDelayedExecutor();
+	
 	public void scheduleBuildForPlayer(Player player, PlayerState state, boolean isInit);
 	public Set<IRemover> getSummaryBuildedBlocks();
-	List<BukkitTask> getBuildedTasks();
+	List<FillBlocksTask> getBuildedTasks();
 	
 	void addGlobalRemovers(UUID uuid, List<IRemover> removers);
 	List<IRemover> getGlobalRemovers(UUID uuid);

@@ -3,8 +3,12 @@ package ru.kredwi.qa.task;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+
+import javax.annotation.Nonnull;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -12,8 +16,6 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import ru.kredwi.qa.PluginWrapper;
@@ -32,13 +34,10 @@ import ru.kredwi.qa.utils.Pair;
 
 /**
  * Fill block timer task
- * 
- * TODO init layer is more if `isInit == true`
- * TODO THREAD LEAK o_0
  * */
-public class FillBlocksTask extends BukkitRunnable {
+public class FillBlocksTask implements Runnable {
 	
-	private final Plugin plugin;
+	private final PluginWrapper plugin;
 	private final Location targetLocation;
 	private final Location saveLocation;
 	private final Vector perpendicular;
@@ -46,18 +45,21 @@ public class FillBlocksTask extends BukkitRunnable {
 	private final IDisplayText displayText;
 	private final char[] symbols;
 	private final int wordLength;
+	private IGame game;
+	
+	private AtomicBoolean stopRunning = new AtomicBoolean(false);
 	
 	private boolean debug;
 	private boolean spawnTextDisplay;
 	private boolean allowDestroyBlock;
+	
+	private int i = 0; // index of current iteration
 	
 	private PlayerState playerState;
 	
 	private Predicate<BreakIsBlockedData> breakIsBlockedCallback;
 	private Consumer<Pair<Location, Location>> buildFinalCallback;
 	private Consumer<Location> placeBlockCallback;
-	
-	private int i = 0; // index of current iteration
 	
 	private FillBlocksTask(Builder builder) {
 		Objects.requireNonNull(builder);
@@ -73,12 +75,13 @@ public class FillBlocksTask extends BukkitRunnable {
 		this.playerState = Objects.requireNonNull(builder.playerState);
 		this.wordLength = Objects.requireNonNull(builder.wordLength);
 		this.direction = Objects.requireNonNull(builder.direction);
+		this.game = Objects.requireNonNull(builder.game);
 		
 	    this.perpendicular = new Vector(-direction.getZ(), 0, direction.getX());
 	    this.allowDestroyBlock = builder.plugin.getConfigManager().getAsBoolean(ConfigKeys.ALLOW_DESTROY_ANY_BLOCK);
 	    this.debug = builder.plugin.getConfigManager().getAsBoolean(ConfigKeys.DEBUG);
 	    
-	    if (Objects.isNull(playerState.getSymbols()) || playerState.getSymbols().length == 0) {
+	    if (playerState.getSymbols().length == 0) {
 	    	this.symbols = new char[] { ' ' };
 	    } else {
 	    	this.symbols = playerState.getSymbols();
@@ -86,18 +89,23 @@ public class FillBlocksTask extends BukkitRunnable {
 
 	}
 	
-	private char getDisplaySymbol(char[] symbols, int index) {
+	private char getDisplaySymbol(@Nonnull char[] symbols, int index) {
 		return index >= symbols.length ? ' ' : symbols[index];
+	}
+	
+	public void cancel() {
+		stopRunning.set(true);
+	}
+	
+	public boolean isCancelled() {
+		return stopRunning.get();
 	}
 	
 	@Override
 	public void run() {
 		try {
-			if (i >= Integer.MAX_VALUE || i >= wordLength) {
-				Bukkit.getScheduler().runTask(plugin, () -> {
-					buildFinalCallback.accept(new Pair<Location, Location>(targetLocation, saveLocation));
-				});
-				cancel();
+			if (stopRunning.get()) {
+				runFinalCallback();
 				return;
 			}
 			saveLocation.add(direction);
@@ -120,11 +128,23 @@ public class FillBlocksTask extends BukkitRunnable {
 				
 				placeBlockCallback.accept(saveLocation.clone());
 				i++;
+				
+				if (i < wordLength && !stopRunning.get()) {
+					CompletableFuture.runAsync(this, game.getBlockConstruction().getDelayedExecutor());
+				} else {
+					runFinalCallback();
+					cancel();
+					return;
+				}
 			});	
 		} catch (Exception e) {
 			e.printStackTrace();
-			cancel();
 		}
+	}
+	
+	private void runFinalCallback() {
+		Bukkit.getScheduler().runTask(plugin, () -> 
+			buildFinalCallback.accept(new Pair<Location, Location>(targetLocation, saveLocation)));
 	}
 	
 	/**
@@ -140,7 +160,6 @@ public class FillBlocksTask extends BukkitRunnable {
 	private void setBlockBatch(List<Location> locations, PlayerState playerState,
 			Consumer<List<Pair<Location, BlockRemover>>> callback) {
 		
-		BukkitRunnable task = FillBlocksTask.this;
 		List<Location> newLocations = new ArrayList<>();
 		BlockData blockData = playerState.getBlockData();
 			
@@ -168,7 +187,7 @@ public class FillBlocksTask extends BukkitRunnable {
 					Bukkit.getScheduler().runTask(plugin, () -> {
 						buildFinalCallback.accept(null);
 					});
-					task.cancel();
+					cancel();
 					return;
 				}
 				
@@ -188,7 +207,7 @@ public class FillBlocksTask extends BukkitRunnable {
 				playerState.addPlayerBuildedBlocks(remover.second());
 				
 				loc.getBlock().setBlockData(blockData, false);
-			}		
+			}
 			callback.accept(removers);
 		});
 	}

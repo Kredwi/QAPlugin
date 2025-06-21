@@ -2,7 +2,6 @@ package ru.kredwi.qa.game.impl;
 
 import org.bukkit.entity.Player;
 
-import ru.kredwi.qa.QAPlugin;
 import ru.kredwi.qa.game.GameMode;
 import ru.kredwi.qa.game.IBlockConstructionService;
 import ru.kredwi.qa.game.IGame;
@@ -32,13 +31,6 @@ public abstract class Game implements IGame {
 	
 	@Override
 	public boolean isAllServicesReady() {
-		QAPlugin.getQALogger().info(String.valueOf(
-				"Block Construct " + getBlockConstruction().isServiceReady()
-				+ "\nGame Answer"  + getGameAnswer().isServiceReady()
-				+ "\nPlayer service " + getPlayerService().isServiceReady()
-				+ "\nQuestion Manager " + getQuestionManager().isServiceReady()
-				+ "\nWinner service " + getWinnerService().isServiceReady()
-				));
 		return getBlockConstruction().isServiceReady()
 				&& getGameAnswer().isServiceReady()
 				&& getPlayerService().isServiceReady()

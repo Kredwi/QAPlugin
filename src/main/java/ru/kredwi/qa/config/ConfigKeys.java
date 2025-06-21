@@ -19,7 +19,6 @@ public interface ConfigKeys {
 	String PARTICLE_COUNT = "particle-count";
 	String WIN_SOUND = "win-sound";
 	String BLOCK_PLACE_SOUND = "block-place-sound";
-	String BUILD_PERIOD = "build-period";
 	String BUILD_DELAY = "build-delay";
 	String MIN_SYMBOL_IN_ANSWER = "min-symbol-in-answer";
 	String MIN_SYMBOL_IN_QUESTION = "min-symbol-in-question";
@@ -83,6 +82,7 @@ public interface ConfigKeys {
 	String YOU_DEAD_AND_LOSE = "you-dead-and-lose";
 	String PLAYER_DROP_POINTS_WITH_ALREADY_ANSWER = "player-drop-points-with-already-answer";
 	String COMMAND_DONT_SUPPORT_GAMEMODE = "command-dont-support-gamemode";
+	String SERVICES_NOT_STARTED = "services-not-started";
 	
 	String MIN_LENGTH_PATH = "min-length-path";
 	String MAX_LENGTH_PATH = "max-length-path";

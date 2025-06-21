@@ -5,14 +5,17 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
-import ru.kredwi.qa.config.QAConfig;
+import ru.kredwi.qa.PluginWrapper;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IMainGame;
 import ru.kredwi.qa.game.request.GameRequestManager;
 
 public class GameManager implements IMainGame {
+	private Plugin plugin;
 	private final GameRequestManager gameRequestManager;
 	
 	// key: Player Name value: Game name
@@ -20,8 +23,9 @@ public class GameManager implements IMainGame {
 	
 	private Map<String, IGame> games = new HashMap<>();
 	
-	public GameManager(QAConfig cm) {
-		gameRequestManager = new GameRequestManager(cm, this);
+	public GameManager(PluginWrapper plugin) {
+		gameRequestManager = new GameRequestManager(plugin.getConfigManager(), this);
+		this.plugin = plugin;
 	}
 	
 	/**
@@ -38,7 +42,7 @@ public class GameManager implements IMainGame {
 		if (gameIsExists) {
 			game.getGameAnswer().resetAnwserCount();
 			game.getBlockConstruction().resetBuildComplete();
-			game.getBlockConstruction().deleteBuildedBlocks();
+			Bukkit.getScheduler().runTask(plugin, () -> game.getBlockConstruction().deleteBuildedBlocks());
 		}
 		
 		boolean connectIsRemoved = connectedGames.entrySet()

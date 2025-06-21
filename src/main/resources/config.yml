@@ -1,4 +1,4 @@
-version: 3.1 # Config version
+version: 3.2 # Config version
 
 debug: false # Enable debug mode (for developers)
 delete-blocks-when-disable: false # Delete blocks created by the plugin when the server is disabled?
@@ -57,8 +57,7 @@ enabled-blocks: [CYAN_CONCRETE, LIME_CONCRETE, YELLOW_CONCRETE, PURPLE_CONCRETE,
 win-sound: ENTITY_PLAYER_LEVELUP # Sound played when a player wins
 block-place-sound: BLOCK_SCAFFOLDING_PLACE # Sound played when a block is placed
 
-build-delay: 0 # Delay before building starts (in ticks)
-build-period: 10 # Building period (in ticks)
+build-delay: 50 # Delay before building starts (in MILLISECONDS)
 
 # Particles can be found here: https://helpch.at/docs/1.19.4/org/bukkit/Particle.html
 place-particle: SPIT # Particle with spawned in player location
@@ -111,6 +110,7 @@ player-dead-and-lose: "§fPlayer §6{0} §f dies, and §close!"
 you-dead-and-lose: "§cYou died and lose!"
 player-drop-points-with-already-answer: "§fthe player §6{0} §clost his points, §fbecause he answered with a repeating answer!"
 command-dont-support-gamemode: "§cThis type of game is not supported by this command"
+services-not-started: "§cServices is not started! Please wait..."
 
 # {0} - minimum symbols required
 # {1} - number of input symbols

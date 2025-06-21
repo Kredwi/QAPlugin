@@ -1,7 +1,6 @@
 package ru.kredwi.qa.game.service;
 
 import static ru.kredwi.qa.config.ConfigKeys.BUILD_DELAY;
-import static ru.kredwi.qa.config.ConfigKeys.BUILD_PERIOD;
 import static ru.kredwi.qa.config.ConfigKeys.DEBUG;
 import static ru.kredwi.qa.config.ConfigKeys.ENABLED_BLOCKS;
 import static ru.kredwi.qa.config.ConfigKeys.SPAWN_DISPLAY_TEXTS;
@@ -18,6 +17,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 
 import javax.annotation.Nonnull;
@@ -26,7 +28,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 import ru.kredwi.qa.PluginWrapper;
@@ -46,7 +47,7 @@ import ru.kredwi.qa.utils.LocationUtils;
 
 public class BlockConstructionService implements IBlockConstructionService{
 
-	private List<BukkitTask> buildTasks = new LinkedList<>();
+	private List<FillBlocksTask> buildTasks = new LinkedList<>();
 	private Map<UUID, List<IRemover>> globalRemovers = new HashMap<>();
 	
 	private PluginWrapper plugin;
@@ -79,15 +80,19 @@ public class BlockConstructionService implements IBlockConstructionService{
 		
 		FillBlocksTask fbt = fbtBuilder.build();
 		
-		getBuildedTasks().add(fbt
-			.runTaskTimerAsynchronously(plugin,
-					cm.getAsInt(BUILD_DELAY),
-					cm.getAsInt(BUILD_PERIOD)));
+		Executor delayedExecutor= getDelayedExecutor();
+		CompletableFuture.runAsync(fbt, delayedExecutor);
+		buildTasks.add(fbt);
+		
 	}
 	
 	protected FillBlocksTask.Builder getFillBlockBuilder(Player player, PlayerState state, int buildBlock) {
 		Vector direction = LocationUtils.horizontalizeDirection(state.getLocaton());
-		QAPlugin.getQALogger().info(String.valueOf(buildBlock));
+
+		if (cm.getAsBoolean(DEBUG)) {
+			QAPlugin.getQALogger().info("[FillBlockBuilder] Count of path layer " + buildBlock);
+		}
+		
 		return new FillBlocksTask.Builder(plugin, state.getLocaton(), direction,
 				state, player, game, buildBlock);
 	}
@@ -119,11 +124,14 @@ public class BlockConstructionService implements IBlockConstructionService{
 		
 		FillBlocksTask.Builder fbtBuilder = getFillBlockBuilder(player, state, buildBlock)
 				.breakIsBlockedCallback(breakDeniedCallback);
-		QAPlugin.getQALogger().info("Fill block Builder getted");
 		nextScheduleBuildForPlayer(fbtBuilder, player, state, isInit);
 	}
 	
-	
+	/**
+	 * Cancel and delete active tasks and remove builded blocks<br>
+	 * <b>DONT USE IN ASYNC BLOCKS DONT CHANGED IF THREAD IS NOT MAIN !!!</b>
+	 * @author Kredwi
+	 * */
 	@Override
 	public void deleteBuildedBlocks() {
 		if (buildTasks != null && !buildTasks.isEmpty()) {
@@ -134,12 +142,10 @@ public class BlockConstructionService implements IBlockConstructionService{
 			});
 			buildTasks.clear();
 		}
-		// in async blocks dont deleted
-		Bukkit.getScheduler().runTask(plugin, () -> getSummaryBuildedBlocks()
-				.removeIf((e -> {
-					e.remove();
-					return true;
-				})));
+		getSummaryBuildedBlocks().removeIf((e -> {
+			e.remove();
+			return true;
+		}));
 	}
 	
 	public Set<IRemover> getSummaryBuildedBlocks() {
@@ -187,6 +193,11 @@ public class BlockConstructionService implements IBlockConstructionService{
 	}
 	
 	@Override
+	public Executor getDelayedExecutor() {
+		return CompletableFuture.delayedExecutor(cm.getAsInt(BUILD_DELAY), TimeUnit.MILLISECONDS);
+	}
+	
+	@Override
 	public void addGlobalRemovers(UUID uuid, List<IRemover> removers) {
 		Objects.requireNonNull(uuid);
 		Objects.requireNonNull(removers);
@@ -228,7 +239,7 @@ public class BlockConstructionService implements IBlockConstructionService{
 	}
 
 	@Override
-	public List<BukkitTask> getBuildedTasks() {
+	public List<FillBlocksTask> getBuildedTasks() {
 		return buildTasks;
 	}
 
