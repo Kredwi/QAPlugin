@@ -5,10 +5,10 @@ QAPlugin will add a Question/Answer minigame to your server.
 Tested in: **NONE**
 
 ## How to use
-1.  A player with game creation permissions uses the command `/creategame <game name>`, specifying the required arguments.
+1.  A player with game creation permissions uses the command `/creategame <game name> <gamemode> <args for gamemode...>`, specifying the required arguments.
 2.  The player who created the game must then create paths for the players using the command `/path <game name> [player]`.
  - **NOTE**: The direction and starting location are set based on the *command sender's* current position.
-3.  After setting paths for all players, the command `/startgame` must be executed. This will initialize the game, create the necessary blocks, and teleport all players to their starting points.
+3.  After setting paths for all players, the command `/startgame <game name>` must be executed. This will initialize the game, create the necessary blocks, and teleport all players to their starting points.
 
 ## Commands
 
@@ -33,8 +33,7 @@ The plugin settings are located in the `plugins/QAPlugin/config.yml` file. Basic
 - `enabled-blocks` - List of blocks used for construction
  - `win-sound` - Sound when winning
  - `block-place-sound` - The sound when placing the block
- - `build-delay` - Delay before the start of construction (in ticks)
- - `build-period` - Construction period (in ticks)
+ - `build-delay` - Delay before the start of construction (in ms)
  - `max-requests-size` - Max number of requests to game
  - `allow-destroy-any-block` - Allow breaking blocks by paths **(DANGEROUS FOR THE WORLD!! BLOCKS CANNOT BE RESTORED)**
  - `spawn-display-texts` - Enables spawning of display texts around blocks (can cause high server load (**1** block = **5** entites of `DisplayText`))
@@ -55,6 +54,16 @@ The plugin settings are located in the `plugins/QAPlugin/config.yml` file. Basic
  - `host` - host of database (ip)
  - `port` - port of database
  - `database` - database name for plugin
+
+## Gamemodes
+- `CLASSIC` - Classic Mode
+- `PLEONASMS` - Elimination mode
+
+### Classic
+The winner is the one who has reached the required number of blocks. (There may be several winners)
+
+### Plonasms
+The winner is the last one left, the game requires at least two players.
 
 *and other...*
 
