@@ -93,7 +93,7 @@ public class ConstructionStageEndCallback extends AbstractStageEndCallback
 		// reverse block removers
 		Collections.reverse(blockRemovers);
 		
-		game.getBlockConstruction().deletePathLayer(blockRemovers, state, deleteBlock);
+		game.getBlockConstruction().deletePathLayer(blockRemovers, state, delete);
 		
 		// now reverse block removers
 		Collections.reverse(blockRemovers);

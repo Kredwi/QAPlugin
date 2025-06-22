@@ -194,9 +194,7 @@ public class FillBlocksTask implements Runnable {
 						QAPlugin.getQALogger().info("Cancel this task timer and execute final callback...");							
 					}
 					if (!isCancelled()) {
-						Bukkit.getScheduler().runTask(plugin, () -> {
-							buildFinalCallback.accept(null);
-						});	
+						runFinalCallback();
 					}
 					cancel();
 					return;

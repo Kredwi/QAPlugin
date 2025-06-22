@@ -67,7 +67,6 @@ public class CreateGame extends CommandAbstract {
 				commandController.getMainGame().addGame(newGame);
 				
 			} catch (IllegalArgumentException e) {
-				e.printStackTrace();
 				sender.sendMessage(cm.getAsString(INPUTED_INVALID_DATA));
 				return;
 			} catch (NullPointerException e) {

@@ -58,7 +58,7 @@ enabled-blocks: [CYAN_CONCRETE, LIME_CONCRETE, YELLOW_CONCRETE, PURPLE_CONCRETE,
 win-sound: ENTITY_PLAYER_LEVELUP # Sound played when a player wins
 block-place-sound: BLOCK_SCAFFOLDING_PLACE # Sound played when a block is placed
 
-build-delay: 50 # Delay before building starts (in MILLISECONDS)
+build-delay: 250 # Delay before building starts (in MILLISECONDS)
 
 # Particles can be found here: https://helpch.at/docs/1.19.4/org/bukkit/Particle.html
 place-particle: SPIT # Particle with spawned in player location
