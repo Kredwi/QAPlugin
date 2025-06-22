@@ -2,6 +2,7 @@ package ru.kredwi.qa.game.service;
 
 import static ru.kredwi.qa.config.ConfigKeys.DB_ENABLE;
 import static ru.kredwi.qa.config.ConfigKeys.DEBUG;
+import static ru.kredwi.qa.config.ConfigKeys.DELETE_GAME_AFTER_TICK;
 import static ru.kredwi.qa.config.ConfigKeys.FIREWORK_FOR_WINNER_COLORS;
 import static ru.kredwi.qa.config.ConfigKeys.FIREWORK_FOR_WINNER_ENABLE;
 import static ru.kredwi.qa.config.ConfigKeys.FIREWORK_FOR_WINNER_FADES;
@@ -21,6 +22,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
+import org.bukkit.Bukkit;
 import org.bukkit.FireworkEffect;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -67,7 +69,8 @@ public abstract class WinnerService implements IWinnerService {
 		
 		// spawn for winners firework effects
 		if (cm.getAsBoolean(FIREWORK_FOR_WINNER_ENABLE)) {
-			game.getWinnerService().getWinners().forEach(p -> FireworkUtils.spawnFireworkEntity(plugin, p.getLocation(), fireworkEffect));		
+			game.getWinnerService().getWinners().forEach(p ->
+				FireworkUtils.spawnFireworkEntity(plugin, p.getLocation(), fireworkEffect));		
 		}
 		
 		// and alert all players in the game of winners
@@ -78,7 +81,9 @@ public abstract class WinnerService implements IWinnerService {
 		game.setFinished(true);
 		
 		if (cm.getAsBoolean(IMMEDIATELY_END_GAME)) {
-			mainGame.removeGameWithName(game.getGameInfo().name());	
+			Bukkit.getScheduler().runTaskLater(plugin, () ->
+				mainGame.removeGameWithName(game.getGameInfo().name()),
+				cm.getAsInt(DELETE_GAME_AFTER_TICK));
 		}
 	}
 

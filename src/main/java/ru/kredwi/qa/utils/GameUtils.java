@@ -10,10 +10,6 @@ import ru.kredwi.qa.game.player.PlayerState;
 
 public class GameUtils {
 
-	/**
-	 * What create chain of resp...??
-	 * One utils method.
-	 * */
 	public static final void setWinnerWhyManyBuilded(IGame game) {
 		Optional<Integer> maxBuildedBlocks = game.getPlayerService().getPlayerAndStatesArray().stream()
 				.map(e -> e.getValue().getBuildedBlocks())

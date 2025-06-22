@@ -1,13 +1,11 @@
 package ru.kredwi.qa.commands.creator;
 
-import static ru.kredwi.qa.config.ConfigKeys.GAME_FINISHED;
 import static ru.kredwi.qa.config.ConfigKeys.GAME_NOT_FOUND;
-import static ru.kredwi.qa.config.ConfigKeys.IN_THE_GAME_NOT_FOUND_PATHS;
+import static ru.kredwi.qa.config.ConfigKeys.*;
 import static ru.kredwi.qa.config.ConfigKeys.IS_COMMAND_ONLY_FOR_GAME_OWNER;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
 import org.bukkit.command.Command;
@@ -46,18 +44,18 @@ public class StartGame extends CommandAbstract {
 	public void run(ICommandController commandController, CommandSender sender, Command command, String[] args) {
 		IGame game = commandController.getMainGame().getGame(args[0]);
 		
-		if (Objects.isNull(game)) {
+		if (game == null) {
 			sender.sendMessage(cm.getAsString(GAME_NOT_FOUND));
-			return;
-		}
-		
-		if (game.isFinish()) {
-			sender.sendMessage(cm.getAsString(GAME_FINISHED));
 			return;
 		}
 		
 		if (!game.getGameInfo().isPlayerOwner((Player) sender)) {
 			sender.sendMessage(cm.getAsString(IS_COMMAND_ONLY_FOR_GAME_OWNER));
+			return;
+		}
+
+		if (!game.isAllServicesReady()) {
+			sender.sendMessage(cm.getAsString(SERVICES_NOT_STARTED));
 			return;
 		}
 		

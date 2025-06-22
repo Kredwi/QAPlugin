@@ -108,7 +108,6 @@ public class GamePlayerService implements IGamePlayer {
 		} else {
 			playerState.getPlayerBuildedBlocks()
 				.forEach(IRemover::remove);
-	
 		}
 		
 		getPlayers().remove(player);

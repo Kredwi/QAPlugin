@@ -1,4 +1,4 @@
-version: 3.2 # Config version
+version: 3.3 # Config version
 
 debug: false # Enable debug mode (for developers)
 delete-blocks-when-disable: false # Delete blocks created by the plugin when the server is disabled?
@@ -11,6 +11,7 @@ spawn-place-particle: true # Spawn place particles
 enable-requests: true # Send an invite to the game instead of adding it at the beginning
 immediately-end-game: true # If false, the game will not be removed from the game pool, and the blocks will remain. To delete a game, you can use /deletegame [gamename]
 max-requests-size: 10 # Max number of requests to game
+delete-game-after-tick: 5 # After end game delete game time (in ticks)
 
 max-blocks-for-game: 100
 min-blocks-for-game: 5

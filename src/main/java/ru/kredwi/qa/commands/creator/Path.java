@@ -108,27 +108,6 @@ public class Path extends CommandAbstract {
 		}
 	}
 	
-	@Override
-	public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
-		
-		if (!isHaveNeedsPermissions(sender)) return Collections.emptyList();
-		
-		if (args.length == 1) {
-			return mainGame.getNamesFromGames().stream()
-					.filter(e -> e.startsWith(args[0]))
-					.collect(Collectors.toList());
-		}
-		
-		if (args.length == 2) {
-			return Bukkit.getOnlinePlayers().stream()
-					.map(Player::getName)
-					.filter(e -> e.startsWith(args[1]))
-					.collect(Collectors.toList());
-		}
-		
-		return Collections.emptyList();
-	}
-	
 	private boolean sendMessagesIfNegativeConditions(Player player, String gameName) {
 		IGame game = mainGame.getGame(gameName);
 		
@@ -153,6 +132,27 @@ public class Path extends CommandAbstract {
 		}
 		
 		return false;
+	}
+	
+	@Override
+	public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
+		
+		if (!isHaveNeedsPermissions(sender)) return Collections.emptyList();
+		
+		if (args.length == 1) {
+			return mainGame.getNamesFromGames().stream()
+					.filter(e -> e.startsWith(args[0]))
+					.collect(Collectors.toList());
+		}
+		
+		if (args.length == 2) {
+			return Bukkit.getOnlinePlayers().stream()
+					.map(Player::getName)
+					.filter(e -> e.startsWith(args[1]))
+					.collect(Collectors.toList());
+		}
+		
+		return Collections.emptyList();
 	}
 
 }

@@ -1,6 +1,7 @@
 package ru.kredwi.qa;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Random;
 import java.util.logging.Logger;
 
@@ -22,6 +23,7 @@ import ru.kredwi.qa.game.factory.IGameFactory;
 import ru.kredwi.qa.game.factory.PleoyasmsGameFactory;
 import ru.kredwi.qa.game.impl.GameManager;
 import ru.kredwi.qa.sql.SQLManager;
+import ru.kredwi.qa.task.FillBlocksTask;
 
 /**
  * Main plugin class
@@ -35,7 +37,7 @@ public class QAPlugin extends JavaPlugin implements PluginWrapper {
 	 * config version for validate configs
 	 * @author Kredwi
 	 * */
-	private static final double NEED_CONFIG_VERSION = 3.2;
+	private static final double NEED_CONFIG_VERSION = 3.3;
 	
 	private static Logger logger = null;
 	
@@ -107,12 +109,22 @@ public class QAPlugin extends JavaPlugin implements PluginWrapper {
 	@Override
 	public void onDisable() {
 		boolean deleteBlocks = configManager.getAsBoolean(ConfigKeys.DELETE_BLOCKS_WHEN_DISABLE);
-		if (deleteBlocks) {
-			gameManager.getGames().removeIf(g -> {
+		gameManager.getGames().removeIf(g -> {
+			List<FillBlocksTask> buildTasks = g.getBlockConstruction().getBuildedTasks();
+			if (buildTasks != null && !buildTasks.isEmpty()) {
+				buildTasks.removeIf((e) -> {
+					if (!e.isCancelled())
+						e.cancel();
+					return true;
+				});
+				buildTasks.clear();
+			}
+			
+			if (deleteBlocks) {
 				g.getBlockConstruction().deleteBuildedBlocks();
-				return true;
-			});
-		}
+			}
+			return true;
+		});
 		
 		if (configManager.getAsBoolean(ConfigKeys.DB_ENABLE)) {
 			try {

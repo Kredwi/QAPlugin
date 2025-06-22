@@ -87,4 +87,5 @@ public interface ConfigKeys {
 	String MIN_LENGTH_PATH = "min-length-path";
 	String MAX_LENGTH_PATH = "max-length-path";
 	String GAME_FINISHED = "game-finished";
+	String DELETE_GAME_AFTER_TICK = "delete-game-after-tick";
 }

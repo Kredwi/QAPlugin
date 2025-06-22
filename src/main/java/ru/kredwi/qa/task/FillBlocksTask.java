@@ -1,6 +1,7 @@
 package ru.kredwi.qa.task;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
@@ -16,6 +17,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.IllegalPluginAccessException;
 import org.bukkit.util.Vector;
 
 import ru.kredwi.qa.PluginWrapper;
@@ -104,7 +106,7 @@ public class FillBlocksTask implements Runnable {
 	@Override
 	public void run() {
 		try {
-			if (stopRunning.get()) {
+			if (isCancelled()) {
 				runFinalCallback();
 				return;
 			}
@@ -117,7 +119,7 @@ public class FillBlocksTask implements Runnable {
 			blocksToUpdate.add(saveLocation.clone().subtract(perpendicular));
 			
 			 setBlockBatch(blocksToUpdate, playerState, (pairs) -> {
-				 if (spawnTextDisplay) {
+				 if (!isCancelled() && spawnTextDisplay) {
 					 final int index = i; // copy i
 					 pairs.forEach((pair) -> Bukkit.getScheduler()
 							 .runTaskLater(plugin, () -> {
@@ -137,8 +139,15 @@ public class FillBlocksTask implements Runnable {
 					return;
 				}
 			});	
+		} catch (IllegalPluginAccessException e) {
+			if (plugin.getConfigManager().getAsBoolean(ConfigKeys.DEBUG)) {
+				QAPlugin.getQALogger().warning(e.getMessage() + " If while server disable, ignore this log.");
+			}
+			cancel();
 		} catch (Exception e) {
 			e.printStackTrace();
+			runFinalCallback();
+			cancel();
 		}
 	}
 	
@@ -184,9 +193,11 @@ public class FillBlocksTask implements Runnable {
 					if (debug) {
 						QAPlugin.getQALogger().info("Cancel this task timer and execute final callback...");							
 					}
-					Bukkit.getScheduler().runTask(plugin, () -> {
-						buildFinalCallback.accept(null);
-					});
+					if (!isCancelled()) {
+						Bukkit.getScheduler().runTask(plugin, () -> {
+							buildFinalCallback.accept(null);
+						});	
+					}
 					cancel();
 					return;
 				}
@@ -195,21 +206,24 @@ public class FillBlocksTask implements Runnable {
 			
 			newLocations.add(location);
 		}
-		
-		Bukkit.getScheduler().runTask(plugin, () -> {
-			List<Pair<Location, BlockRemover>> removers = new ArrayList<>();
-			for (Location loc : newLocations) {
-				
-				Pair<Location, BlockRemover> remover = new Pair<>(loc, new BlockRemover(loc.getBlock()));
-				
-				removers.add(remover);
-				
-				playerState.addPlayerBuildedBlocks(remover.second());
-				
-				loc.getBlock().setBlockData(blockData, false);
-			}
-			callback.accept(removers);
-		});
+		if (!isCancelled()) {
+			Bukkit.getScheduler().runTask(plugin, () -> {
+				List<Pair<Location, BlockRemover>> removers = new ArrayList<>();
+				for (Location loc : newLocations) {
+					
+					Pair<Location, BlockRemover> remover = new Pair<>(loc, new BlockRemover(loc.getBlock()));
+					
+					removers.add(remover);
+					
+					playerState.addPlayerBuildedBlocks(remover.second());
+					
+					loc.getBlock().setBlockData(blockData, false);
+				}
+				callback.accept(removers);
+			});	
+		} else {
+			callback.accept(Collections.emptyList());
+		}
 	}
 	
     public static class Builder {
