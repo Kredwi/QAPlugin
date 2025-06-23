@@ -1,6 +1,11 @@
 package ru.kredwi.qa.game;
 
 import ru.kredwi.qa.game.impl.GameInfo;
+import ru.kredwi.qa.game.service.IBlockConstructionService;
+import ru.kredwi.qa.game.service.IGameAnswer;
+import ru.kredwi.qa.game.service.IGamePlayer;
+import ru.kredwi.qa.game.service.IGameQuestionManager;
+import ru.kredwi.qa.game.service.IWinnerService;
 
 public interface IGame {
 	

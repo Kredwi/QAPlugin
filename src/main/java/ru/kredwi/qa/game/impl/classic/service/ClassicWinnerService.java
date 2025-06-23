@@ -1,10 +1,10 @@
 package ru.kredwi.qa.game.impl.classic.service;
 
 import ru.kredwi.qa.PluginWrapper;
-import ru.kredwi.qa.game.IBlockConstructionService;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.player.PlayerState;
-import ru.kredwi.qa.game.service.WinnerService;
+import ru.kredwi.qa.game.service.IBlockConstructionService;
+import ru.kredwi.qa.game.service.impl.WinnerService;
 import ru.kredwi.qa.sql.DatabaseActions;
 
 public class ClassicWinnerService extends WinnerService{

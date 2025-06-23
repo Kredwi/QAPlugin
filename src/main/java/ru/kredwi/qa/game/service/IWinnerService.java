@@ -1,4 +1,4 @@
-package ru.kredwi.qa.game;
+package ru.kredwi.qa.game.service;
 
 import java.util.List;
 

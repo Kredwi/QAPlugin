@@ -22,8 +22,8 @@ import ru.kredwi.qa.commands.CommandAbstract;
 import ru.kredwi.qa.commands.ICommandController;
 import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.game.IGame;
-import ru.kredwi.qa.game.IGameQuestionManager;
 import ru.kredwi.qa.game.player.PlayerState;
+import ru.kredwi.qa.game.service.IGameQuestionManager;
 import ru.kredwi.qa.game.service.data.Question;
 
 public class NewQuestion extends CommandAbstract {

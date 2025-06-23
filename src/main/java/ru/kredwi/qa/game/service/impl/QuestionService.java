@@ -1,4 +1,4 @@
-package ru.kredwi.qa.game.service;
+package ru.kredwi.qa.game.service.impl;
 
 import static ru.kredwi.qa.config.ConfigKeys.DEBUG;
 import static ru.kredwi.qa.config.ConfigKeys.QUESTIONS;
@@ -17,8 +17,8 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import ru.kredwi.qa.QAPlugin;
 import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.exceptions.QuestionsAreOverException;
-import ru.kredwi.qa.game.IGamePlayer;
-import ru.kredwi.qa.game.IGameQuestionManager;
+import ru.kredwi.qa.game.service.IGamePlayer;
+import ru.kredwi.qa.game.service.IGameQuestionManager;
 import ru.kredwi.qa.game.service.data.Question;
 
 public class QuestionService implements IGameQuestionManager{

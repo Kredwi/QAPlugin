@@ -1,6 +1,5 @@
 package ru.kredwi.qa.commands.creator;
 
-import static ru.kredwi.qa.config.ConfigKeys.DEBUG;
 import static ru.kredwi.qa.config.ConfigKeys.ENABLE_REQUESTS;
 import static ru.kredwi.qa.config.ConfigKeys.GAME_IS_CREATED;
 import static ru.kredwi.qa.config.ConfigKeys.GAME_NOT_FOUND;
@@ -17,12 +16,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import ru.kredwi.qa.QAPlugin;
 import ru.kredwi.qa.commands.CommandAbstract;
 import ru.kredwi.qa.commands.ICommandController;
 import ru.kredwi.qa.config.QAConfig;
@@ -48,63 +49,42 @@ public class Path extends CommandAbstract {
 	
 	@Override
 	public void run(ICommandController commandController, CommandSender sender, Command command, String[] args) {
-		
-		Player player = (Player) sender;
+		Player playerSender = (Player) sender;
 		
 		try {
-			
-			if (!cm.getAsBoolean(ENABLE_REQUESTS) && args.length > 1) {
-				
-				if (sendMessagesIfNegativeConditions(player, args[0])) return;
-				
-				Player otherPlayer = Bukkit.getPlayer(args[1]);
-				
-				if (otherPlayer == null) {
-					sender.sendMessage(cm.getAsString(IS_PLAYER_IS_NOT_FOUND));
-					return;
+			switch (args.length) {
+				case 0 -> sender.sendMessage(cm.getAsString(NO_ARGS));
+				case 1 -> doExecute(playerSender, playerSender, args[0], false);
+				default -> {
+					Player player = Bukkit.getPlayer(args[1]);
+					
+					if (!cm.getAsBoolean(ENABLE_REQUESTS)) {
+						doExecute(playerSender, player, args[0], false);
+						break;
+					}
+					doExecute(playerSender, player, args[0], true);
 				}
-				
-				gameRequestManager.connectPlayersToGame(args[0], otherPlayer.getName(),
-						player, player.getLocation().clone());
-				
-				return;
 			}
-			
-			// if player nickname is not entered
-			if (args.length == 1 && args[0] != null) {
-
-				if (sendMessagesIfNegativeConditions(player, args[0])) return;
-				
-				gameRequestManager.connectPlayersToGame(args[0], sender.getName(),
-						player, player.getLocation().clone());
-				
-			// if player nickname is entered
-			} else if (args.length > 1 && args[1] != null) {
-				
-				if (sendMessagesIfNegativeConditions(player, args[0])) return;
-				
-				Player otherPlayer = Bukkit.getPlayer(args[1]);
-				
-				if (otherPlayer == null) {
-					sender.sendMessage(cm.getAsString(IS_PLAYER_IS_NOT_FOUND));
-					return;
-				}
-				
-				gameRequestManager.addUserRequest(otherPlayer.getUniqueId(), args[0], player);
-				
-				otherPlayer.sendMessage(MessageFormat.format(cm.getAsString(YOU_HAVE_NEW_GAME_REQUESTS), args[0]));
-				player.sendMessage(MessageFormat.format(cm.getAsString(REQUESTS_SENDED), otherPlayer.getName())); 
-			} else {
-				sender.sendMessage(cm.getAsString(NO_ARGS));
-			}	
 		} catch (RequestsOutOfBounds e) {
-			
 			sender.sendMessage(cm.getAsString(MANY_GAME_REQUESTS));
-			
-			if (cm.getAsBoolean(DEBUG)) {
-				QAPlugin.getQALogger().info("EXCEPTION IN PATH REQUESTS OUT OF BOUNDS: "+e.getMessage());
-			}
-			
+		}
+	}
+	
+	private void doExecute(@Nonnull CommandSender sender, @Nullable Player player, @Nonnull String gameName, boolean request) {
+		if (player == null) {
+			sender.sendMessage(cm.getAsString(IS_PLAYER_IS_NOT_FOUND));
+			return;
+		}
+		
+		if (sendMessagesIfNegativeConditions((Player) sender, gameName)) return;
+		
+		if (request) {
+			gameRequestManager.addUserRequest(player.getUniqueId(), gameName, player);
+			player.sendMessage(MessageFormat.format(cm.getAsString(YOU_HAVE_NEW_GAME_REQUESTS), gameName));
+			sender.sendMessage(MessageFormat.format(cm.getAsString(REQUESTS_SENDED), player.getName())); 
+		} else {
+			gameRequestManager.connectPlayersToGame(gameName, player.getName(),
+					(Player) sender, ((Player) sender).getLocation().clone());
 		}
 	}
 	

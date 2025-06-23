@@ -2,21 +2,23 @@ package ru.kredwi.qa.game;
 
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+
 import org.bukkit.entity.Player;
 
 import ru.kredwi.qa.game.request.GameRequestManager;
 
 public interface IMainGame {
 
-	void addGame(IGame game);
+	void addGame(@Nonnull IGame game);
 
-	IGame getGame(String gameName);
+	IGame getGame(@Nonnull String gameName);
 	
 	Set<IGame> getGames();
 
-	void connectPlayerToGame(Player player, IGame game);
+	void connectPlayerToGame(@Nonnull Player player, @Nonnull IGame game);
 
-	IGame getGameFromPlayer(Player player);
+	IGame getGameFromPlayer(@Nonnull Player player);
 
 	Set<String> getNamesFromGames();
 
@@ -26,7 +28,7 @@ public interface IMainGame {
 	 * @return <i>true</i> if game is deleted
 	 * @author Kredwi
 	 * */
-	boolean removeGameWithName(String gameName);
+	boolean removeGameWithName(@Nonnull String gameName);
 
 	GameRequestManager getGameRequestManager();
 

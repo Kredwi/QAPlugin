@@ -1,15 +1,17 @@
 package ru.kredwi.qa.game.impl;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.bukkit.entity.Player;
 
 import ru.kredwi.qa.game.GameMode;
-import ru.kredwi.qa.game.IBlockConstructionService;
 import ru.kredwi.qa.game.IGame;
-import ru.kredwi.qa.game.IGameAnswer;
 import ru.kredwi.qa.game.IGameEvent;
-import ru.kredwi.qa.game.IGamePlayer;
-import ru.kredwi.qa.game.IGameQuestionManager;
-import ru.kredwi.qa.game.IWinnerService;
+import ru.kredwi.qa.game.service.IBlockConstructionService;
+import ru.kredwi.qa.game.service.IGameAnswer;
+import ru.kredwi.qa.game.service.IGamePlayer;
+import ru.kredwi.qa.game.service.IGameQuestionManager;
+import ru.kredwi.qa.game.service.IWinnerService;
 
 public abstract class Game implements IGame {
 
@@ -17,7 +19,7 @@ public abstract class Game implements IGame {
 
 	private GameServices services;
 	
-	private boolean preStopGame;
+	private AtomicBoolean preStopGame = new AtomicBoolean(false);
 	private boolean isStart;
 	private boolean isFinish;
 	
@@ -85,12 +87,12 @@ public abstract class Game implements IGame {
 	
 	@Override
 	public boolean isPreStopGame() {
-		return preStopGame;
+		return preStopGame.get();
 	}
 
 	@Override
 	public void setPreStopGame(boolean preStopGame) {
-		this.preStopGame = preStopGame;
+		this.preStopGame.set(preStopGame);
 	}
 
 	@Override

@@ -3,12 +3,12 @@ package ru.kredwi.qa.game.impl.classic.service;
 import org.bukkit.entity.Player;
 
 import ru.kredwi.qa.PluginWrapper;
-import ru.kredwi.qa.game.IGamePlayer;
-import ru.kredwi.qa.game.IWinnerService;
 import ru.kredwi.qa.game.classic.IClassicGame;
 import ru.kredwi.qa.game.impl.classic.callback.ConstructionStageEndCallback;
 import ru.kredwi.qa.game.player.PlayerState;
-import ru.kredwi.qa.game.service.BlockConstructionService;
+import ru.kredwi.qa.game.service.IGamePlayer;
+import ru.kredwi.qa.game.service.IWinnerService;
+import ru.kredwi.qa.game.service.impl.BlockConstructionService;
 import ru.kredwi.qa.task.FillBlocksTask;
 
 public class ClassicConsturctionService extends BlockConstructionService{

@@ -9,8 +9,10 @@ import static ru.kredwi.qa.config.ConfigKeys.YOU_NOT_CONNECTED_TO_GAME;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -120,9 +122,17 @@ public class DeleteBlock extends CommandAbstract{
 			if (game == null)
 				return Collections.emptyList();
 			
-			return game.getPlayerService().getPlayers().stream()
+			List<String> names = game.getPlayerService().getPlayers().stream()
 					.map(Player::getName)
 					.toList();
+			
+			for (UUID uuid : game.getBlockConstruction().getGlobalPlayersRemovers()) {
+				OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
+				if (!names.contains(player.getName()))
+					names.add(player.getName());
+			}
+			
+			return names;
 		}
 		
 		return null;

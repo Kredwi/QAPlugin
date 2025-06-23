@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.annotation.Nonnull;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -35,7 +37,7 @@ public class GameManager implements IMainGame {
 	 * @author Kredwi
 	 * */
 	@Override
-	public boolean removeGameWithName(String gameName) {
+	public boolean removeGameWithName(@Nonnull String gameName) {
 		IGame game = games.remove(gameName.trim().toLowerCase());
 		boolean gameIsExists = game != null;
 		
@@ -57,19 +59,19 @@ public class GameManager implements IMainGame {
 	}
 	
 	@Override
-	public IGame getGame(String gameName) {
+	public IGame getGame(@Nonnull String gameName) {
 		return gameName == null ? null : games.get(gameName.trim().toLowerCase());
 	}
 	@Override
-	public void addGame(IGame game) {
+	public void addGame(@Nonnull IGame game) {
 		this.games.put(game.getGameInfo().name(), game);
 	}
 	@Override
-	public void connectPlayerToGame(Player player, IGame game) {
+	public void connectPlayerToGame(@Nonnull Player player, @Nonnull IGame game) {
 		connectedGames.put(player.getName(), game.getGameInfo().name());
 	}
 	@Override
-	public IGame getGameFromPlayer(Player player) {
+	public IGame getGameFromPlayer(@Nonnull Player player) {
 		return getGame(connectedGames.get(player.getName()));
 	}
 	@Override

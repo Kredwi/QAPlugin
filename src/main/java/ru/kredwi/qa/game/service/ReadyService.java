@@ -1,4 +1,4 @@
-package ru.kredwi.qa.game;
+package ru.kredwi.qa.game.service;
 
 public interface ReadyService {
 	boolean isServiceReady();

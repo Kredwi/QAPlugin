@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.player.PlayerState;
-import ru.kredwi.qa.game.service.GamePlayerService;
+import ru.kredwi.qa.game.service.impl.GamePlayerService;
 import ru.kredwi.qa.removers.IRemover;
 
 public class PleonasmsGamePlayerService extends GamePlayerService {

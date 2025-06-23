@@ -7,9 +7,11 @@ import static ru.kredwi.qa.config.ConfigKeys.IS_PLAYER_IS_NOT_FOUND;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -92,6 +94,12 @@ public class DeletePlayer extends CommandAbstract {
 					.map(Player::getName)
 					.filter(e -> e.startsWith(args[1]))
 					.collect(Collectors.toList());
+			
+			for (UUID uuid : game.getBlockConstruction().getGlobalPlayersRemovers()) {
+				OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
+				if (!names.contains(player.getName()))
+					names.add(player.getName());
+			}
 			
 			return names;
 		}

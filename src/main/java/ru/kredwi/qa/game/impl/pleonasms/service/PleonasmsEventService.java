@@ -1,7 +1,7 @@
 package ru.kredwi.qa.game.impl.pleonasms.service;
 
 import ru.kredwi.qa.game.IGame;
-import ru.kredwi.qa.game.service.EventService;
+import ru.kredwi.qa.game.service.impl.EventService;
 import ru.kredwi.qa.utils.GameUtils;
 
 public class PleonasmsEventService extends EventService{

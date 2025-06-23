@@ -1,4 +1,4 @@
-package ru.kredwi.qa.game.service;
+package ru.kredwi.qa.game.service.impl;
 
 import static ru.kredwi.qa.config.ConfigKeys.DB_ENABLE;
 import static ru.kredwi.qa.config.ConfigKeys.DEBUG;
@@ -32,7 +32,7 @@ import ru.kredwi.qa.QAPlugin;
 import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IMainGame;
-import ru.kredwi.qa.game.IWinnerService;
+import ru.kredwi.qa.game.service.IWinnerService;
 import ru.kredwi.qa.sql.DatabaseActions;
 import ru.kredwi.qa.utils.FireworkUtils;
 

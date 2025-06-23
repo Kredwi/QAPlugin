@@ -1,4 +1,4 @@
-package ru.kredwi.qa.game.service;
+package ru.kredwi.qa.game.service.impl;
 
 import static ru.kredwi.qa.config.ConfigKeys.DB_ENABLE;
 import static ru.kredwi.qa.config.ConfigKeys.DEBUG;
@@ -17,8 +17,8 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import ru.kredwi.qa.QAPlugin;
 import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.game.IGame;
-import ru.kredwi.qa.game.IGameAnswer;
 import ru.kredwi.qa.game.player.PlayerState;
+import ru.kredwi.qa.game.service.IGameAnswer;
 import ru.kredwi.qa.sql.DatabaseActions;
 
 public class GameAnswerService implements IGameAnswer{

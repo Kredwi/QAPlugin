@@ -1,4 +1,4 @@
-package ru.kredwi.qa.game.service;
+package ru.kredwi.qa.game.service.impl;
 
 import ru.kredwi.qa.game.IGameEvent;
 

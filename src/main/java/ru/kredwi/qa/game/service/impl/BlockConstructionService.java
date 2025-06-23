@@ -1,4 +1,4 @@
-package ru.kredwi.qa.game.service;
+package ru.kredwi.qa.game.service.impl;
 
 import static ru.kredwi.qa.config.ConfigKeys.BUILD_DELAY;
 import static ru.kredwi.qa.config.ConfigKeys.DEBUG;
@@ -36,11 +36,11 @@ import ru.kredwi.qa.callback.BlockBreakDeniedCallback;
 import ru.kredwi.qa.callback.data.BreakIsBlockedData;
 import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.exceptions.PlayerDontHaveLayersException;
-import ru.kredwi.qa.game.IBlockConstructionService;
 import ru.kredwi.qa.game.IGame;
-import ru.kredwi.qa.game.IGamePlayer;
-import ru.kredwi.qa.game.IWinnerService;
 import ru.kredwi.qa.game.player.PlayerState;
+import ru.kredwi.qa.game.service.IBlockConstructionService;
+import ru.kredwi.qa.game.service.IGamePlayer;
+import ru.kredwi.qa.game.service.IWinnerService;
 import ru.kredwi.qa.removers.IRemover;
 import ru.kredwi.qa.task.FillBlocksTask;
 import ru.kredwi.qa.utils.LocationUtils;
@@ -221,6 +221,11 @@ public class BlockConstructionService implements IBlockConstructionService{
 	public void removeGlobalRemovers(UUID uuid) {
 		Objects.requireNonNull(uuid);
 		globalRemovers.remove(uuid);
+	}
+	
+	@Override
+	public List<UUID> getGlobalPlayersRemovers() {
+		return new ArrayList<>(globalRemovers.keySet());
 	}
 	
 	@Override

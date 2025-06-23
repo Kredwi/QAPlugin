@@ -1,4 +1,4 @@
-package ru.kredwi.qa.game;
+package ru.kredwi.qa.game.service;
 
 import java.util.Collection;
 import java.util.List;
@@ -42,6 +42,7 @@ public interface IBlockConstructionService extends ReadyService {
 	
 	void addGlobalRemovers(UUID uuid, List<IRemover> removers);
 	List<IRemover> getGlobalRemovers(UUID uuid);
+	List<UUID> getGlobalPlayersRemovers();
 	void removeGlobalRemovers(UUID uuid);
 	
 	BlockData getRandomBlockData();

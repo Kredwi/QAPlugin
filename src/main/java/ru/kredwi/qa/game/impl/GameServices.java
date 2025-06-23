@@ -4,18 +4,18 @@ import java.util.Objects;
 
 import ru.kredwi.qa.PluginWrapper;
 import ru.kredwi.qa.config.ConfigKeys;
-import ru.kredwi.qa.game.IBlockConstructionService;
 import ru.kredwi.qa.game.IGame;
-import ru.kredwi.qa.game.IGameAnswer;
 import ru.kredwi.qa.game.IGameEvent;
-import ru.kredwi.qa.game.IGamePlayer;
-import ru.kredwi.qa.game.IGameQuestionManager;
-import ru.kredwi.qa.game.IWinnerService;
-import ru.kredwi.qa.game.service.BlockConstructionService;
-import ru.kredwi.qa.game.service.EventService;
-import ru.kredwi.qa.game.service.GameAnswerService;
-import ru.kredwi.qa.game.service.GamePlayerService;
-import ru.kredwi.qa.game.service.QuestionService;
+import ru.kredwi.qa.game.service.IBlockConstructionService;
+import ru.kredwi.qa.game.service.IGameAnswer;
+import ru.kredwi.qa.game.service.IGamePlayer;
+import ru.kredwi.qa.game.service.IGameQuestionManager;
+import ru.kredwi.qa.game.service.IWinnerService;
+import ru.kredwi.qa.game.service.impl.BlockConstructionService;
+import ru.kredwi.qa.game.service.impl.EventService;
+import ru.kredwi.qa.game.service.impl.GameAnswerService;
+import ru.kredwi.qa.game.service.impl.GamePlayerService;
+import ru.kredwi.qa.game.service.impl.QuestionService;
 import ru.kredwi.qa.sql.SQLManager;
 
 public class GameServices {

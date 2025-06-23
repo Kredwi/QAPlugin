@@ -13,9 +13,9 @@ import org.bukkit.entity.Player;
 import ru.kredwi.qa.PluginWrapper;
 import ru.kredwi.qa.callback.AbstractStageEndCallback;
 import ru.kredwi.qa.game.AnswerUsedData;
-import ru.kredwi.qa.game.IBlockConstructionService;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.player.PlayerState;
+import ru.kredwi.qa.game.service.IBlockConstructionService;
 import ru.kredwi.qa.removers.IRemover;
 import ru.kredwi.qa.utils.Pair;
 

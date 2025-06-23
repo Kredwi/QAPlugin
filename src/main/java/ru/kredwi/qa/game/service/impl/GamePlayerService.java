@@ -1,4 +1,4 @@
-package ru.kredwi.qa.game.service;
+package ru.kredwi.qa.game.service.impl;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -14,8 +14,8 @@ import org.bukkit.entity.Player;
 
 import ru.kredwi.qa.QAPlugin;
 import ru.kredwi.qa.game.IGame;
-import ru.kredwi.qa.game.IGamePlayer;
 import ru.kredwi.qa.game.player.PlayerState;
+import ru.kredwi.qa.game.service.IGamePlayer;
 import ru.kredwi.qa.removers.IRemover;
 
 /**
