@@ -44,7 +44,6 @@ public class DisplayText implements IDisplayText {
 	
 	@Override
 	public void createTextOnBlock(BlockRemover blockRemover, char symbol, Location targetLocation) {
-
 		if (!spawnDisplayText) {
 			if (plugin.getConfigManager().getAsBoolean(ConfigKeys.DEBUG)) {
 				QAPlugin.getQALogger().info("display text spawn is cancel");
@@ -93,6 +92,7 @@ public class DisplayText implements IDisplayText {
 	private void createTextDisplay(BlockRemover blockRemover, World world, Location location, char symbol, float rotationYaw, float rotationPith) {
 		Bukkit.getScheduler().runTask(plugin, () -> {
 			TextDisplay textDisplay = world.spawn(location, TextDisplay.class);
+			blockRemover.addAttribute(new DisplayRemover(textDisplay));
 			
 			textDisplay.setTransformation(DISPLAY_TEXT_TRANSFORMATION);
 			
@@ -105,7 +105,6 @@ public class DisplayText implements IDisplayText {
 			
 			textDisplay.setRotation(rotationYaw, rotationPith);
 			textDisplay.setShadowed(true);
-			blockRemover.addAttribute(new DisplayRemover(textDisplay));
 });
 	}
 }

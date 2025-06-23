@@ -49,7 +49,7 @@ public class FillBlocksTask implements Runnable {
 	private final int wordLength;
 	private IGame game;
 	
-	private AtomicBoolean stopRunning = new AtomicBoolean(false);
+	private AtomicBoolean stopRunningTask = new AtomicBoolean(false);
 	
 	private boolean debug;
 	private boolean spawnTextDisplay;
@@ -96,11 +96,11 @@ public class FillBlocksTask implements Runnable {
 	}
 	
 	public void cancel() {
-		stopRunning.set(true);
+		stopRunningTask.set(true);
 	}
 	
 	public boolean isCancelled() {
-		return stopRunning.get();
+		return stopRunningTask.get();
 	}
 	
 	@Override
@@ -123,15 +123,17 @@ public class FillBlocksTask implements Runnable {
 					 final int index = i; // copy i
 					 pairs.forEach((pair) -> Bukkit.getScheduler()
 							 .runTaskLater(plugin, () -> {
-								 displayText.createTextOnBlock(pair.second(),
-											getDisplaySymbol(symbols, index), saveLocation.clone()); 
+								 if (!isCancelled()) {
+									 displayText.createTextOnBlock(pair.second(),
+												getDisplaySymbol(symbols, index), saveLocation.clone()); 
+								 }
 							 }, 1));
 				 }
 				
 				placeBlockCallback.accept(saveLocation.clone());
 				i++;
 				
-				if (i < wordLength && !stopRunning.get()) {
+				if (i < wordLength && !isCancelled()) {
 					CompletableFuture.runAsync(this, game.getBlockConstruction().getDelayedExecutor());
 				} else {
 					runFinalCallback();
