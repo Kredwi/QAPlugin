@@ -1,4 +1,4 @@
-version: 3.3 # Config version
+version: 3.4 # Config version
 
 debug: false # Enable debug mode (for developers)
 delete-blocks-when-disable: false # Delete blocks created by the plugin when the server is disabled?
@@ -67,6 +67,7 @@ particle-count: 1 # Count the number of particles
 # Message templates
 question-template: "§6Question§8: §f§r{0}" # {0} - question text
 questions-are-over: "§cQuestions are over." # Notification that questions are finished
+player-answer-of: "§fPlayer §6{1} §fanswer§8: §6{0}"
 
 # Plugin messages
 game-finished: "§cGame finished."

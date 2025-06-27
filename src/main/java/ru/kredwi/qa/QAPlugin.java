@@ -37,7 +37,7 @@ public class QAPlugin extends JavaPlugin implements PluginWrapper {
 	 * config version for validate configs
 	 * @author Kredwi
 	 * */
-	private static final double NEED_CONFIG_VERSION = 3.3;
+	private static final double NEED_CONFIG_VERSION = 3.4;
 	
 	private static Logger logger = null;
 	

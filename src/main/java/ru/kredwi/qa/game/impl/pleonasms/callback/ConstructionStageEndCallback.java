@@ -35,6 +35,10 @@ public class ConstructionStageEndCallback extends AbstractStageEndCallback
 	public void accept(Pair<Location, Location> location) {
 		// get path owner
 		PlayerState state = game.getPlayerService().getPlayerState(player);
+		String answer = new String(state.getSymbols());
+		
+		sendMessageIfDisplaysDisabled(answer, player.getName());
+		
 		state.setLocaton(location.second());		
 		isAnswerAlreadyUsed(state, location);
 		// reset all dynamic states
@@ -42,11 +46,8 @@ public class ConstructionStageEndCallback extends AbstractStageEndCallback
 		
 		// player build complete
 		game.getBlockConstruction().addBuildComplete();
-		// checks is winner?
-		if (game.getWinnerService().isPlayerWin(state)) {
-				// add winner to list winners
-				game.getWinnerService().addWinner(player);
-		}
+
+		game.getWinnerService().addPlayerIfWin(player);
 		
 		// if last player complete build
 		if (game.getBlockConstruction().getBuildComplete() > game.getPlayerService().getPlayers().size()) {
@@ -62,8 +63,7 @@ public class ConstructionStageEndCallback extends AbstractStageEndCallback
 			
 			// reset build completes
 			game.getBlockConstruction().resetBuildComplete();
-			
-			super.winnerOrQuestionsPlayer(player, state);
+			super.winnerOrQuestionsPlayer(player, answer);
 		}
 	}
 	
@@ -100,13 +100,7 @@ public class ConstructionStageEndCallback extends AbstractStageEndCallback
 	}
 	
 	private void deletePlayerFromGame(Player player, PlayerState playerState, Location saveLocation) {
-		//playerState.getPlayerBuildedBlocks()
-		//	.forEach(IRemover::remove);
-	
 		game.getBlockConstruction()
 			.addGlobalRemovers(player.getUniqueId(), playerState.getPlayerBuildedBlocks());
-		
-//		player.teleport(playerState.getLocaton());
-//		game.getPlayerService().getPlayers().remove(player);
 	}
 }

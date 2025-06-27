@@ -22,6 +22,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
+import javax.annotation.Nonnull;
+
 import org.bukkit.Bukkit;
 import org.bukkit.FireworkEffect;
 import org.bukkit.entity.Player;
@@ -32,6 +34,7 @@ import ru.kredwi.qa.QAPlugin;
 import ru.kredwi.qa.config.QAConfig;
 import ru.kredwi.qa.game.IGame;
 import ru.kredwi.qa.game.IMainGame;
+import ru.kredwi.qa.game.player.PlayerState;
 import ru.kredwi.qa.game.service.IWinnerService;
 import ru.kredwi.qa.sql.DatabaseActions;
 import ru.kredwi.qa.utils.FireworkUtils;
@@ -101,6 +104,13 @@ public abstract class WinnerService implements IWinnerService {
 		}
 	}
 
+	@Override
+	public void addPlayerIfWin(@Nonnull Player player) {
+		PlayerState state = game.getPlayerService().getPlayerState(player);
+		if (state != null && isPlayerWin(state))
+			addWinner(player);
+	}
+	
 	@Override
 	public List<Player> getWinners() {
 		return new ArrayList<>(this.winners);

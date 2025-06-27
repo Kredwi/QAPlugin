@@ -2,6 +2,8 @@ package ru.kredwi.qa.game.service;
 
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import org.bukkit.entity.Player;
 
 import ru.kredwi.qa.game.player.PlayerState;
@@ -15,6 +17,8 @@ import ru.kredwi.qa.game.player.PlayerState;
  * @author Kredwi
  */
 public interface IWinnerService extends ReadyService {
+	
+	public void addPlayerIfWin(@Nonnull Player player);
 	
 	public void executeWinnerHandler();
 	

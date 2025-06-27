@@ -2,6 +2,7 @@ package ru.kredwi.qa.task;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
@@ -117,30 +118,30 @@ public class FillBlocksTask implements Runnable {
 			blocksToUpdate.add(saveLocation.clone());
 			blocksToUpdate.add(saveLocation.clone().add(perpendicular));
 			blocksToUpdate.add(saveLocation.clone().subtract(perpendicular));
-			
 			 setBlockBatch(blocksToUpdate, playerState, (pairs) -> {
-				 if (!isCancelled() && spawnTextDisplay) {
+				 if (!isCancelled()) {
 					 final int index = i; // copy i
-					 pairs.forEach((pair) -> Bukkit.getScheduler()
-							 .runTaskLater(plugin, () -> {
-								 if (!isCancelled()) {
+					 if (spawnTextDisplay) {
+					 	Iterator<Pair<Location,BlockRemover>> iterator = pairs.iterator();
+					 	while (iterator.hasNext()) {
+						 	Pair<Location,BlockRemover> pair = iterator.next();
+							 	if (plugin.getConfigManager().getAsBoolean(ConfigKeys.SPAWN_DISPLAY_TEXTS)) {
 									 displayText.createTextOnBlock(pair.second(),
-												getDisplaySymbol(symbols, index), saveLocation.clone()); 
+												getDisplaySymbol(symbols, index), saveLocation.clone());
 								 }
-							 }, 1));
-				 }
+						};
+					 }
 				
-				placeBlockCallback.accept(saveLocation.clone());
-				i++;
-				
+					 placeBlockCallback.accept(saveLocation.clone());
+					 i++;
+
 				if (i < wordLength && !isCancelled()) {
-					CompletableFuture.runAsync(this, game.getBlockConstruction().getDelayedExecutor());
+					CompletableFuture.runAsync(this, game.getBlockConstruction().getDelayedExecutor());			
 				} else {
 					runFinalCallback();
 					cancel();
-					return;
 				}
-			});	
+			}});
 		} catch (IllegalPluginAccessException e) {
 			if (plugin.getConfigManager().getAsBoolean(ConfigKeys.DEBUG)) {
 				QAPlugin.getQALogger().warning(e.getMessage() + " If while server disable, ignore this log.");
@@ -170,13 +171,10 @@ public class FillBlocksTask implements Runnable {
 	 */
 	private void setBlockBatch(List<Location> locations, PlayerState playerState,
 			Consumer<List<Pair<Location, BlockRemover>>> callback) {
-		
 		List<Location> newLocations = new ArrayList<>();
 		BlockData blockData = playerState.getBlockData();
-			
 		for (Location location : locations) {
 			Block block = location.getBlock();
-			
 			if (!allowDestroyBlock && !block.getType().equals(Material.AIR)) {
 				
 				if (debug) {
@@ -220,7 +218,7 @@ public class FillBlocksTask implements Runnable {
 					loc.getBlock().setBlockData(blockData, false);
 				}
 				callback.accept(removers);
-			});	
+			});
 		} else {
 			callback.accept(Collections.emptyList());
 		}

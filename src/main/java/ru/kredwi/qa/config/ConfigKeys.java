@@ -83,6 +83,7 @@ public interface ConfigKeys {
 	String PLAYER_DROP_POINTS_WITH_ALREADY_ANSWER = "player-drop-points-with-already-answer";
 	String COMMAND_DONT_SUPPORT_GAMEMODE = "command-dont-support-gamemode";
 	String SERVICES_NOT_STARTED = "services-not-started";
+	String PLAYER_ANSWER_OF = "player-answer-of";
 	
 	String MIN_LENGTH_PATH = "min-length-path";
 	String MAX_LENGTH_PATH = "max-length-path";
